@@ -73,10 +73,10 @@ class KegiatanController extends Controller
                 ->orWhereHas('subkelompok', function (Builder $query) use ($kata) {
                     $query->where('sub_kelompoks.nama', 'like', '%' . $kata . '%');
                 })
-                // ->orWhereHas('status', function (Builder $query) use ($kata) {
-                //     $query->where('status_kegiatans.nama', 'like', '%' . $kata . '%');
-                // })
-                // ->orWhere('kegiatans.nama', 'like', '%' . $kata . '%')
+                ->orWhereHas('status', function (Builder $query) use ($kata) {
+                    $query->where('status_kegiatans.nama', 'like', '%' . $kata . '%');
+                })
+                ->orWhere('kegiatans.nama', 'like', '%' . $kata . '%')
                 ->select('kegiatans.*');
             }
 
