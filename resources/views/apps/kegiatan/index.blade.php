@@ -39,22 +39,13 @@
                         <div class="card-body">
 
                             <!-- Card Body -->
-                            <h4 class="card-title">Data Seluruh Kegiatan</h4>
+                            <h4 class="card-title">Data Seluruh Kegiatan 2024</h4>
 
                             <div class="row">
-                                <!-- Date Range Filter -->
-                                <div class="col-xs-auto">
-                                    <div class="float-end" id="daterange"
-                                        style="background: #fff;cursor:pointer;padding: 5px 10px;border:1px solid #ccc;width100%;text-align:center">
-                                        <i class="bi bi-calendar"></i>&nbsp;
-                                        <span></span>
-                                        <i class="bi bi-caret-down-fill"></i>
-                                    </div>
-                                </div>
                                 <!-- Button Section -->
                                 <div class="col mb-2 d-flex">
                                     <div>
-                                        <a href="{{route('kegiatan-create')}}" class="btn btn-primary me-1">Tambah</a>
+                                        <a href="{{ route('kegiatan-create') }}" class="btn btn-primary me-1">Tambah</a>
                                     </div>
                                     <div>
                                         <form action="{{ route('excel') }}" method="post" class="me-1">
@@ -75,6 +66,15 @@
                                                 <button type="submit" class="btn btn-danger" id="excelButton">PDF</button>
                                             </div>
                                         </form>
+                                    </div>
+                                    <!-- Date Range Filter -->
+                                    <div class="col-xs-auto ms-2">
+                                        <div class="float-end" id="daterange"
+                                            style="background: #fff;cursor:pointer;padding: 5px 10px;border:1px solid #ccc;width100%;text-align:center">
+                                            <i class="bi bi-calendar"></i>&nbsp;
+                                            <span></span>
+                                            <i class="bi bi-caret-down-fill"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -179,30 +179,32 @@
         // Handling Date Range Filter
         var start_date = moment().startOf('year');
         var end_date = moment();
+        console.log(start_date)
 
         var start_date_convert = start_date.format('YYYY-MM-DD');
         var end_date_convert = end_date.format('YYYY-MM-DD');
 
-        // Handling Search
+
+        // Handling Search and Excel export filter
         $(document).ready(function() {
             $('#excelDataSearch').val(null);
             $('#dt-search-0').on('keyup', function() {
                 var dtSearch = $('#dt-search-0').val();
-
                 $('#excelDataSearch').val(dtSearch)
-
             });
         });
+
         $('#daterange span').html(start_date.format('D MMM YY') + ' - ' + end_date.format('D MMM YY'));
         $('#excelDataStart').val(start_date_convert);
         $('#excelDataEnd').val(end_date_convert);
 
 
-
-
+        // Daterange Filter
         $('#daterange').daterangepicker({
             startDate: start_date,
             endDate: end_date,
+            autoUpdateInput: false,
+            showDropdowns: true,
             ranges: {
                 'Today': [moment(), moment()],
                 'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -210,7 +212,9 @@
                 'Last 30 Days': [moment().subtract(29, 'days'), moment()],
                 'This Month': [moment().startOf('month'), moment().endOf('month')],
                 'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf(
-                    'month')]
+                    'month')],
+                'This Year': [moment().startOf('year'), moment().endOf(
+                    'year')]
             }
         }, function(start_date, end_date) {
             $('#daterange span').html(start_date.format('D MMM YY') + ' - ' + end_date.format(
@@ -219,20 +223,23 @@
             end_date_convert = end_date.format('YYYY-MM-DD');
             $('#excelDataStart').val(start_date_convert);
             $('#excelDataEnd').val(end_date_convert);
+            console.log(start_date)
             kegiatanTable.draw();
-            console.log('draw');
         });
+
 
 
         var kegiatanTable = $('#kegiatanTable').DataTable({
             serverSide: true,
+            searching: false,
             processing: true,
-            searchable: true,
             ajax: {
                 url: "{{ route('kegiatan-index') }}",
                 data: function(data) {
-                    data.from_date = $('#daterange').data('daterangepicker').startDate.format('YYYY-MM-DD');
-                    data.end_date = $('#daterange').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                    data.from_date = $('#daterange').data('daterangepicker').startDate.format(
+                        'YYYY-MM-DD');
+                    data.end_date = $('#daterange').data('daterangepicker').endDate.format(
+                        'YYYY-MM-DD');
                 },
             },
             drawCallback: function() {

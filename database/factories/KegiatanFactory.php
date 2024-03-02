@@ -37,7 +37,7 @@ class KegiatanFactory extends Factory
             'problems' => null,
             'follow_up' => null,
             'todos' => null,
-            'created_at' => Carbon::now()->subDays(rand(0, 40)),
+            'created_at' => Carbon::now()->subDays(rand(0, 90)),
             'updated_at' => Carbon::now(),
         ];
     }
