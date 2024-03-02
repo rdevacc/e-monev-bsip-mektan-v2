@@ -77,6 +77,17 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col mb-2 d-flex">
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" id="searchField"
+                                            placeholder="Cari Kegiatan">
+                                        <button class="btn btn-outline-secondary" type="button" id="button-addon2">
+                                            <i class="bi bi-search"></i>
+                                            Cari
+                                        </button>
+                                    </div>
+
+                                </div>
                             </div>
 
                             <!-- Table with stripped rows -->
@@ -107,9 +118,11 @@
                                             </th>
                                             <th rowspan="1" colspan="4" class="text-center align-middle">Target dan
                                                 Realisasi (%)</th>
-                                            <th rowspan="3" colspan="1" class="text-center align-middle">Kegiatan yang
+                                            <th rowspan="3" colspan="1" class="text-center align-middle">Kegiatan
+                                                yang
                                                 sudah dikerjakan</th>
-                                            <th rowspan="3" colspan="1" class="text-center align-middle">Permasalahan
+                                            <th rowspan="3" colspan="1" class="text-center align-middle">
+                                                Permasalahan
                                             </th>
                                             <th rowspan="3" colspan="1" style="width: 10%"
                                                 class="text-center align-middle">Tindak Lantjut</th>
@@ -179,7 +192,6 @@
         // Handling Date Range Filter
         var start_date = moment().startOf('year');
         var end_date = moment();
-        console.log(start_date)
 
         var start_date_convert = start_date.format('YYYY-MM-DD');
         var end_date_convert = end_date.format('YYYY-MM-DD');
@@ -188,9 +200,11 @@
         // Handling Search and Excel export filter
         $(document).ready(function() {
             $('#excelDataSearch').val(null);
-            $('#dt-search-0').on('keyup', function() {
-                var dtSearch = $('#dt-search-0').val();
-                $('#excelDataSearch').val(dtSearch)
+            // Handle Search
+            $('#searchField').on('keyup', function(searchField) {
+                var dtSearch = $('#searchField').val();
+                $('#excelDataSearch').val(dtSearch);
+                kegiatanTable.draw();
             });
         });
 
@@ -223,11 +237,8 @@
             end_date_convert = end_date.format('YYYY-MM-DD');
             $('#excelDataStart').val(start_date_convert);
             $('#excelDataEnd').val(end_date_convert);
-            console.log(start_date)
             kegiatanTable.draw();
         });
-
-
 
         var kegiatanTable = $('#kegiatanTable').DataTable({
             serverSide: true,
@@ -240,6 +251,7 @@
                         'YYYY-MM-DD');
                     data.end_date = $('#daterange').data('daterangepicker').endDate.format(
                         'YYYY-MM-DD');
+                    data.searchField = $('#searchField').val();
                 },
             },
             drawCallback: function() {

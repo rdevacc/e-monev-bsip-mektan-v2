@@ -7,6 +7,7 @@ use App\Models\Kelompok;
 use App\Models\SubKelompok;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -59,7 +60,25 @@ class KegiatanController extends Controller
                 $query = Kegiatan::with(['kelompok', 'subkelompok', 'status', 'pj'])->select('kegiatans.*');
             }
 
-            // $query = Kegiatan::with(['kelompok', 'subkelompok', 'status', 'pj'])->select('kegiatans.*');
+
+            if($request->searchField) {
+                $kata = $request->searchField;
+                $query = Kegiatan::with(['kelompok', 'subkelompok', 'status', 'pj'])
+                ->whereHas('pj', function (Builder $query) use ($kata) {
+                    $query->where('users.nama', 'like', '%' . $kata . '%');
+                })
+                ->orWhereHas('kelompok', function (Builder $query) use ($kata) {
+                    $query->where('kelompoks.nama', 'like', '%' . $kata . '%');
+                })
+                ->orWhereHas('subkelompok', function (Builder $query) use ($kata) {
+                    $query->where('sub_kelompoks.nama', 'like', '%' . $kata . '%');
+                })
+                // ->orWhereHas('status', function (Builder $query) use ($kata) {
+                //     $query->where('status_kegiatans.nama', 'like', '%' . $kata . '%');
+                // })
+                // ->orWhere('kegiatans.nama', 'like', '%' . $kata . '%')
+                ->select('kegiatans.*');
+            }
 
 
             return DataTables::of($query)
