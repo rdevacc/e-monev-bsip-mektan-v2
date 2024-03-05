@@ -25,9 +25,8 @@ class KegiatanController extends Controller
              */
 
             $thisYear = Carbon::now()->format('Y');
-            $date = Carbon::create($thisYear, 1, 1);
-            $startOfYear = $date->startOfYear();
-
+            $date = Carbon::create($thisYear, 1, 1,0,0,0,'GMT+7');
+            $startOfYear = $date->startOfYear()->format('');
 
             /**
              * * Query for Today Filter *
@@ -38,17 +37,19 @@ class KegiatanController extends Controller
                     ->select('kegiatans.*');
             }
             /**
-             * * Query for Default Filter, From start of the year untill today *
-             */
-            elseif ($request->form_date == $startOfYear && $request->end_date == Carbon::now()) {
-                $query = Kegiatan::with(['kelompok', 'subkelompok', 'status', 'pj'])
-                    ->whereBetween('kegiatans.created_at', [$request->from_date, $request->end_date])
-                    ->select('kegiatans.*');
-            } 
-            /**
              * * Query for Date Range Filter *
              */
-            elseif ($request->filled('from_date') && $request->filled('end_date')) {
+            elseif ($request->from_date && $request->end_date) {
+                /**
+                 * * Query for Default Filter, From start of the year until today *
+                 */
+                // $today = Carbon::now()->format('D M d Y H:i:s a');
+                // if ($request->end_date == $today) {
+                //     $query = Kegiatan::with(['kelompok', 'subkelompok', 'status', 'pj'])
+                //         ->whereBetween('kegiatans.created_at', [$request->from_date, Carbon::now()])
+                //         ->select('kegiatans.*');
+                // }
+
                 $query = Kegiatan::with(['kelompok', 'subkelompok', 'status', 'pj'])
                     ->whereBetween('kegiatans.created_at', [$request->from_date, $request->end_date])
                     ->select('kegiatans.*');
@@ -61,23 +62,23 @@ class KegiatanController extends Controller
             }
 
 
-            if($request->searchField) {
+            if ($request->searchField) {
                 $kata = $request->searchField;
                 $query = Kegiatan::with(['kelompok', 'subkelompok', 'status', 'pj'])
-                ->whereHas('pj', function (Builder $query) use ($kata) {
-                    $query->where('users.nama', 'like', '%' . $kata . '%');
-                })
-                ->orWhereHas('kelompok', function (Builder $query) use ($kata) {
-                    $query->where('kelompoks.nama', 'like', '%' . $kata . '%');
-                })
-                ->orWhereHas('subkelompok', function (Builder $query) use ($kata) {
-                    $query->where('sub_kelompoks.nama', 'like', '%' . $kata . '%');
-                })
-                ->orWhereHas('status', function (Builder $query) use ($kata) {
-                    $query->where('status_kegiatans.nama', 'like', '%' . $kata . '%');
-                })
-                ->orWhere('kegiatans.nama', 'like', '%' . $kata . '%')
-                ->select('kegiatans.*');
+                    ->whereHas('pj', function (Builder $query) use ($kata) {
+                        $query->where('users.nama', 'like', '%' . $kata . '%');
+                    })
+                    ->orWhereHas('kelompok', function (Builder $query) use ($kata) {
+                        $query->where('kelompoks.nama', 'like', '%' . $kata . '%');
+                    })
+                    ->orWhereHas('subkelompok', function (Builder $query) use ($kata) {
+                        $query->where('sub_kelompoks.nama', 'like', '%' . $kata . '%');
+                    })
+                    ->orWhereHas('status', function (Builder $query) use ($kata) {
+                        $query->where('status_kegiatans.nama', 'like', '%' . $kata . '%');
+                    })
+                    ->orWhere('kegiatans.nama', 'like', '%' . $kata . '%')
+                    ->select('kegiatans.*');
             }
 
 

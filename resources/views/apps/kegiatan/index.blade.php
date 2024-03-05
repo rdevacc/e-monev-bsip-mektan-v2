@@ -81,7 +81,7 @@
                                     <div class="input-group mb-3">
                                         <input type="text" class="form-control" id="searchField"
                                             placeholder="Cari Kegiatan">
-                                        <button class="btn btn-outline-secondary" type="button" id="button-addon2">
+                                        <button class="btn btn-outline-secondary" type="button" id="searchFieldBtn">
                                             <i class="bi bi-search"></i>
                                             Cari
                                         </button>
@@ -191,7 +191,7 @@
     <script>
         // Handling Date Range Filter
         var start_date = moment().startOf('year');
-        var end_date = moment();
+        var end_date = moment().add(1, 'day');
 
         var start_date_convert = start_date.format('YYYY-MM-DD');
         var end_date_convert = end_date.format('YYYY-MM-DD');
@@ -200,8 +200,15 @@
         // Handling Search and Excel export filter
         $(document).ready(function() {
             $('#excelDataSearch').val(null);
+            $('#start_date').val(start_date);
+            $('#end_date').val(end_date);
             // Handle Search
             $('#searchField').on('keyup', function(searchField) {
+                var dtSearch = $('#searchField').val();
+                $('#excelDataSearch').val(dtSearch);
+                kegiatanTable.draw();
+            });
+            $('#searchFieldBtn').on('click', function(searchField) {
                 var dtSearch = $('#searchField').val();
                 $('#excelDataSearch').val(dtSearch);
                 kegiatanTable.draw();
@@ -211,6 +218,9 @@
         $('#daterange span').html(start_date.format('D MMM YY') + ' - ' + end_date.format('D MMM YY'));
         $('#excelDataStart').val(start_date_convert);
         $('#excelDataEnd').val(end_date_convert);
+
+        console.log(start_date._d.toString());
+        console.log(end_date._d.toString());
 
 
         // Daterange Filter
@@ -227,8 +237,8 @@
                 'This Month': [moment().startOf('month'), moment().endOf('month')],
                 'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf(
                     'month')],
-                'This Year': [moment().startOf('year'), moment().endOf(
-                    'year')]
+                'This Year': [moment().startOf('year'), moment().endOf('year')],
+                'Last Year': [moment().subtract(1, 'year'), moment().subtract(1, 'year').endOf('year')]
             }
         }, function(start_date, end_date) {
             $('#daterange span').html(start_date.format('D MMM YY') + ' - ' + end_date.format(

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Models\SubKelompok;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -15,6 +16,9 @@ class UserController extends Controller
     public function index()
     {
 
+        // return dd(Carbon::now()->parse('z'));
+        // return dd(Carbon::now()->format('l, F jS Y, H:i:s a'));
+        return dd(Carbon::now()->format('D M d Y H:i:s P'));
         $datausers = User::all();
 
         return view('apps.users.index', [
@@ -103,7 +107,7 @@ class UserController extends Controller
         return redirect()->route('user-index')->with('success', 'User ' . $user->nama . ' has been updated!');
     }
 
-     /**
+    /**
      * * User Delete Controller *
      */
     public function destroy(User $user)
@@ -111,6 +115,5 @@ class UserController extends Controller
         User::destroy($user->id);
 
         return redirect()->route('user-index')->with('success', 'User ' . $user->nama . ' has been deleted!');
-
     }
 }
