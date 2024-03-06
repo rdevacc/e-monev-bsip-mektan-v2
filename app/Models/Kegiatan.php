@@ -28,6 +28,13 @@ class Kegiatan extends Model
         'todos',
     ];
 
+    protected $casts = [
+        'dones' => 'array',
+        'problems' => 'array',
+        'follow_up' => 'array',
+        'todos' => 'array',
+    ];
+
 
     // Casting Dones
     protected function dones(): Attribute

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kegiatan;
 use App\Models\Role;
 use App\Models\SubKelompok;
 use App\Models\User;
@@ -15,10 +16,10 @@ class UserController extends Controller
      */
     public function index()
     {
+        $test = Kegiatan::find(308);
 
-        // return dd(Carbon::now()->parse('z'));
-        // return dd(Carbon::now()->format('l, F jS Y, H:i:s a'));
-        return dd(Carbon::now()->format('D M d Y H:i:s P'));
+        dd($test);
+
         $datausers = User::all();
 
         return view('apps.users.index', [

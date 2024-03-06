@@ -207,10 +207,10 @@
                                 <div id="followUpRow" class="mb-2">
                                     <div class="row align-items-end" id="followUpField">
                                         <div class="col-10 col-md-11">
-                                            <label for="followUpInput" class="form-label">Tindak Lanjut</label>
+                                            <label for="follow_up" class="form-label">Tindak Lanjut</label>
                                             <input type="text"
-                                                class="form-control @error('followUp.*') is-invalid @enderror"
-                                                id="followUpInput" name="followUp[0]"
+                                                class="form-control @error('follow_up.*') is-invalid @enderror"
+                                                id="follow_up" name="follow_up[0]"
                                                 value="{{ old('followUp.0') ?: '' }}">
                                         </div>
                                         <div class="col-2 col-md-1">
@@ -272,7 +272,7 @@
                 $("#donesRow").append(
                     `<div class="row align-items-end my-2" id="donesField">
                         <div class="col-10 col-md-11">
-                            <input type="text" class="form-control" id="donesInput" name="donesInput[` + i + `]" value="{{ old('dones.`+ i +`') ?: '' }}">
+                            <input type="text" class="form-control" id="dones" name="dones[` + i + `]" value="{{ old('dones.`+ i +`') ?: '' }}">
                         </div>
                         <div class="col-2 col-md-1">
                             <btn type="button" class="btn btn btn-outline-danger" id="donesRemoveBtn">
@@ -293,7 +293,7 @@
                 $("#problemsRow").append(
                     `<div class="row align-items-end my-2" id="problemsField">
                         <div class="col-10 col-md-11">
-                            <input type="text" class="form-control" id="problemsInput" name="problemsInput[` + j + `]" value="{{ old('problems.`+ j +`') ?: '' }}">
+                            <input type="text" class="form-control" id="problems" name="problems[` + j + `]" value="{{ old('problems.`+ j +`') ?: '' }}">
                         </div>
                         <div class="col-2 col-md-1">
                             <btn type="button" class="btn btn btn-outline-danger" id="problemsRemoveBtn">
@@ -314,7 +314,7 @@
                 $("#followUpRow").append(
                     `<div class="row align-items-end my-2" id="followUpField">
                         <div class="col-10 col-md-11">
-                            <input type="text" class="form-control" id="followUpInput" name="followUpInput[` + k + `]" value="{{ old('followUp.`+ k +`') ?: '' }}">
+                            <input type="text" class="form-control" id="follow_up" name="follow_up[` + k + `]" value="{{ old('follow_up.`+ k +`') ?: '' }}">
                         </div>
                         <div class="col-2 col-md-1">
                             <btn type="button" class="btn btn btn-outline-danger" id="followUpRemoveBtn">
@@ -335,7 +335,7 @@
                 $("#todosRow").append(
                     `<div class="row align-items-end my-2" id="todosField">
                         <div class="col-10 col-md-11">
-                            <input type="text" class="form-control" id="todosInput" name="todosInput[` + l + `]" value="{{ old('todos.`+ l +`') ?: '' }}">
+                            <input type="text" class="form-control" id="todos" name="todos[` + l + `]" value="{{ old('todos.`+ l +`') ?: '' }}">
                         </div>
                         <div class="col-2 col-md-1">
                             <btn type="button" class="btn btn btn-outline-danger" id="todosRemoveBtn">

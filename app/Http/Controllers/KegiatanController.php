@@ -40,16 +40,6 @@ class KegiatanController extends Controller
              * * Query for Date Range Filter *
              */
             elseif ($request->from_date && $request->end_date) {
-                /**
-                 * * Query for Default Filter, From start of the year until today *
-                 */
-                // $today = Carbon::now()->format('D M d Y H:i:s a');
-                // if ($request->end_date == $today) {
-                //     $query = Kegiatan::with(['kelompok', 'subkelompok', 'status', 'pj'])
-                //         ->whereBetween('kegiatans.created_at', [$request->from_date, Carbon::now()])
-                //         ->select('kegiatans.*');
-                // }
-
                 $query = Kegiatan::with(['kelompok', 'subkelompok', 'status', 'pj'])
                     ->whereBetween('kegiatans.created_at', [$request->from_date, $request->end_date])
                     ->select('kegiatans.*');
@@ -128,6 +118,8 @@ class KegiatanController extends Controller
      */
     public function store(Request $request)
     {
+        // return dd($request->all());
+        
         $validated = $request->validate([
             'status_id' => 'required',
             'kelompok_id' => 'required',
@@ -141,7 +133,7 @@ class KegiatanController extends Controller
             'realisasi_fisik' => 'required|numeric',
             'dones.*' => 'required',
             'problems.*' => 'required',
-            'followUp.*' => 'required',
+            'follow_up.*' => 'required',
             'todos.*' => 'required',
         ], [
             'status_id.required' => 'Status field is required!',
@@ -157,7 +149,7 @@ class KegiatanController extends Controller
             'realisasi_fisik.required' => 'Realisasi Fisik field is required!',
             'dones.*.required' => 'Kegiatan yang sudah dikerjakan field is required!',
             'problems.*.required' => 'Permasalahan field is required!',
-            'followUp.*.required' => 'Tindak Lanjut field is required!',
+            'follow_up.*.required' => 'Tindak Lanjut field is required!',
             'todos.*.required' => 'Kegiatan yang akan dilakukan field is required!',
         ]);
 

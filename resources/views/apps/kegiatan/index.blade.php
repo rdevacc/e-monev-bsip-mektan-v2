@@ -320,18 +320,70 @@
                 {
                     data: 'dones',
                     name: 'dones',
+                    render: function(data, type, row, meta) {
+                        var result = '';
+                        var index = 1;
+                        if (data != null) {
+                            for (var i = 0; i < data.length; i++) {
+                                result += index + ". " + data[i] + "<br><br>";
+                                index++;
+                            }
+                            return result;
+                        } else {
+                            return '-';
+                        }
+                    }
                 },
                 {
                     data: 'problems',
                     name: 'problems',
+                    render: function(data, type, row, meta) {
+                        var result = '';
+                        var index = 1;
+                        if (data != null) {
+                            for (var i = 0; i < data.length; i++) {
+                                result += index + ". " + data[i] + "<br><br>";
+                                index++;
+                            }
+                            return result;
+                        } else {
+                            return '-';
+                        }
+                    }
                 },
                 {
                     data: 'follow_up',
                     name: 'follow_up',
+                    render: function(data, type, row, meta) {
+                        var result = '';
+                        var index = 1;
+                        if (data != null) {
+                            for (var i = 0; i < data.length; i++) {
+                                result += index + ". " + data[i] + "<br><br>";
+                                index++;
+                            }
+                            return result;
+                        } else {
+                            return '-';
+                        }
+                    }
                 },
                 {
                     data: 'todos',
                     name: 'todos',
+                    render: function(data, type, row, meta) {
+                        var result = '';
+                        var index = 1;
+                        if (data != null) {
+                            for (var i = 0; i < data.length; i++) {
+                                result += index + ". " + data[i] + "<br><br>";
+                                index++;
+                            }
+                            return result;
+                        } else {
+                            return '-';
+                        }
+                    }
                 },
                 {
                     data: 'created_at',
