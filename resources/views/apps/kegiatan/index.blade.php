@@ -68,8 +68,8 @@
                                         </form>
                                     </div>
                                     <!-- Date Range Filter -->
-                                    <div class="col-xs-auto ms-2">
-                                        <div class="float-end" id="daterange"
+                                    <div class="col-xs-5 col-sm-3 ms-2">
+                                        <div id="daterange"
                                             style="background: #fff;cursor:pointer;padding: 5px 10px;border:1px solid #ccc;width100%;text-align:center">
                                             <i class="bi bi-calendar"></i>&nbsp;
                                             <span></span>
@@ -77,7 +77,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col mb-2 d-flex">
+                                <div class="col-auto mb-2">
                                     <div class="input-group mb-3">
                                         <input type="text" class="form-control" id="searchField"
                                             placeholder="Cari Kegiatan">
@@ -117,7 +117,7 @@
                                                 Status
                                             </th>
                                             <th rowspan="1" colspan="4" class="text-center align-middle">Target dan
-                                                Realisasi (%)</th>
+                                                Realisasi</th>
                                             <th rowspan="3" colspan="1" class="text-center align-middle">Kegiatan
                                                 yang
                                                 sudah dikerjakan</th>
@@ -288,6 +288,20 @@
                 {
                     data: 'anggaran_kegiatan',
                     name: 'anggaran_kegiatan',
+                    render: function(data, type, row, meta) {
+                        var number_string = data.toString();
+                        var split = number_string.split(',');
+                        var sisa = split[0].length % 3;
+                        var rupiah = split[0].substr(0, sisa);
+                        var ribuan = split[0].substr(sisa).match(/\d{1,3}/gi);
+                        if (ribuan) {
+                            separator = sisa ? '.' : '';
+                            rupiah += separator + ribuan.join('.');
+                        }
+                        data = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+                        return data;
+
+                    }
                 },
                 {
                     data: 'kelompok',
@@ -304,10 +318,38 @@
                 {
                     data: 'target_keuangan',
                     name: 'target_keuangan',
+                    render: function(data, type, row, meta) {
+                        var number_string = data.toString();
+                        var split = number_string.split(',');
+                        var sisa = split[0].length % 3;
+                        var rupiah = split[0].substr(0, sisa);
+                        var ribuan = split[0].substr(sisa).match(/\d{1,3}/gi);
+                        if (ribuan) {
+                            separator = sisa ? '.' : '';
+                            rupiah += separator + ribuan.join('.');
+                        }
+                        data = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+                        return data;
+
+                    }
                 },
                 {
                     data: 'realisasi_keuangan',
                     name: 'realisasi_keuangan',
+                    render: function(data, type, row, meta) {
+                        var number_string = data.toString();
+                        var split = number_string.split(',');
+                        var sisa = split[0].length % 3;
+                        var rupiah = split[0].substr(0, sisa);
+                        var ribuan = split[0].substr(sisa).match(/\d{1,3}/gi);
+                        if (ribuan) {
+                            separator = sisa ? '.' : '';
+                            rupiah += separator + ribuan.join('.');
+                        }
+                        data = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+                        return data;
+
+                    }
                 },
                 {
                     data: 'target_fisik',

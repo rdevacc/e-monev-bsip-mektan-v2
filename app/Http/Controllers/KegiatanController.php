@@ -25,7 +25,7 @@ class KegiatanController extends Controller
              */
 
             $thisYear = Carbon::now()->format('Y');
-            $date = Carbon::create($thisYear, 1, 1,0,0,0,'GMT+7');
+            $date = Carbon::create($thisYear, 1, 1, 0, 0, 0, 'GMT+7');
             $startOfYear = $date->startOfYear()->format('');
 
             /**
@@ -118,8 +118,40 @@ class KegiatanController extends Controller
      */
     public function store(Request $request)
     {
-        // return dd($request->all());
-        
+        $inputAnggaran = $request->anggaran_kegiatan;
+        $inputTargetKeuangan = $request->target_keuangan;
+        $inputRealisasiKeuangan = $request->realisasi_keuangan;
+        $inputTargetFisik = $request->target_fisik;
+        $inputRealisasiFisik = $request->realisasi_fisik;
+
+    //    return dd($inputTargetFisik);
+
+        // Strip non-numeric characters from the input
+        $amountAnggaran = preg_replace('/[^0-9]/', '', $inputAnggaran);
+        $amountTargetKeuangan = preg_replace('/[^0-9]/', '', $inputTargetKeuangan);
+        $amountRealisasiKeuangan = preg_replace('/[^0-9]/', '', $inputRealisasiKeuangan);
+        $amountTargetFisik = preg_replace('/,/', '.', $inputTargetFisik);
+        $amountRealisasiFisik = preg_replace('/,/', '.', $inputRealisasiFisik);
+
+        // return dd($amountTargetFisik);
+
+        // Convert the amount to numeric value
+        $numericAnggaran = (int) $amountAnggaran;
+        $numericTargetKeuangan = (int) $amountTargetKeuangan;
+        $numericRealisasiKeuangan = (int) $amountRealisasiKeuangan;
+        $numericTargetFisik = (float) $amountTargetFisik;
+        $numericRealisasiFisik = (float) $amountRealisasiFisik;
+
+        // return dd($numericRealisasiFisik);
+
+        $request['anggaran_kegiatan'] = $numericAnggaran;
+        $request['target_keuangan'] = $numericTargetKeuangan;
+        $request['realisasi_keuangan'] = $numericRealisasiKeuangan;
+        $request['target_fisik'] = $numericTargetFisik;
+        $request['realisasi_fisik'] = $numericRealisasiFisik;
+
+
+
         $validated = $request->validate([
             'status_id' => 'required',
             'kelompok_id' => 'required',
@@ -129,7 +161,7 @@ class KegiatanController extends Controller
             'anggaran_kegiatan' => 'required|numeric',
             'target_keuangan' => 'required|numeric',
             'realisasi_keuangan' => 'required|numeric',
-            'target_fisik' => 'required|numeric',
+            'target_fisik' => 'required|numeric|min:0|max:100',
             'realisasi_fisik' => 'required|numeric',
             'dones.*' => 'required',
             'problems.*' => 'required',
@@ -152,6 +184,7 @@ class KegiatanController extends Controller
             'follow_up.*.required' => 'Tindak Lanjut field is required!',
             'todos.*.required' => 'Kegiatan yang akan dilakukan field is required!',
         ]);
+
 
         Kegiatan::create($validated);
 

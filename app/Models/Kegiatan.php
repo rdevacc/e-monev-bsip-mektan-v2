@@ -52,7 +52,6 @@ class Kegiatan extends Model
         return Attribute::make(
             get: fn ($value) => json_decode($value, true),
             set: fn ($value) => json_encode($value),
-
         );
     }
 
@@ -75,6 +74,15 @@ class Kegiatan extends Model
 
         );
     }
+
+    // Casting Anggaran Kegiatan
+    // protected function anggaran_kegiatan(): Attribute
+    // {
+    //     return Attribute::make(
+    //         get: fn (float $value) => ((string)($value)),
+    //         set: 
+    //     );
+    // }
 
 
     /**

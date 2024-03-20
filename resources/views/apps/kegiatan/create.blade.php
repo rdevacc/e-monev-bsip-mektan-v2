@@ -31,7 +31,8 @@
                             <form method="POST" action="{{ route('kegiatan-create-submit') }}">
                                 @csrf
                                 <div class="row">
-                                    <input type="hidden" value="1" class="form-control" name="status_id" id="status_id">
+                                    <input type="hidden" value="1" class="form-control" name="status_id"
+                                        id="status_id">
                                     {{-- <div class="col-12 mb-2">
                                         <label for="nama" class="form-label">Status Kegiatan</label>
                                         <input type="number" value="1" class="form-control" disabled name="status_id">
@@ -52,7 +53,8 @@
                                             class="form-select @error('kelompok_id') is-invalid @enderror">
                                             <option selected disabled>Pilih Kelompok</option>
                                             @foreach ($kelompoks as $kelompok)
-                                                <option value="{{ $kelompok->id }}" @selected(old('kelompok_id') == $kelompok->id)>{{ $kelompok->nama }}</option>
+                                                <option value="{{ $kelompok->id }}" @selected(old('kelompok_id') == $kelompok->id)>
+                                                    {{ $kelompok->nama }}</option>
                                             @endforeach
                                         </select>
                                         @error('kelompok_id')
@@ -67,7 +69,8 @@
                                             class="form-select @error('subkelompok_id') is-invalid @enderror">
                                             <option selected disabled>Pilih Subkelompok</option>
                                             @foreach ($subkelompoks as $subkelompok)
-                                                <option value="{{ $subkelompok->id }}" @selected(old('subkelompok_id') == $subkelompok->id)>{{ $subkelompok->nama }}</option>
+                                                <option value="{{ $subkelompok->id }}" @selected(old('subkelompok_id') == $subkelompok->id)>
+                                                    {{ $subkelompok->nama }}</option>
                                             @endforeach
                                         </select>
                                         @error('subkelompok_id')
@@ -82,7 +85,8 @@
                                             class="form-select @error('user_id') is-invalid @enderror">
                                             <option selected disabled>Pilih PJ Kegiatan</option>
                                             @foreach ($pjs as $pj)
-                                                <option value="{{ $pj->id }}" @selected(old('user_id') == $pj->id)>{{ $pj->nama }}</option>
+                                                <option value="{{ $pj->id }}" @selected(old('user_id') == $pj->id)>
+                                                    {{ $pj->nama }}</option>
                                             @endforeach
                                         </select>
                                         @error('user_id')
@@ -97,7 +101,8 @@
                                             <span class="input-group-text">Rp.</span>
                                             <input type="text"
                                                 class="form-control @error('anggaran_kegiatan') is-invalid @enderror"
-                                                id="anggaran_kegiatan" name="anggaran_kegiatan" value="{{ old('anggaran_kegiatan') ?: '' }}">
+                                                id="anggaran_kegiatan" name="anggaran_kegiatan"
+                                                value="{{ old('anggaran_kegiatan') ?: '' }}">
                                             @error('anggaran_kegiatan')
                                                 <div class="invalid-feedback">
                                                     {{ $message }}
@@ -111,7 +116,8 @@
                                             <span class="input-group-text">Rp.</span>
                                             <input type="text"
                                                 class="form-control @error('target_keuangan') is-invalid @enderror"
-                                                id="target_keuangan" name="target_keuangan" value="{{ old('target_keuangan') ?: '' }}">
+                                                id="target_keuangan" name="target_keuangan"
+                                                value="{{ old('target_keuangan') ?: '' }}">
                                             @error('target_keuangan')
                                                 <div class="invalid-feedback">
                                                     {{ $message }}
@@ -125,7 +131,8 @@
                                             <span class="input-group-text">Rp.</span>
                                             <input type="text"
                                                 class="form-control @error('realisasi_keuangan') is-invalid @enderror"
-                                                id="realisasi_keuangan" name="realisasi_keuangan" value="{{ old('realisasi_keuangan') ?: '' }}">
+                                                id="realisasi_keuangan" name="realisasi_keuangan"
+                                                value="{{ old('realisasi_keuangan') ?: '' }}">
                                             @error('realisasi_keuangan')
                                                 <div class="invalid-feedback">
                                                     {{ $message }}
@@ -139,7 +146,8 @@
                                             <span class="input-group-text">%</span>
                                             <input type="text"
                                                 class="form-control @error('target_fisik') is-invalid @enderror"
-                                                id="target_fisik" name="target_fisik" value="{{ old('target_fisik') ?: '' }}">
+                                                id="target_fisik" name="target_fisik"
+                                                value="{{ old('target_fisik') ?: '' }}">
                                             @error('target_fisik')
                                                 <div class="invalid-feedback">
                                                     {{ $message }}
@@ -153,7 +161,8 @@
                                             <span class="input-group-text">%</span>
                                             <input type="text"
                                                 class="form-control @error('realisasi_fisik') is-invalid @enderror"
-                                                id="realisasi_fisik" name="realisasi_fisik" value="{{ old('realisasi_fisik') ?: '' }}">
+                                                id="realisasi_fisik" name="realisasi_fisik"
+                                                value="{{ old('realisasi_fisik') ?: '' }}">
                                             @error('realisasi_fisik')
                                                 <div class="invalid-feedback">
                                                     {{ $message }}
@@ -211,14 +220,14 @@
                                             <input type="text"
                                                 class="form-control @error('follow_up.*') is-invalid @enderror"
                                                 id="follow_up" name="follow_up[0]"
-                                                value="{{ old('followUp.0') ?: '' }}">
+                                                value="{{ old('follow_up.0') ?: '' }}">
                                         </div>
                                         <div class="col-2 col-md-1">
                                             <btn type="button" class="btn btn btn-outline-success" id="followUpAddBtn">
                                                 <i class="bi bi-plus-circle"></i>
                                             </btn>
                                         </div>
-                                        @error('followUp.*')
+                                        @error('follow_up.*')
                                             <p class="text-danger">
                                                 <small>{{ $message }}</small>
                                             </p>
@@ -265,6 +274,80 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
+
+            $('#anggaran_kegiatan').on('input', function() {
+                $(this).val($(this).val().replace(/\D/g, ''));
+                var amount = $(this).val().replace(/[^\d]/g, ''); // Remove non-numeric characters
+                if (amount.length > 0) {
+                    amount = parseInt(amount, 10); // Convert to integer
+                    $(this).val(formatRupiah(amount)); // Format as Rupiah
+                }
+            });
+
+            $('#target_keuangan').on('input', function() {
+                $(this).val($(this).val().replace(/\D/g, ''));
+                var amount = $(this).val().replace(/[^\d]/g, ''); // Remove non-numeric characters
+                if (amount.length > 0) {
+                    amount = parseInt(amount, 10); // Convert to integer
+                    $(this).val(formatRupiah(amount)); // Format as Rupiah
+                }
+            });
+
+            $('#realisasi_keuangan').on('input', function() {
+                $(this).val($(this).val().replace(/\D/g, ''));
+                var amount = $(this).val().replace(/[^\d]/g, ''); // Remove non-numeric characters
+                if (amount.length > 0) {
+                    amount = parseInt(amount, 10); // Convert to integer
+                    $(this).val(formatRupiah(amount)); // Format as Rupiah
+                }
+            });
+
+            $('#target_fisik').on('input', function() {
+                $(this).val($(this).val().replace(/[^0-9,]/g, ''));
+                   
+                // Allow only one decimal point
+                var inputVal = $(this).val(); 
+                var decimalCount = (inputVal.match(/\,/g) || []).length;
+
+                if (decimalCount > 1) {
+                    // More than one decimal point found, remove extra
+                    var lastIndex = inputVal.lastIndexOf(',');
+                    $(this).val(inputVal.substring(0, lastIndex));
+                }
+            });
+            
+            $('#realisasi_fisik').on('input', function() {
+                $(this).val($(this).val().replace(/[^0-9,]/g, ''));
+                   
+                // Allow only one decimal point
+                var inputVal = $(this).val(); 
+                var decimalCount = (inputVal.match(/\,/g) || []).length;
+
+                if (decimalCount > 1) {
+                    // More than one decimal point found, remove extra
+                    var lastIndex = inputVal.lastIndexOf('.');
+                    $(this).val(inputVal.substring(0, lastIndex));
+                }
+            });
+
+
+            function formatRupiah(angka) {
+                var number_string = angka.toString();
+                var split = number_string.split(',');
+                var sisa = split[0].length % 3;
+                var rupiah = split[0].substr(0, sisa);
+                var ribuan = split[0].substr(sisa).match(/\d{1,3}/gi);
+
+                if (ribuan) {
+                    separator = sisa ? '.' : '';
+                    rupiah += separator + ribuan.join('.');
+                }
+
+                rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+                return rupiah;
+            }
+
+
             // Handle Dones Field Row
             var i = 0;
             $("#donesAddBtn").click(function() {
