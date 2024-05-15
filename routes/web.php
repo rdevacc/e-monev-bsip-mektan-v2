@@ -1,10 +1,7 @@
 <?php
 
-use App\Http\Controllers\ActivitiesFilterController;
-use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExcelController;
-use App\Http\Controllers\FilterController;
 use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\KelompokController;
 use App\Http\Controllers\LoginController;
@@ -27,14 +24,21 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('/v2')->group(function () {
     /**
-     * *Dashboard Route
+     * * Dashboard Route
      */
     Route::get('app/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 
-
+    /**
+     * * Excel Route
+     */
     Route::post('/app/kegiatan/excel', [ExcelController::class, 'generateExcel'])->name('excel');
-    // Route::get('/app/kegiatan/page-excel', [ExcelController::class, 'pageExcel'])->name('page-excel');
+
+    /**
+     * * PDF Route
+     */
+    Route::get('/app/kegiatan/page-pdf', [PDFController::class, 'pagePDF'])->name('page-pdf');
+    Route::post('/app/kegiatan/pdf', [PdfController::class, 'generatePDF'])->name('pdf');
 
 
     /**

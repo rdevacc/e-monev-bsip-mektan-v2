@@ -15,10 +15,6 @@ class UserController extends Controller
      */
     public function index()
     {
-        $test = Kegiatan::find(308);
-
-        dd($test);
-
         $datausers = User::all();
 
         return view('apps.users.index', [

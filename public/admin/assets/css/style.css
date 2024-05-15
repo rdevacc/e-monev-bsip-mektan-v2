@@ -690,9 +690,9 @@ h6 {
   align-items: center;
   font-size: 15px;
   font-weight: 600;
-  color: #4154f1;
+  color: #012970;
   transition: 0.3;
-  background: #f6f9ff;
+  /* background: #004de6; */
   padding: 10px 15px;
   border-radius: 4px;
 }
@@ -761,6 +761,11 @@ h6 {
 
 .sidebar-nav .nav-content a.active i {
   background-color: #4154f1;
+}
+
+.sidebar-nav .nav-link.active{
+  color: #4154f1;
+  background: #f1f5ff;
 }
 
 /*--------------------------------------------------------------

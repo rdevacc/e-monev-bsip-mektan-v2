@@ -93,6 +93,9 @@
     <!-- Bootstrap Tooltips -->
     <script src="https://cdn.datatables.net/v/bs5/dt-1.13.10/datatables.min.js"></script>
 
+    <!-- Custom JS -->
+    <script src="{{ asset('js/app.js') }}"></script>
+
     @stack('scripts')
 
 </body>

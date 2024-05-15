@@ -6,21 +6,21 @@
         <li class="nav-heading">Utama</li>
 
           <li class="nav-item">
-              <a class="nav-link " href="#">
+              <a class="nav-link collapsed" href="#">
                   <i class="bi bi-grid"></i>
                   <span>Dashboard</span>
               </a>
           </li><!-- End Dashboard Nav -->
 
           <li class="nav-item">
-              <a class="nav-link collapsed active" href="{{route('kegiatan-index')}}">
+              <a class="nav-link collapsed" href="{{route('kegiatan-index')}}">
                   <i class="bi bi-menu-button-wide"></i><span>Kegiatan</span></i>
               </a>
           </li><!-- End Kegiatan Page Nav -->
 
           <li class="nav-item">
               <a class="nav-link collapsed" href="#">
-                  <i class="bi bi-archive"></i><span>Laporan </span></i>
+                  <i class="bi bi-archive"></i><span>Laporan</span></i>
               </a>
           </li><!-- End Report Page Nav -->
 

@@ -11,7 +11,7 @@
         @method('delete')
         @csrf
         <button class="btn btn-danger"
-            onclick="return confirm('Apakah anda ingin menghapus pengaduan ' + {{ $model->id }} + '?')"
+            onclick="return confirm('Apakah anda ingin menghapus pengaduan?')"
             data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip"
             data-bs-title="Hapus Pengaduan" >
             <i class="bi bi-trash text-body-secondary"></i>

@@ -60,10 +60,13 @@
                                         </form>
                                     </div>
                                     <div>
-                                        <form action="#" method="post">
+                                        <form action="{{ route('pdf') }}" method="post">
                                             @csrf
                                             <div>
-                                                <button type="submit" class="btn btn-danger" id="excelButton">PDF</button>
+                                                <button type="submit" class="btn btn-danger" id="PDFButton">PDF</button>
+                                                <input type="hidden" name="PDFDataStart" id="PDFDataStart">
+                                                <input type="hidden" name="PDFDataEnd" id="PDFDataEnd">
+                                                <input type="hidden" name="PDFDataSearch" id="PDFDataSearch">
                                             </div>
                                         </form>
                                     </div>
@@ -105,7 +108,7 @@
                                                 PJ Kegiatan
                                             </th>
                                             <th rowspan="3" colspan="1" class="text-center align-middle">
-                                                Anggaran Kegiatan
+                                                Anggaran Kegiatan (Rp)
                                             </th>
                                             <th rowspan="3" colspan="1" class="text-center align-middle">
                                                 Kelompok
@@ -126,9 +129,7 @@
                                             </th>
                                             <th rowspan="3" colspan="1" style="width: 10%"
                                                 class="text-center align-middle">Tindak Lantjut</th>
-                                            <th rowspan="3" colspan="1" class="text-center align-middle">Kegiatan
-                                                yang
-                                                akan dilakukan ()</th>
+                                            <th rowspan="3" colspan="1" class="text-center align-middle">Kegiatan yang akan dilakukan</th>
                                             <th rowspan="3" colspan="1" class="text-center align-middle">Tanggal
                                             </th>
                                             <th rowspan="3" colspan="1" class="text-center align-middle">Action
@@ -136,9 +137,9 @@
 
                                         </tr>
                                         <tr>
-                                            <th rowspan="1" colspan="2" class="text-center align-middle">Keuangan
+                                            <th rowspan="1" colspan="2" class="text-center align-middle">Keuangan (Rp)
                                             </th>
-                                            <th rowspan="1" colspan="2" class="text-center align-middle">Fisik</th>
+                                            <th rowspan="1" colspan="2" class="text-center align-middle">Fisik (%)</th>
                                         </tr>
                                         <tr>
                                             <th rowspan="1" colspan="1" class="text-center align-middle">T</th>
@@ -214,13 +215,30 @@
                 kegiatanTable.draw();
             });
         });
+    
+        // Handling Search and PDF export filter
+        $(document).ready(function() {
+            $('#PDFDataSearch').val(null);
+            $('#start_date').val(start_date);
+            $('#end_date').val(end_date);
+            // Handle Search
+            $('#searchField').on('keyup', function(searchField) {
+                var dtSearch = $('#searchField').val();
+                $('#PDFDataSearch').val(dtSearch);
+                kegiatanTable.draw();
+            });
+            $('#searchFieldBtn').on('click', function(searchField) {
+                var dtSearch = $('#searchField').val();
+                $('#PDFDataSearch').val(dtSearch);
+                kegiatanTable.draw();
+            });
+        });
 
         $('#daterange span').html(start_date.format('D MMM YY') + ' - ' + end_date.format('D MMM YY'));
         $('#excelDataStart').val(start_date_convert);
         $('#excelDataEnd').val(end_date_convert);
-
-        console.log(start_date._d.toString());
-        console.log(end_date._d.toString());
+        $('#PDFDataStart').val(start_date_convert);
+        $('#PDFDataEnd').val(end_date_convert);
 
 
         // Daterange Filter
@@ -247,6 +265,8 @@
             end_date_convert = end_date.format('YYYY-MM-DD');
             $('#excelDataStart').val(start_date_convert);
             $('#excelDataEnd').val(end_date_convert);
+            $('#PDFDataStart').val(start_date_convert);
+            $('#PDFDataEnd').val(end_date_convert);
             kegiatanTable.draw();
         });
 

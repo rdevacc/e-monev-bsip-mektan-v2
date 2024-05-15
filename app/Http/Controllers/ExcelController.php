@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\KegiatanExport;
 use App\Models\Kegiatan;
-use App\Models\Kelompok;
-use App\Models\SubKelompok;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -14,10 +13,7 @@ class ExcelController extends Controller
 {
     public function generateExcel(Request $request)
     {
-        $kelompoks = Kelompok::get(['nama']);
-        $subkelompoks = SubKelompok::get(['nama']);
-
-
+        
         /**
          * * Handle Export Excel by Search Filter *
          */
@@ -38,15 +34,35 @@ class ExcelController extends Controller
                 })
                 ->orWhere('nama', 'like', '%' . $kata . '%')
                 ->get();
-            // return dd($data);
+
+            /**
+             * * This month and Next month logic
+             */
+            $currentMonth = Carbon::parse($data[0]["created_at"])->translatedFormat('F');
+            $next_month = Carbon::parse($data[0]["created_at"]->addMonth(1))->translatedFormat('F');
+            
+            /**
+             * * Array value logic
+             */
+
+            //  Array variable
             $array_kelompoks = [];
             $array_subkelompoks = [];
+            $array_pjs = [];
 
+            // Looping data and insert to empty array
             foreach ($data as $kegiatan) {
                 array_push($array_kelompoks, $kegiatan['kelompok']['nama']);
                 array_push($array_subkelompoks, $kegiatan['subkelompok']['nama']);
+                array_push($array_pjs, $kegiatan['pj']['nama']);
             };
-            return Excel::download(new KegiatanExport($data, $array_kelompoks, $array_subkelompoks), 'E-Monev BSIP Mektan.xlsx');
+            
+            // Handling duplicate value in array
+            $array_kelompoks = array_unique($array_kelompoks);
+            $array_subkelompoks = array_unique($array_subkelompoks);
+            $array_pjs = array_unique($array_pjs);
+            
+            return Excel::download(new KegiatanExport($data, $array_kelompoks, $array_subkelompoks, $array_pjs, $currentMonth, $next_month), 'E-Monev BSIP Mektan.xlsx');
         }
 
 
@@ -63,36 +79,71 @@ class ExcelController extends Controller
                     ->whereBetween('created_at', [$request->excelDataStart, $request->excelDataEnd])
                     ->latest()->get();
             }
+            
+            /**
+             * * This month and Next month logic
+             */
+            $currentMonth = Carbon::parse($data[0]["created_at"])->translatedFormat('F');
+            $next_month = Carbon::parse($data[0]["created_at"]->addMonth(1))->translatedFormat('F');
+            
+            /**
+             * * Array value logic
+             */
 
+            //  Array variable
             $array_kelompoks = [];
             $array_subkelompoks = [];
+            $array_pjs = [];
 
+            // Looping data and insert to empty array
             foreach ($data as $kegiatan) {
                 array_push($array_kelompoks, $kegiatan['kelompok']['nama']);
                 array_push($array_subkelompoks, $kegiatan['subkelompok']['nama']);
+                array_push($array_pjs, $kegiatan['pj']['nama']);
             };
-            return Excel::download(new KegiatanExport($data, $array_kelompoks, $array_subkelompoks), 'E-Monev BSIP Mektan.xlsx');
+            
+            // Handling duplicate value in array
+            $array_kelompoks = array_unique($array_kelompoks);
+            $array_subkelompoks = array_unique($array_subkelompoks);
+            $array_pjs = array_unique($array_pjs);
+            
+            return Excel::download(new KegiatanExport($data, $array_kelompoks, $array_subkelompoks, $array_pjs, $currentMonth, $next_month), 'E-Monev BSIP Mektan.xlsx');
         };
 
-
+        /**
+         * * Data when all conditions passed
+         */
         $data = Kegiatan::latest()->get();
 
-        return Excel::download(new KegiatanExport($data, $kelompoks, $subkelompoks), 'E-Monev BSIP Mektan.xlsx');
-    }
+        /**
+         * * This month and Next month logic
+         */
+        $currentMonth = Carbon::parse($data[0]["created_at"])->translatedFormat('F');
+        $next_month = Carbon::parse($data[0]["created_at"]->addMonth(1))->translatedFormat('F');
+            
+            
+        /**
+         * * Array value logic
+         */
 
-    public function pageExcel()
-    {
-        // $kelompoks = Kelompok::get(['nama']);
-        // $subkelompoks = SubKelompok::get(['nama']);
-        $kelompoks = 'Semua Kelompok';
-        $subkelompoks = 'Seluruh Subkelompok';
+        //  Array variable
+        $array_kelompoks = [];
+        $array_subkelompoks = [];
+        $array_pjs = [];
 
-        $data = Kegiatan::whereMonth('created_at', '=', now())->latest()->get();
+        // Looping data and insert to empty array
+        foreach ($data as $kegiatan) {
+            array_push($array_kelompoks, $kegiatan['kelompok']['nama']);
+            array_push($array_subkelompoks, $kegiatan['subkelompok']['nama']);
+            array_push($array_pjs, $kegiatan['pj']['nama']);
+        };
+        
+        // Handling duplicate value in array
+        $array_kelompoks = array_unique($array_kelompoks);
+        $array_subkelompoks = array_unique($array_subkelompoks);
+        $array_pjs = array_unique($array_pjs);
+        
 
-        return view('apps.kegiatan.generateExcel', [
-            'data' => $data,
-            'kelompoks' => $kelompoks,
-            'subkelompoks' => $subkelompoks,
-        ]);
+        return Excel::download(new KegiatanExport($data, $array_kelompoks, $array_subkelompoks, $array_pjs, $currentMonth, $next_month), 'E-Monev BSIP Mektan.xlsx');
     }
 }

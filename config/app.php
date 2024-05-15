@@ -84,7 +84,8 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => env('LOCALE', 'en'),
+    // 'locale' => 'en',
 
     /*
     |--------------------------------------------------------------------------
@@ -97,7 +98,8 @@ return [
     |
     */
 
-    'fallback_locale' => 'en',
+    'fallback_locale' => env('FALLBACK_LOCALE', 'en'),
+    // 'fallback_locale' => 'en',
 
     /*
     |--------------------------------------------------------------------------
@@ -110,7 +112,8 @@ return [
     |
     */
 
-    'faker_locale' => 'en_US',
+    'faker_locale' => env('FAKER_LOCALE', 'en_US'),
+    // 'faker_locale' => 'en_US',
 
     /*
     |--------------------------------------------------------------------------
@@ -163,6 +166,7 @@ return [
 
          Yajra\DataTables\DataTablesServiceProvider::class,
          Maatwebsite\Excel\ExcelServiceProvider::class,
+         Barryvdh\DomPDF\ServiceProvider::class,
 
         /*
          * Application Service Providers...
