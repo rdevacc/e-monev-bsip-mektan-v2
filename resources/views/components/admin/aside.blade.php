@@ -18,11 +18,11 @@
               </a>
           </li><!-- End Kegiatan Page Nav -->
 
-          <li class="nav-item">
+          {{-- <li class="nav-item">
               <a class="nav-link collapsed" href="#">
                   <i class="bi bi-archive"></i><span>Laporan</span></i>
               </a>
-          </li><!-- End Report Page Nav -->
+          </li><!-- End Report Page Nav --> --}}
 
 
           <li class="nav-heading">Super Admin</li>

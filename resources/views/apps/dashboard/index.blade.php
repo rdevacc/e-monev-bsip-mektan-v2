@@ -20,7 +20,7 @@
                       </div>
                       <div class="ps-3">
                         <h6>{{ $jumlahTotalKegiatan }}</h6>
-                        <span class="text-success small pt-1 fw-bold"></span>
+                        <span class="text-success small pt-1 fw-bold">Tahun {{ $currentYear }}</span>
                       </div>
                     </div>
                   </div>
@@ -40,9 +40,8 @@
                         <i class="bi bi-database-check"></i>
                       </div>
                       <div class="ps-3">
-                        <h6>$3,264</h6>
-                        <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span>
-  
+                        <h6>{{ $totalSudah }}</h6>
+                        <span class="text-success small pt-1 fw-bold">Tahun {{ $currentYear }}</span>
                       </div>
                     </div>
                   </div>
@@ -63,9 +62,8 @@
                         <i class="bi bi-database-exclamation"></i>
                       </div>
                       <div class="ps-3">
-                        <h6>1244</h6>
-                        <span class="text-danger small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
-  
+                        <h6>{{ $totalBelum }}</h6>
+                        <span class="text-success small pt-1 fw-bold">Tahun {{ $currentYear }}</span>
                       </div>
                     </div>
   
