@@ -24,11 +24,14 @@
                     <div class="card-body">
 
                         <!-- Card Body -->
-                        <h4 class="card-title">Data Seluruh Kegiatan 2024</h4>
+                        <h4 class="card-title">Detail Data Kegiatan</h4>
 
                         <div class="row">
                             <!-- Button Section -->
                             <div class="col mb-2 d-flex">
+                                <div>
+                                    <button onclick="history.back()" class="btn btn-warning text-light me-1">Kembali</button>
+                                </div>
                                 <div>
                                     <a href="{{ route('kegiatan-create') }}" class="btn btn-primary me-1">Tambah</a>
                                 </div>
@@ -38,40 +41,18 @@
                                         <div>
                                             <button type="submit" class="btn btn-success"
                                                 id="excelButton">Excel</button>
-                                            <input type="hidden" name="excelDataStart" id="excelDataStart">
-                                            <input type="hidden" name="excelDataEnd" id="excelDataEnd">
-                                            <input type="hidden" name="excelDataSearch" id="excelDataSearch">
+                                            <input type="hidden" name="excelDataShow" id="excelDataShow" value="{{ $dataShow->id }}">
                                         </div>
                                     </form>
                                 </div>
                                 <div>
-                                    <form action="#" method="post">
+                                    <form action="#" method="post" class="me-1">
                                         @csrf
                                         <div>
-                                            <button type="submit" class="btn btn-danger" id="excelButton">PDF</button>
+                                            <button type="submit" class="btn btn-danger" id="PDFButton">PDF</button>
                                         </div>
                                     </form>
                                 </div>
-                                <!-- Date Range Filter -->
-                                <div class="col-xs-5 col-sm-3 ms-2">
-                                    <div id="daterange"
-                                        style="background: #fff;cursor:pointer;padding: 5px 10px;border:1px solid #ccc;width100%;text-align:center">
-                                        <i class="bi bi-calendar"></i>&nbsp;
-                                        <span></span>
-                                        <i class="bi bi-caret-down-fill"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-auto mb-2">
-                                <div class="input-group mb-3">
-                                    <input type="text" class="form-control" id="searchField"
-                                        placeholder="Cari Kegiatan">
-                                    <button class="btn btn-outline-secondary" type="button" id="searchFieldBtn">
-                                        <i class="bi bi-search"></i>
-                                        Cari
-                                    </button>
-                                </div>
-
                             </div>
                         </div>
 
@@ -121,9 +102,9 @@
 
                                     </tr>
                                     <tr>
-                                        <th rowspan="1" colspan="2" class="text-center align-middle">Keuangan
+                                        <th rowspan="1" colspan="2" class="text-center align-middle">Keuangan (Rp)
                                         </th>
-                                        <th rowspan="1" colspan="2" class="text-center align-middle">Fisik</th>
+                                        <th rowspan="1" colspan="2" class="text-center align-middle">Fisik (%)</th>
                                     </tr>
                                     <tr>
                                         <th rowspan="1" colspan="1" class="text-center align-middle">T</th>
@@ -133,15 +114,15 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <td>1.</td>
+                                    <td>1.</td> 
                                     <td>{{ $dataShow->nama }}</td>
                                     <td>{{ $dataShow->pj->nama }}</td>
-                                    <td>{{ $dataShow->anggaran_kegiatan }}</td>
+                                    <td>{{ formatRupiahAngka($dataShow->anggaran_kegiatan) }}</td>
                                     <td>{{ $dataShow->kelompok->nama }}</td>
                                     <td>{{ $dataShow->subkelompok->nama }}</td>
                                     <td>{{ $dataShow->status->nama }}</td>
-                                    <td>{{ $dataShow->target_keuangan }}</td>
-                                    <td>{{ $dataShow->realisasi_keuangan }}</td>
+                                    <td>{{ formatRupiahAngka($dataShow->target_keuangan) }}</td>
+                                    <td>{{ formatRupiahAngka($dataShow->realisasi_keuangan) }}</td>
                                     <td>{{ $dataShow->target_fisik }}</td>
                                     <td>{{ $dataShow->realisasi_fisik }}</td>
                                     <td>
@@ -181,8 +162,7 @@
                                                     <i class="bi bi-trash text-body-secondary"></i>
                                                 </button>
                                             </form>
-                                        </div>
-                                        
+                                        </div>  
                                     </td>
                                 </tbody>
                             </table>
@@ -194,3 +174,15 @@
     </section>
 </main>
 @endsection
+
+
+@push('scripts')
+    {{-- Handling Excel Data Show Export --}}
+    {{-- <script>
+
+        $(document).ready(function(){
+            // $("#excelDataShow").val
+            console.log($dataShow->id)
+        });
+    </script> --}}
+@endpush

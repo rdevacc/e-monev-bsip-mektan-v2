@@ -193,8 +193,6 @@ class KegiatanController extends Controller
     {
         $dataShow = $kegiatan->find($kegiatan->id);
 
-        // dd($dataShow);
-
         return view('apps.kegiatan.show',[
             'dataShow' => $dataShow
         ]);

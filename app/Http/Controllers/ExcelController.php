@@ -110,6 +110,46 @@ class ExcelController extends Controller
             return Excel::download(new KegiatanExport($data, $array_kelompoks, $array_subkelompoks, $array_pjs, $currentMonth, $next_month), 'E-Monev BSIP Mektan.xlsx');
         };
 
+
+        /**
+         * * Handling Show Data Excel Export
+         */
+        if($request->excelDataShow){
+            $data = Kegiatan::with(['kelompok', 'subkelompok', 'status', 'pj'])
+                    ->where('id', $request->excelDataShow)
+                    ->get();
+
+            /**
+             * * This month and Next month logic
+             */
+            $currentMonth = Carbon::parse($data[0]["created_at"])->translatedFormat('F');
+            $next_month = Carbon::parse($data[0]["created_at"]->addMonth(1))->translatedFormat('F');
+            
+            /**
+             * * Array value logic
+             */
+
+            //  Array variable
+            $array_kelompoks = [];
+            $array_subkelompoks = [];
+            $array_pjs = [];
+
+            // Looping data and insert to empty array
+            foreach ($data as $kegiatan) {
+                array_push($array_kelompoks, $kegiatan['kelompok']['nama']);
+                array_push($array_subkelompoks, $kegiatan['subkelompok']['nama']);
+                array_push($array_pjs, $kegiatan['pj']['nama']);
+            };
+            
+            // Handling duplicate value in array
+            $array_kelompoks = array_unique($array_kelompoks);
+            $array_subkelompoks = array_unique($array_subkelompoks);
+            $array_pjs = array_unique($array_pjs);
+            
+            return Excel::download(new KegiatanExport($data, $array_kelompoks, $array_subkelompoks, $array_pjs, $currentMonth, $next_month), 'E-Monev BSIP Mektan.xlsx');
+        };
+
+
         /**
          * * Data when all conditions passed
          */

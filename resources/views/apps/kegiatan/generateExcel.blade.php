@@ -46,8 +46,8 @@
             <th rowspan="3" colspan="1">Kegiatan yang sudah dikerjakan</th>
             <th rowspan="3" colspan="1">Permasalahan</th>
             <th rowspan="3" colspan="1">Tindak Lantjut</th>
-            <th rowspan="3" colspan="1">Tanggal</th>
             <th rowspan="3" colspan="1">Kegiatan yang akan dilakukan ({{ $next_month }})</th>
+            <th rowspan="3" colspan="1">Tanggal</th>
         </tr>
         <tr>
             <th rowspan="1" colspan="2">Keuangan</th>
@@ -67,11 +67,11 @@
                     <span class="font-semibold align-text-top">{{ $loop->iteration }}.</span>
                 </td>
                 <td class="align-text-top">{{ $kegiatan->nama }}</td>
-                <td class="align-text-top">Rp. {{ $kegiatan->anggaran_kegiatan }}</td>
+                <td class="align-text-top">{{ formatRupiah($kegiatan->anggaran_kegiatan) }}</td>
                 <td class="align-text-top text-center">{{ $kegiatan->subkelompok->nama }}</td>
                 <td class="align-text-top text-center">{{ $kegiatan->kelompok->nama }}</td>
-                <td class="align-text-top">Rp. {{ $kegiatan->target_keuangan }}</td>
-                <td class="align-text-top">Rp. {{ $kegiatan->realisasi_keuangan }}</td>
+                <td class="align-text-top">{{ formatRupiah($kegiatan->target_keuangan) }}</td>
+                <td class="align-text-top">{{ formatRupiah($kegiatan->realisasi_keuangan) }}</td>
                 <td class="align-text-top">{{ $kegiatan->target_fisik }}%</td>
                 <td class="align-text-top">{{ $kegiatan->realisasi_fisik }}%</td>
                 <td class="align-text-top">
@@ -96,14 +96,14 @@
                     @endforeach
                 </td>
                 <td class="align-text-top">
-                    {{ $kegiatan->created_at }}
-                </td>
-                <td class="align-text-top">
                     @foreach ($kegiatan->todos as $value)
                     <p class="align-text-top">
                         {{ $loop->iteration }}. {{$value}}        
                     </p>
                     @endforeach
+                </td>
+                <td class="align-text-top">
+                    {{ $kegiatan->created_at }}
                 </td>
             </tr>
         @endforeach
