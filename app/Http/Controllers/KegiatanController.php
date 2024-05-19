@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kegiatan;
 use App\Models\Kelompok;
+use App\Models\StatusKegiatan;
 use App\Models\SubKelompok;
 use App\Models\User;
 use Carbon\Carbon;
@@ -206,12 +207,14 @@ class KegiatanController extends Controller
         $kelompoks = Kelompok::get(['id', 'nama']);
         $subkelompoks = SubKelompok::get(['id', 'nama']);
         $pjs = User::get(['id', 'nama']);
+        $status_kegiatan = StatusKegiatan::get(['id', 'nama']);
 
         return view('apps.kegiatan.edit', [
             'dataEdit' => $kegiatan,
             'kelompoks' => $kelompoks,
             'subkelompoks' => $subkelompoks,
             'pjs' => $pjs,
+            'status_kegiatan' => $status_kegiatan,
         ]);
     }
 

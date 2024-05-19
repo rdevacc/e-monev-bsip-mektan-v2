@@ -831,18 +831,23 @@ h6 {
   flex-grow: 0;
 }
 
-.dashboard .sales-card .card-icon {
-  color: #4154f1;
+.dashboard .total-kegiatan-card .card-icon {
+  color: #69c70c;
   background: #f6f6fe;
 }
 
-.dashboard .revenue-card .card-icon {
-  color: #2eca6a;
+.dashboard .sudah-dikerjakan-card .card-icon {
+  color: #076da4;
   background: #e0f8e9;
 }
 
-.dashboard .customers-card .card-icon {
+.dashboard .belum-dikerjakan-card .card-icon {
   color: #ff771d;
+  background: #ffecdf;
+}
+
+.dashboard .total-anggaran-card .card-icon {
+  color: #2eca6a;
   background: #ffecdf;
 }
 

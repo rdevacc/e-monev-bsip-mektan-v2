@@ -32,8 +32,27 @@
                                 @csrf
                                 @method('PUT')
                                 <div class="row">
-                                    <input type="hidden" value="1" class="form-control" name="status_id"
-                                        id="status_id">
+                                    <div class="col-12 mb-2">
+                                        <label for="status_id" class="form-label">Status Kegiatan</label>
+                                        <select name="status_id" id="status_id"
+                                            class="form-select @error('status_id') is-invalid @enderror">
+                                            <option selected disabled>Pilih status</option>
+                                            @foreach ($status_kegiatan as $status)
+                                                @if (old('status_id', $dataEdit->status_id) == $status->id)
+                                                    <option value="{{ $status->id }}" selected>
+                                                        {{ $status->nama }}
+                                                    </option>
+                                                @else
+                                                    <option value="{{ $status->id }}">{{ $status->nama }}</option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+                                        @error('status_id')
+                                            <div class="invalid-feedback">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                    </div>
                                     <div class="col-12 mb-2">
                                         <label for="nama" class="form-label">Nama Kegiatan</label>
                                         <input type="text" class="form-control @error('nama') is-invalid @enderror"
@@ -319,7 +338,7 @@
                                         </btn>
                                     </div>
                                 </div>
-
+                                
                                 {{-- Button --}}
                                 <div class="mt-5 mb-2 me-2 text-end">
                                     <button type="reset" class="btn btn-secondary">Reset</button>

@@ -40,7 +40,7 @@ class MonthlyKegiatansChart
                 ]
             ])
             ->setDataLabels()
-            ->setColors(['#069108'])
+            ->setColors(['#062d96'])
             ->setXAxis($dataBulan)
             ->setHeight(300);
 
