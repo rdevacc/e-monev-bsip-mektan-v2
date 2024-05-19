@@ -2,7 +2,6 @@
 
 @section('content')
 <main id="main" class="main">
-
     <section class="section dashboard">
         <div class="row">
           <!-- Left side columns -->
@@ -88,45 +87,34 @@
           </div><!-- End Left side columns -->
         </div>
 
-        <div class="row pb-4">
-            <div class="col-lg-12">
-                <!-- Total Kegiatan Chart -->
-                <div class="p-6 m-20 bg-white rounded shadow">
-                    {!! $chart->container() !!}
-                </div>     
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-lg-12">
-                <!-- Total Kegiatan Sudah Chart -->
-                <div class="p-6 m-20 bg-white rounded shadow">
-                    {!! $chartSudah->container() !!}
-                </div>     
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-lg-12">
-                <!-- Total Kegiatan Belum Chart -->
-                <div class="p-6 m-20 bg-white rounded shadow">
-                    {!! $chartBelum->container() !!}
-                </div>     
-            </div>
-        </div>
-
-    </div>
-      </section>
+          <div class="row pb-4">
+              <div class="col-lg-12">
+                  <!-- Total Kegiatan Chart -->
+                  <div class="p-6 m-20 bg-white rounded shadow">
+                      {!! $chart->container() !!}
+                  </div>     
+              </div>
+          </div>
+          
+          <div class="row pb-4">
+              <div class="col-lg-12">
+                  <!-- Total Kegiatan Sudah Chart -->
+                  <div class="p-6 m-20 bg-white rounded shadow">
+                      {!! $chartSudahdanBelum->container() !!}
+                  </div>     
+              </div>
+          </div>
+      </div>
+    </section>
 </main>
 @endsection
 
 @push('scripts')
+    {{-- Script for call Charts --}}
     <script src="{{ $chart->cdn() }}"></script>
     {{ $chart->script() }}
 
-    <script src="{{ $chartSudah->cdn() }}"></script>
-    {{ $chartSudah->script() }}
-  
-    <script src="{{ $chartBelum->cdn() }}"></script>
-    {{ $chartBelum->script() }}
+    <script src="{{ $chartSudahdanBelum->cdn() }}"></script>
+    {{ $chartSudahdanBelum->script() }}
+
 @endpush()
