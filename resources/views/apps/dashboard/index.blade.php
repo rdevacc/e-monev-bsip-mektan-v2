@@ -88,15 +88,30 @@
           </div><!-- End Left side columns -->
         </div>
 
+        <div class="row pb-4">
+            <div class="col-lg-12">
+                <!-- Total Kegiatan Chart -->
+                <div class="p-6 m-20 bg-white rounded shadow">
+                    {!! $chart->container() !!}
+                </div>     
+            </div>
+        </div>
+        
         <div class="row">
             <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                    <!-- Card Body -->
-                    <div class="p-6 m-20 bg-white rounded shadow">
-                        {!! $chart->container() !!}
-                    </div>                
-                </div>
+                <!-- Total Kegiatan Sudah Chart -->
+                <div class="p-6 m-20 bg-white rounded shadow">
+                    {!! $chartSudah->container() !!}
+                </div>     
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-12">
+                <!-- Total Kegiatan Belum Chart -->
+                <div class="p-6 m-20 bg-white rounded shadow">
+                    {!! $chartBelum->container() !!}
+                </div>     
             </div>
         </div>
 
@@ -108,4 +123,10 @@
 @push('scripts')
     <script src="{{ $chart->cdn() }}"></script>
     {{ $chart->script() }}
+
+    <script src="{{ $chartSudah->cdn() }}"></script>
+    {{ $chartSudah->script() }}
+  
+    <script src="{{ $chartBelum->cdn() }}"></script>
+    {{ $chartBelum->script() }}
 @endpush()
