@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Kegiatan;
 use App\Models\Role;
 use App\Models\SubKelompok;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -15,9 +15,12 @@ class UserController extends Controller
      */
     public function index()
     {
-        $datausers = User::all();
+        $dataAdminUsers = User::orderBy('role_id')->get();
+        $datausers = User::where('role_id', '!=', 1)
+                    ->get();
 
         return view('apps.users.index', [
+            'dataAdminUsers' => $dataAdminUsers,
             'dataUsers' => $datausers,
         ]);
     }
@@ -108,6 +111,12 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        // Check Super admin role
+        if($user->id == 1 && Auth::user()->role->id !== 1) {
+            return abort(403);
+        }
+
+        // Query for delete data
         User::destroy($user->id);
 
         return redirect()->route('user-index')->with('success', 'User ' . $user->nama . ' has been deleted!');

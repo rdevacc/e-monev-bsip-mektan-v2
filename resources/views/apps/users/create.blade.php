@@ -48,7 +48,7 @@
                                 </div>
                                 <div class="col-7">
                                     <input type="password" id="password" name="password"
-                                        class="form-control @error('password') is-invalid @enderror" autofocus
+                                        class="form-control @error('password') is-invalid @enderror"
                                         autocomplete="off" required>
                                     @error('password')
                                         <div class="invalid-feedback">
@@ -56,8 +56,8 @@
                                         </div>
                                     @enderror
                                 </div>
-                                <div class="col-1">
-                                    <button class="btn" type="button">
+                                <div class="col-1" id="password_wrap">
+                                    <button class="btn" type="button" id="password_btn">
                                         <i class="bi bi-eye-fill" id="show_eye"></i>
                                         <i class="bi bi-eye-slash-fill d-none" id="hide_eye"></i>
                                     </button>
@@ -153,21 +153,25 @@
 @push('scripts')
     <script>
         // Password Input
-        $('#show_eye').on('click', function() {
-            togglePassword();
-        });
+        $(document).ready(function(){
+            // Password Input   
+            $('#show_eye').on('click', function() {
+                togglePassword();
+            });
+    
+            $('#hide_eye').on('click', function() {
+                togglePassword();
+            });
 
-        $('#hide_eye').on('click', function() {
-            togglePassword();
-        });
+            // Retype Password Input
+            $('#confirmed_show_eye').on('click', function() {
+                toggleRePassword();
+            });
 
-        // Retype Password Input
-        $('#confirmed_show_eye').on('click', function() {
-            toggleRePassword();
-        });
-
-        $('#confirmed_hide_eye').on('click', function() {
-            toggleRePassword();
+            $('#confirmed_hide_eye').on('click', function() {
+                toggleRePassword();
+            });
+            
         });
 
         function togglePassword() {

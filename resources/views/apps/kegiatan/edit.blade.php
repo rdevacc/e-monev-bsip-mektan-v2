@@ -8,7 +8,6 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Tambah Data Kegiatan</h5>
-
                             @if ($errors->any())
                                 <div class="alert alert-danger">
                                     <ul>
@@ -64,6 +63,7 @@
                                             </div>
                                         @enderror
                                     </div>
+                                    @can('superAdminAndAdmin')
                                     <div class="col-12 mb-2">
                                         <label for="kelompok_id" class="form-label">Kelompok</label>
                                         <select name="kelompok_id" id="kelompok_id"
@@ -129,6 +129,7 @@
                                             </div>
                                         @enderror
                                     </div>
+                                    @endcan
                                     <div class="col-12 mb-2">
                                         <label for="anggaran_kegiatan" class="form-label">Anggaran Kegiatan</label>
                                         <div class="input-group">
@@ -548,11 +549,11 @@
             var todos_len = $("#todosInputRow input").length;
             var l = todos_len;
             $("#todosAddBtn").click(function() {
-                ++k;
+                ++l;
                 $("#todosRow").append(
                     `<div class="row" id="todosField">
                         <div class="col-11 col-md-11 mb-2">
-                            <input type="text" class="form-control" id="todosInput" name="todos[`+ k +`]" value="">
+                            <input type="text" class="form-control" id="todosInput" name="todos[`+ l +`]" value="">
                         </div>
                         <div class="col-2 col-md-1">
                             <btn type="button" class="btn btn btn-outline-danger" id="todosRemoveBtn">

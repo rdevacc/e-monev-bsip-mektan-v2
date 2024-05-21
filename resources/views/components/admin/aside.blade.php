@@ -24,7 +24,7 @@
               </a>
           </li><!-- End Report Page Nav --> --}}
 
-
+          @canany(['isSuperAdmin', 'isAdmin'])
           <li class="nav-heading">Super Admin</li>
 
           <li class="nav-item">
@@ -47,12 +47,15 @@
                   <span>Subkelompok</span>
               </a>
           </li><!-- End Subkelompok -->
-
+          @endcanany
+          @can('isSuperAdmin')
           <li class="nav-item">
               <a class="nav-link collapsed" href="{{route('role-index')}}">
                   <i class="bi bi-shield-check"></i>
                   <span>Roles</span>
               </a>
           </li><!-- End Roles -->
+          @endcan
+         
       </ul>
   </aside><!-- End Sidebar-->

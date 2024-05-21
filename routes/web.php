@@ -23,10 +23,20 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('/v2')->group(function () {
+
+    /**
+     * * Authentication Route
+     */
+    Route::get('/app/login', [LoginController::class, 'index'])->middleware('guest')->name('login');
+    Route::post('/app/login', [LoginController::class, 'authenticate'])->name('login-submit');
+    Route::post('/app/logout', [LoginController::class, 'logout'])->name('logout');
+    // Route::get('/app/forgot-password', [LoginController::class, 'forgot_password'])->middleware('guest')->name('forgot-password');
+    // Route::post('/app/forgot-password-submit', [LoginController::class, 'forgot_password_submit'])->name('forgot-password-submit');
+
     /**
      * * Dashboard Route
      */
-    Route::get('app/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/app/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
 
 
     /**
@@ -51,12 +61,12 @@ Route::prefix('/v2')->group(function () {
         'edit' => 'user-edit',
         'update' => 'user-edit-submit',
         'destroy' => 'user-delete',
-    ]);
+    ])->middleware('admin');
 
     /**
      * * Role Route
      */
-    Route::resource('/app/role', RoleController::class)->names([
+    Route::resource('/app/role', RoleController::class)->middleware('superadmin')->names([
         'index' => 'role-index',
         'create' => 'role-create',
         'store' => 'role-create-submit',
@@ -68,7 +78,7 @@ Route::prefix('/v2')->group(function () {
     /**
      * * Kelompok Route
      */
-    Route::resource('/app/kelompok', KelompokController::class)->names([
+    Route::resource('/app/kelompok', KelompokController::class)->middleware('admin')->names([
         'index' => 'kelompok-index',
         'create' => 'kelompok-create',
         'store' => 'kelompok-create-submit',
@@ -80,7 +90,7 @@ Route::prefix('/v2')->group(function () {
     /**
      * * SubKelompok Route
      */
-    Route::resource('/app/subkelompok', SubKelompokController::class)->names([
+    Route::resource('/app/subkelompok', SubKelompokController::class)->middleware('admin')->names([
         'index' => 'subkelompok-index',
         'create' => 'subkelompok-create',
         'store' => 'subkelompok-create-submit',
@@ -92,7 +102,7 @@ Route::prefix('/v2')->group(function () {
     /**
      * * Kegiatan Route
      */
-    Route::resource('/app/kegiatan', KegiatanController::class)->names([
+    Route::resource('/app/kegiatan', KegiatanController::class)->middleware('auth')->names([
         'index' => 'kegiatan-index',
         'create' => 'kegiatan-create',
         'show' => 'kegiatan-show',
@@ -103,7 +113,6 @@ Route::prefix('/v2')->group(function () {
     ]);
 });
 
-// Route::get('/', [LoginController::class, 'index'])->middleware('guest');
 
 // Route::get('/app/dashboard', [DashboardController::class, 'index'])->middleware('auth');
 

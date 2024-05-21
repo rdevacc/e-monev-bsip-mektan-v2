@@ -250,12 +250,16 @@ class KegiatanController extends Controller
         $request['target_fisik'] = $numericTargetFisik;
         $request['realisasi_fisik'] = $numericRealisasiFisik;
 
+
+        // Override Kelompok, Subkelompok, and User Id
+        // $kegiatan->kelompok_id = $request->kelom
+
         // Validate Data
         $validated = $request->validate([
             'status_id' => 'required',
-            'kelompok_id' => 'required',
-            'subkelompok_id' => 'required',
-            'user_id' => 'required',
+            // 'kelompok_id' => 'required',
+            // 'subkelompok_id' => 'required',
+            // 'user_id' => 'required',
             'nama' => 'required',
             'anggaran_kegiatan' => 'required|numeric',
             'target_keuangan' => 'required|numeric',

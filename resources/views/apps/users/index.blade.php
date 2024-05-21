@@ -32,62 +32,121 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($dataUsers as $user)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $user->nama }}</td>
-                                            <td>{{ $user->role->nama }}</td>
-                                            <td>
-                                                <div class="d-flex">
-                                                    <a class="btn btn-warning mx-1"
-                                                        href="{{ route('user-edit', $user->id) }}" data-bs-toggle="tooltip"
-                                                        data-bs-placement="top" data-bs-custom-class="custom-tooltip"
-                                                        data-bs-title="Edit User {{ $user->nama }}">
-                                                        <i class="bi bi-pencil"></i>
-                                                    </a>
+                                    @if (Auth::user()->id == 1)
+                                    @foreach ($dataAdminUsers as $user)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $user->nama }}</td>
+                                        <td>{{ $user->role->nama }}</td>
+                                        <td>
+                                            <div class="d-flex">
+                                                <a class="btn btn-warning mx-1"
+                                                    href="{{ route('user-edit', $user->id) }}" data-bs-toggle="tooltip"
+                                                    data-bs-placement="top" data-bs-custom-class="custom-tooltip"
+                                                    data-bs-title="Edit User {{ $user->nama }}">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
 
-                                                    <!-- Button trigger modal -->
-                                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                                        data-bs-target="#deleteModal" data-id="{{ $user->id }}"
-                                                        data-name="{{ $user->nama }}">
-                                                        <i class="bi bi-trash text-body-secondary"></i>
-                                                    </button>
+                                                <!-- Button trigger modal -->
+                                                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                                    data-bs-target="#deleteModal" data-id="{{ $user->id }}"
+                                                    data-name="{{ $user->nama }}">
+                                                    <i class="bi bi-trash text-body-secondary"></i>
+                                                </button>
 
-                                                    <!-- Modal -->
-                                                    <div class="modal fade" id="deleteModal" tabindex="-1"
-                                                        aria-labelledby="deleteModalLabel" data-bs-backdrop="static" aria-hidden="true">
-                                                        <div class="modal-dialog">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" id="deleteModalLabel">Delete
-                                                                        Item</h5>
-                                                                    <button type="button" class="btn-close"
-                                                                        data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    Are you sure you want to delete user <span
-                                                                        id="itemName"></span>?
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary"
-                                                                        data-bs-dismiss="modal">Close</button>
-                                                                    <form id="deleteForm"
-                                                                        action="{{ route('user-delete', $user->id) }}"
-                                                                        method="POST">
-                                                                        @method('DELETE')
-                                                                        @csrf
-                                                                        <button type="submit"
-                                                                            class="btn btn-danger">Delete</button>
-                                                                    </form>
-                                                                </div>
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="deleteModal" tabindex="-1"
+                                                    aria-labelledby="deleteModalLabel" data-bs-backdrop="static" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="deleteModalLabel">Delete
+                                                                    Item</h5>
+                                                                <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Are you sure you want to delete user <span
+                                                                    id="itemName"></span>?
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">Close</button>
+                                                                <form id="deleteForm"
+                                                                    action="{{ route('user-delete', $user->id) }}"
+                                                                    method="POST">
+                                                                    @method('DELETE')
+                                                                    @csrf
+                                                                    <button type="submit"
+                                                                        class="btn btn-danger">Delete</button>
+                                                                </form>
                                                             </div>
                                                         </div>
                                                     </div>
-
                                                 </div>
-                                            </td>
-                                        </tr>
+
+                                            </div>
+                                        </td>
+                                    </tr>
                                     @endforeach
+                                    @else
+                                    @foreach ($dataUsers as $user)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $user->nama }}</td>
+                                        <td>{{ $user->role->nama }}</td>
+                                        <td>
+                                            <div class="d-flex">
+                                                <a class="btn btn-warning mx-1"
+                                                    href="{{ route('user-edit', $user->id) }}" data-bs-toggle="tooltip"
+                                                    data-bs-placement="top" data-bs-custom-class="custom-tooltip"
+                                                    data-bs-title="Edit User {{ $user->nama }}">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+
+                                                <!-- Button trigger modal -->
+                                                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                                    data-bs-target="#deleteModal" data-id="{{ $user->id }}"
+                                                    data-name="{{ $user->nama }}">
+                                                    <i class="bi bi-trash text-body-secondary"></i>
+                                                </button>
+
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="deleteModal" tabindex="-1"
+                                                    aria-labelledby="deleteModalLabel" data-bs-backdrop="static" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="deleteModalLabel">Delete
+                                                                    Item</h5>
+                                                                <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Are you sure you want to delete user <span
+                                                                    id="itemName"></span>?
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">Close</button>
+                                                                <form id="deleteForm"
+                                                                    action="{{ route('user-delete', $user->id) }}"
+                                                                    method="POST">
+                                                                    @method('DELETE')
+                                                                    @csrf
+                                                                    <button type="submit"
+                                                                        class="btn btn-danger">Delete</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                    @endif
                                 </tbody>
                             </table>
                         </div>

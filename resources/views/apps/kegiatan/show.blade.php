@@ -97,9 +97,10 @@
                                             akan dilakukan ()</th>
                                         <th rowspan="3" colspan="1" class="text-center align-middle">Tanggal
                                         </th>
+                                        @can('update-kegiatan', $dataShow)
                                         <th rowspan="3" colspan="1" class="text-center align-middle">Action
                                         </th>
-
+                                        @endcan
                                     </tr>
                                     <tr>
                                         <th rowspan="1" colspan="2" class="text-center align-middle">Keuangan (Rp)
@@ -148,20 +149,23 @@
                                     <td>{{ $dataShow->created_at }}</td>
                                     <td>
                                         <div class="d-flex">
-                                            <a class="btn btn-warning mx-1" href="{{ route('kegiatan-edit', $dataShow->id) }}" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="Edit Pengaduan">
-                                                <i class="bi bi-pencil"></i>
+                                            @can('update-kegiatan', $dataShow)
+                                           <a class="btn btn-warning mx-1" href="{{ route('kegiatan-edit', $dataShow->id) }}" data-bs-toggle="tooltip"
+                                            data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="Edit Pengaduan">
+                                            <i class="bi bi-pencil"></i>
                                             </a>
+                                            @endcan
+                                            @can('superAdminAndAdmin')
                                             <form action="{{ route('kegiatan-delete', $dataShow->id) }}" method="POST">
                                                 @method('delete')
                                                 @csrf
-                                                <button class="btn btn-danger"
-                                                    onclick="return confirm('Apakah anda ingin menghapus pengaduan?')"
-                                                    data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip"
-                                                    data-bs-title="Hapus Pengaduan" >
+                                                <button class="btn btn-danger" onclick="return confirm('Apakah anda ingin menghapus pengaduan?')"
+                                                        data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip"
+                                                        data-bs-title="Hapus Pengaduan" >
                                                     <i class="bi bi-trash text-body-secondary"></i>
                                                 </button>
                                             </form>
+                                        @endcan
                                         </div>  
                                     </td>
                                 </tbody>

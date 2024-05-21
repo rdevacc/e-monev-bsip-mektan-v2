@@ -28,7 +28,7 @@
                                         <th>#</th>
                                         <th>Nama</th>
                                         <th>Nama Ketua Kelompok</th>
-                                        <th>Anggaran Kelompok</th>
+                                        {{-- <th>Anggaran Kelompok</th> --}}
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -38,7 +38,7 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $kelompok->nama }}</td>
                                             <td>{{ $kelompok->nama_kakel }}</td>
-                                            <td>{{ $kelompok->anggaran_kelompok }}</td>
+                                            {{-- <td>{{ $kelompok->anggaran_kelompok }}</td> --}}
                                             <td>
                                                 <div class="d-flex">
                                                     <a class="btn btn-warning mx-1"

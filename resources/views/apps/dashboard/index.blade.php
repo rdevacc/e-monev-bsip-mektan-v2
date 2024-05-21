@@ -1,5 +1,9 @@
 @extends('layouts.app-v2')
 
+@push('css')
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+@endpush
+
 @section('content')
 <main id="main" class="main">
     <section class="section dashboard">
@@ -110,6 +114,7 @@
 @endsection
 
 @push('scripts')
+
     {{-- Script for call Charts --}}
     <script src="{{ $chart->cdn() }}"></script>
     {{ $chart->script() }}
