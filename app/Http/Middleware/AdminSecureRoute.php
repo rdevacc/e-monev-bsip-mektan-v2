@@ -16,7 +16,6 @@ class AdminSecureRoute
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // return dd($request->path());
 
         // Check if the user is authenticated and is Super Admin or Admin
         if (!Auth::check() || Auth::user()->role->id != 1 && Auth::user()->role->id != 2 ) {

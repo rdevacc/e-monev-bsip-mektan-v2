@@ -102,7 +102,7 @@ Route::prefix('/v2')->group(function () {
     /**
      * * Kegiatan Route
      */
-    Route::resource('/app/kegiatan', KegiatanController::class)->middleware('auth')->names([
+    Route::resource('/app/kegiatan', KegiatanController::class)->middleware(['auth', 'editkegiatan'])->names([
         'index' => 'kegiatan-index',
         'create' => 'kegiatan-create',
         'show' => 'kegiatan-show',

@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'superadmin' => \App\Http\Middleware\SuperAdminRoute::class,
         'admin' => \App\Http\Middleware\AdminSecureRoute::class,
+        'editkegiatan' => \App\Http\Middleware\EditSecureRoute::class,
     ];
 }
