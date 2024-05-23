@@ -18,7 +18,7 @@ class AdminSecureRoute
     {
 
         // Check if the user is authenticated and is Super Admin or Admin
-        if (!Auth::check() || Auth::user()->role->id != 1 && Auth::user()->role->id != 2 ) {
+        if (!Auth::check() || (Auth::user()->role->id != 1 && Auth::user()->role->id != 2) ) {
             // Redirect to login if not authenticated
             return abort(403);
         }

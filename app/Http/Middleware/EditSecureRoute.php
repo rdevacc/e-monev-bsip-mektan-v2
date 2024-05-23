@@ -18,12 +18,12 @@ class EditSecureRoute
     public function handle(Request $request, Closure $next): Response
     {
         // Check if user is Super Admin or Admin will pass the Auth
-        if(!Auth::check() && $request->route('kegiatan') && (auth()->user()->id == 1 || auth()->user()->id == 2)){
+        if(!Auth::check() || $request->route('kegiatan') && (auth()->user()->role->id == 1 || auth()->user()->role->id == 2)){
             return $next($request);
         }
 
         // Check if user has login and own the data
-        if (!Auth::check() || $request->route('kegiatan')) {
+        if (!Auth::check()) {
             $a = $request->path();
             $pisah = explode('/', $a);
             $id = intval($pisah["3"]);
