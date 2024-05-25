@@ -31,6 +31,7 @@
                                 @csrf
                                 @method('PUT')
                                 <div class="row">
+                                    @can('superAdminAndAdmin')
                                     <div class="col-12 mb-2">
                                         <label for="status_id" class="form-label">Status Kegiatan</label>
                                         <select name="status_id" id="status_id"
@@ -52,11 +53,18 @@
                                             </div>
                                         @enderror
                                     </div>
+                                    @endcan
                                     <div class="col-12 mb-2">
                                         <label for="nama" class="form-label">Nama Kegiatan</label>
+                                        @if (Auth::user()->role->id == 1 || Auth::user()->role->id == 2)
                                         <input type="text" class="form-control @error('nama') is-invalid @enderror"
-                                            id="nama" name="nama"
-                                            value="{{ $dataEdit->nama ? $dataEdit->nama : old('nama') }}">
+                                        id="nama" name="nama"
+                                        value="{{ $dataEdit->nama ? $dataEdit->nama : old('nama') }}">
+                                        @else
+                                        <input type="text" class="form-control @error('nama') is-invalid @enderror"
+                                        id="nama" name="nama"
+                                        value="{{ $dataEdit->nama ? $dataEdit->nama : old('nama') }}" disabled>
+                                        @endif
                                         @error('nama')
                                             <div class="invalid-feedback">
                                                 {{ $message }}
@@ -137,7 +145,7 @@
                                             <input type="text"
                                                 class="form-control @error('anggaran_kegiatan') is-invalid @enderror"
                                                 id="anggaran_kegiatan" name="anggaran_kegiatan"
-                                                value="{{ $dataEdit->anggaran_kegiatan ? $dataEdit->anggaran_kegiatan : old('anggaran_kegiatan') }}">
+                                                value="{{ formatRupiahAngka($dataEdit->anggaran_kegiatan) ? formatRupiahAngka($dataEdit->anggaran_kegiatan) : old('anggaran_kegiatan') }}">
                                             @error('anggaran_kegiatan')
                                                 <div class="invalid-feedback">
                                                     {{ $message }}
@@ -152,7 +160,7 @@
                                             <input type="text"
                                                 class="form-control @error('target_keuangan') is-invalid @enderror"
                                                 id="target_keuangan" name="target_keuangan"
-                                                value="{{ $dataEdit->target_keuangan ? $dataEdit->target_keuangan : old('target_keuangan') }}">
+                                                value="{{ formatRupiahAngka($dataEdit->target_keuangan) ? formatRupiahAngka($dataEdit->target_keuangan) : old('target_keuangan') }}">
                                             @error('target_keuangan')
                                                 <div class="invalid-feedback">
                                                     {{ $message }}
@@ -167,7 +175,7 @@
                                             <input type="text"
                                                 class="form-control @error('realisasi_keuangan') is-invalid @enderror"
                                                 id="realisasi_keuangan" name="realisasi_keuangan"
-                                                value="{{ $dataEdit->realisasi_keuangan ? $dataEdit->realisasi_keuangan : old('realisasi_keuangan') }}">
+                                                value="{{ formatRupiahAngka($dataEdit->realisasi_keuangan) ? formatRupiahAngka($dataEdit->realisasi_keuangan) : old('realisasi_keuangan') }}">
                                             @error('realisasi_keuangan')
                                                 <div class="invalid-feedback">
                                                     {{ $message }}

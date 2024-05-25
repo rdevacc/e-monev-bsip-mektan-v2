@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Login | E-Monev BBPSI Mektan</title>
+  <title>Forgot Password | E-Monev BBPSI Mektan</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -57,20 +57,20 @@
               <div class="card mb-3">
                 <div class="card-body">
                   <div class="pt-4 pb-2">
-                    <h5 class="card-title text-center pb-0 fs-4">Login to Your Account</h5>
-                    <p class="text-center small">Enter your email & password to login</p>
+                    <h5 class="card-title text-center pb-0 fs-4">Forgot Password</h5>
+                    <p class="text-center small">Enter your email & get the verification link</p>
                   </div>
-                  @if (session()->has('loginError'))
-                    <div class="alert alert-danger alert-dismissible fade show">
-                        {{ session('loginError') }}
+                  @if (session()->has('forgotMessage'))
+                    <div class="alert alert-info alert-dismissible fade show">
+                        {{ session('forgotMessage') }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                   @endif
-                  <form action="{{ route('login-submit') }}" class="row" method="POST">
+                  <form action="{{ route('forgot-password-submit') }}" class="row" method="POST">
                     @csrf
-                    <div class="col-12 pb-2">
+                    <div class="col-12 pb-4">
                         <label for="email" class="form-label">Email</label>
-                        <input type="email" id="email" name="email"
+                        <input type="text" id="email" name="email"
                         class="form-control @error('email') is-invalid @enderror" autofocus autocomplete="off"
                         value="{{ old('email') }}" required>
                         @error('email')
@@ -79,22 +79,8 @@
                         </div>
                         @enderror
                     </div>
-                    <div class="col-12 pb-2">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" id="password" name="password"
-                            class="form-control @error('password') is-invalid @enderror"
-                            autocomplete="off" required>
-                        @error('password')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                        @enderror
-                    </div>
-                    <div class="col-12 pb-4">
-                      <a href="{{ route('forgot-password') }}">Forgot Password?</a>
-                    </div>
                     <div class="col-12">
-                        <button class="btn btn-primary w-100" type="submit">Login</button>
+                        <button class="btn btn-primary w-100" type="submit">Send Email</button>
                     </div>
                   </form>
                 </div>

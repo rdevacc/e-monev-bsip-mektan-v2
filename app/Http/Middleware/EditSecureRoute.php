@@ -23,7 +23,7 @@ class EditSecureRoute
         }
 
         // Check if user has login and own the data
-        if (!Auth::check()) {
+        if (!Auth::check() || $request->route('kegiatan')) {
             $a = $request->path();
             $pisah = explode('/', $a);
             $id = intval($pisah["3"]);

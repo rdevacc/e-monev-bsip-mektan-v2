@@ -27,6 +27,7 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Nama</th>
+                                        <th>Email</th>
                                         <th>Role</th>
                                         <th>Action</th>
                                     </tr>
@@ -37,6 +38,7 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $user->nama }}</td>
+                                        <td>{{ $user->email }}</td>
                                         <td>{{ $user->role->nama }}</td>
                                         <td>
                                             <div class="d-flex">
@@ -94,6 +96,7 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $user->nama }}</td>
+                                        <td>{{ $user->email }}</td>
                                         <td>{{ $user->role->nama }}</td>
                                         <td>
                                             <div class="d-flex">

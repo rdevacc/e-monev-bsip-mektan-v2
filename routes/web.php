@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExcelController;
+use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\KelompokController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PdfController;
+use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SubKelompokController;
 use App\Http\Controllers\UserController;
@@ -22,6 +24,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/', [LoginController::class, 'index'])->middleware('guest')->name('login');
+
 Route::prefix('/v2')->group(function () {
 
     /**
@@ -30,8 +34,12 @@ Route::prefix('/v2')->group(function () {
     Route::get('/app/login', [LoginController::class, 'index'])->middleware('guest')->name('login');
     Route::post('/app/login', [LoginController::class, 'authenticate'])->name('login-submit');
     Route::post('/app/logout', [LoginController::class, 'logout'])->name('logout');
-    // Route::get('/app/forgot-password', [LoginController::class, 'forgot_password'])->middleware('guest')->name('forgot-password');
-    // Route::post('/app/forgot-password-submit', [LoginController::class, 'forgot_password_submit'])->name('forgot-password-submit');
+
+    Route::get('/app/forgot-password', [ForgotPasswordController::class, 'forgot_password'])->middleware('guest')->name('forgot-password');
+    Route::post('/app/forgot-password-submit', [ForgotPasswordController::class, 'forgot_password_submit'])->name('forgot-password-submit');
+
+    Route::get('/app/reset-password/{token}', [ResetPasswordController::class, 'reset_password'])->middleware('guest')->name('password.reset');
+    Route::post('/app/reset-password/', [ResetPasswordController::class, 'reset_password_submit'])->middleware('guest')->name('password.update');
 
     /**
      * * Dashboard Route
@@ -112,31 +120,3 @@ Route::prefix('/v2')->group(function () {
         'destroy' => 'kegiatan-delete',
     ]);
 });
-
-
-// Route::get('/app/dashboard', [DashboardController::class, 'index'])->middleware('auth');
-
-// Route::get('/app/login', [LoginController::class, 'index'])->middleware('guest')->name('login');
-// Route::post('/app/login', [LoginController::class, 'authenticate']);
-// Route::get('/app/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
-
-// Route::get('/app/forgot-password', [LoginController::class, 'forgot_password'])->middleware('guest')->name('forgot-password');
-// Route::post('/app/forgot-password-submit', [LoginController::class, 'forgot_password_submit'])->name('forgot-password-submit');
-
-// Route::get('/app/reset-password/{token}', [LoginController::class, 'reset_password'])->middleware('guest')->name('reset-password');
-// Route::post('/app/reset-password/', [LoginController::class, 'reset_password_submit'])->middleware('guest')->name('reset-password-submit');
-
-// Route::get('/app/activities/search', [ActivitiesFilterController::class, 'search'])->middleware('auth');
-// Route::get('/app/activities/filter', [ActivitiesFilterController::class, 'filter'])->middleware('auth');
-
-// Route::post('/app/activities/pdf', [PdfController::class, 'generatePDF'])->middleware('auth');
-// Route::post('/app/activities/excel', [ExcelController::class, 'generateExcel'])->middleware('auth');
-
-// Route::resource('/app/activities', ActivityController::class)->middleware('auth');
-// Route::post('/app/activities/fetch-budget', [ActivityController::class, 'fetchBudget'])->middleware('auth');
-
-// Route::resource('/app/departments', DepartmentController::class)->middleware('can:superAdminAndAdmin', 'auth');
-
-// Route::resource('/app/divisions', DivisionController::class)->middleware('can:superAdminAndAdmin', 'auth');
-
-// Route::resource('/app/users', UserController::class)->middleware('can:superAdminAndAdmin', 'auth');

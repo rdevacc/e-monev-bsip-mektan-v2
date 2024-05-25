@@ -19,9 +19,6 @@
                                         class="form-control @error('nama') is-invalid @enderror" autofocus
                                         autocomplete="off" value="{{ old('nama', $user->nama) }}" required>
                                     @error('nama')
-                                        {{-- <span class="help-block text-danger fs-6">
-                                                {{ $message }}
-                                            </span> --}}
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
