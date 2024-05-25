@@ -6,7 +6,7 @@ use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\KelompokController;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\PdfController;
+use App\Http\Controllers\PDFController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SubKelompokController;
@@ -24,7 +24,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [LoginController::class, 'index'])->middleware('guest')->name('login');
+Route::get('/', function(){
+    return redirect()->route('login');
+});
 
 Route::prefix('/v2')->group(function () {
 
@@ -55,8 +57,8 @@ Route::prefix('/v2')->group(function () {
     /**
      * * PDF Route
      */
-    Route::get('/app/kegiatan/page-pdf', [PDFController::class, 'pagePDF'])->name('page-pdf');
-    Route::post('/app/kegiatan/pdf', [PdfController::class, 'generatePDF'])->name('pdf');
+    // Route::get('/app/kegiatan/page-pdf', [PDFController::class, 'pagePDF'])->name('page-pdf');
+    Route::post('/app/kegiatan/pdf', [PDFController::class, 'generatePDF'])->name('pdf');
 
 
     /**
