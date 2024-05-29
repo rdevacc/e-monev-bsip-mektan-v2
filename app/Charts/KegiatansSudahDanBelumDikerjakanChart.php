@@ -6,7 +6,7 @@ use App\Models\Kegiatan;
 use ArielMejiaDev\LarapexCharts\LarapexChart;
 use Carbon\Carbon;
 
-class KegiatansSudahdanBelumDikerjakanChart
+class KegiatansSudahDanBelumDikerjakanChart
 {
     protected $chartSudah;
 

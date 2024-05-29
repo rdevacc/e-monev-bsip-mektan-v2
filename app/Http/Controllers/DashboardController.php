@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Charts\KegiatansSudahdanBelumDikerjakanChart;
+use App\Charts\KegiatansSudahDanBelumDikerjakanChart;
 use App\Charts\MonthlyKegiatansChart;
 use App\Models\Kegiatan;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index(MonthlyKegiatansChart $chart, KegiatansSudahdanBelumDikerjakanChart $chartSudahdanBelum) {
+    public function index(MonthlyKegiatansChart $chart, KegiatansSudahDanBelumDikerjakanChart $chartSudahdanBelum) {
 
         $kegiatan = Kegiatan::orderBy('status_id')->orderBy('created_at', 'desc')->get(['id', 'nama', 'anggaran_kegiatan', 'created_at', 'status_id']);
 
