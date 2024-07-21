@@ -23,11 +23,13 @@ class AdminSecureRoute
             return abort(403);
         }
 
-        if(!$request->path() == "v2/app/user/1/edit" || Auth::user()->role->id != 1) {
-            // Redirect to login if not authenticated
-            return abort(403);
+        if($request->path() == "v2/app/user/1/edit") {
+            if(Auth::user()->role->id != 1){
+                // Redirect to login if not authenticated
+                return abort(403);
+            }
+            return $next($request);
         }
-
 
         return $next($request);
     }
