@@ -43,6 +43,8 @@
 
     @stack('css')
 
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
 </head>
 
 <body>
@@ -101,6 +103,8 @@
     <script src="{{ asset('js/app.js') }}"></script>
 
     @stack('scripts')
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
 </body>
 
