@@ -357,7 +357,9 @@
                 ],
             });
 
-            
+            $('#text_search').on('keyup', function () {
+                activityTable.draw();
+            }); 
             $('#filterPJ').change(function () { 
                 console.log($('#filterPJ').val())
                 activityTable.draw();

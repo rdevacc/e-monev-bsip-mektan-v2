@@ -6,7 +6,6 @@ use App\Models\Activity;
 use App\Models\User;
 use App\Models\WorkGroup;
 use App\Models\WorkTeam;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -58,7 +57,8 @@ class ActivityController extends Controller
 
          // Text Search
         if ($request->text_search) {
-            $activities->where('activities.name', 'like', '%' . $request->text_search . '%');
+            $search = strtolower($request->text_search);
+            $activities->whereRaw('LOWER(activities.name) like ?', ["%{$search}%"]);
         }
 
         return DataTables::eloquent($activities)
