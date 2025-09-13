@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Activity;
 use App\Models\Kegiatan;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
@@ -38,11 +39,11 @@ class AppServiceProvider extends ServiceProvider
             return $user->role->nama == 'PJ';
         });
 
-        Gate::define('PJ-Dashboard', function (User $user, Kegiatan $kegiatan) {
+        Gate::define('PJ-Dashboard', function (User $user, Activity $kegiatan) {
             return $user->id === $kegiatan->user_id;
         });
 
-        Gate::define('update-kegiatan', function (User $user, Kegiatan $kegiatan) {
+        Gate::define('update-kegiatan', function (User $user, Activity $kegiatan) {
             return ($user->role->nama == 'SuperAdmin' || $user->role->nama == 'Admin' || $user->id == $kegiatan->user_id);
         });
 

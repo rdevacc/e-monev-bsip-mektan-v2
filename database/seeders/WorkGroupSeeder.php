@@ -6,43 +6,39 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class KelompokSeeder extends Seeder
+class WorkGroupSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        DB::table('kelompoks')->insert([
+         DB::table('work_groups')->insert([
             [
                 'id' => 1,
-                'nama' => 'Kelompok Program dan Evaluasi',
-                'nama_kakel' => 'Harsono',
-                'anggaran_kelompok' => 700000000,
+                'name' => 'Kelompok Program dan Perekayasaan Teknologi',
+                'group_leader' => 'Harsono',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'id' => 2,
-                'nama' => 'Kelompok Standardisasi dan Pengujian',
-                'nama_kakel' => 'Lilik TM',
-                'anggaran_kelompok' => 600000000,
+                'name' => 'Kelompok Kerja Sama dan Pendayagunaan Hasil Perakitan',
+                'group_leader' => 'Sulha Pangaribu',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'id' => 3,
-                'nama' => 'Kelompok PPHSPI',
-                'nama_kakel' => 'Elita',
-                'anggaran_kelompok' => 500000000,
+                'name' => 'Kelompok Layanan Pengujian dan Penilaian Kesesuaian',
+                'group_leader' => 'Muhammad Iqbal',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'id' => 4,
-                'nama' => 'Bagian Tata Usaha',
-                'nama_kakel' => 'Suphendi',
-                'anggaran_kelompok' => 400000000,
+                'name' => 'Bagian Tata Usaha',
+                'group_leader' => 'Suphendi',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

@@ -17,7 +17,7 @@
 
                         <h4 class="card-title mr-4 pr-4">Data Roles</h4>
                         <div class="d-flex justify-content-start mb-3">
-                            <a href="{{route('role-create')}}" class="btn btn-primary py-2 px-4">Tambah
+                            <a href="{{route('role.create')}}" class="btn btn-primary py-2 px-4">Tambah
                                 Role</a>
                         </div>
 
@@ -34,20 +34,20 @@
                                     @foreach ($dataRoles as $role)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $role->nama }}</td>
+                                            <td>{{ $role->name }}</td>
                                             <td>
                                                 <div class="d-flex">
                                                     <a class="btn btn-warning mx-1"
-                                                        href="{{ route('role-edit', $role->id) }}" data-bs-toggle="tooltip"
+                                                        href="{{ route('role.edit', $role->id) }}" data-bs-toggle="tooltip"
                                                         data-bs-placement="top" data-bs-custom-class="custom-tooltip"
-                                                        data-bs-title="Edit role {{ $role->nama }}">
+                                                        data-bs-title="Edit role {{ $role->name }}">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
 
                                                     <!-- Button trigger modal -->
                                                     <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                                                         data-bs-target="#deleteModal" data-id="{{ $role->id }}"
-                                                        data-name="{{ $role->nama }}">
+                                                        data-name="{{ $role->name }}">
                                                         <i class="bi bi-trash text-body-secondary"></i>
                                                     </button>
 
@@ -71,7 +71,7 @@
                                                                     <button type="button" class="btn btn-secondary"
                                                                         data-bs-dismiss="modal">Close</button>
                                                                     <form id="deleteForm"
-                                                                        action="{{ route('role-delete', $role->id) }}"
+                                                                        action="{{ route('role.delete', $role->id) }}"
                                                                         method="POST">
                                                                         @method('DELETE')
                                                                         @csrf

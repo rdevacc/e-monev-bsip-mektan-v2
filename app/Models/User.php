@@ -21,11 +21,13 @@ class User extends Authenticatable implements CanResetPassword
      * @var array<int, string>
      */
     protected $fillable = [
-        'nama',
-        'subkelompok_id',
         'role_id',
+        'work_group_id',
+        'work_team_id',
+        'name',
         'email',
         'password',
+        'last_seen',
     ];
 
     /**
@@ -49,11 +51,11 @@ class User extends Authenticatable implements CanResetPassword
     ];
     
     /**
-     * * The Relationship from User to Subkelompok *
+     * * The Relationship to Activities *
      */
-    public function kegiatans(): HasMany
+    public function activities(): HasMany
     {
-        return $this->hasMany(Kegiatan::class,'user_id');
+        return $this->hasMany(Activity::class);
     }
 
     /**
@@ -65,11 +67,19 @@ class User extends Authenticatable implements CanResetPassword
     }
     
     /**
-     * * The Relationship from User to Subkelompok *
+     * * The Relationship from User to work_group *
      */
-    public function subkelompok(): BelongsTo
+    public function work_group(): BelongsTo
     {
-        return $this->belongsTo(subkelompok::class);
+        return $this->belongsTo(WorkGroup::class);
+    }
+    
+    /**
+     * * The Relationship from User to work_team *
+     */
+    public function work_team(): BelongsTo
+    {
+        return $this->belongsTo(WorkTeam::class);
     }
     
 }

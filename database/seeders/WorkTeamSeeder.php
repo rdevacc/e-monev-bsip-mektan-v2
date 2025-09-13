@@ -6,83 +6,83 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class SubKelompokSeeder extends Seeder
+class WorkTeamSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        DB::table('sub_kelompoks')->insert([
+        DB::table('work_teams')->insert([
             [
                 'id' => 1,
-                'kelompok_id' => 1,
-                'nama' => 'Tim Kerja Program',
-                'nama_katim' => 'Fero',
+                'work_group_id' => 1,
+                'name' => 'Tim Kerja Program dan Evaluasi',
+                'team_leader' => 'Fero',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'id' => 2,
-                'kelompok_id' => 1,
-                'nama' => 'Tim Kerja Evaluasi',
-                'nama_katim' => 'Sri Utami',
+                'work_group_id' => 1,
+                'name' => 'Tim Kerja Perekayasaan Teknologi dan Modernisasi Pertanian',
+                'team_leader' => 'Amiq Nurul Azmi',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'id' => 3,
-                'kelompok_id' => 2,
-                'nama' => 'Tim Kerja Standardisasi',
-                'nama_katim' => 'Yusi',
+                'work_group_id' => 2,
+                'name' => 'Tim Kerja Pengelolaan Kerja Sama',
+                'team_leader' => 'Daragantina',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'id' => 4,
-                'kelompok_id' => 2,
-                'nama' => 'Tim Kerja Pengujian',
-                'nama_katim' => 'Rudi',
+                'work_group_id' => 2,
+                'name' => 'Tim Kerja Pendayagunaan Hasil Perakitan',
+                'team_leader' => 'Tri Saksono',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'id' => 5,
-                'kelompok_id' => 3,
-                'nama' => 'Tim Kerja Pengelolaan Hasil Standardisasi',
-                'nama_katim' => 'Daragantina',
+                'work_group_id' => 3,
+                'name' => 'Tim Kerja Layanan Pengujian',
+                'team_leader' => 'Rudi',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'id' => 6,
-                'kelompok_id' => 3,
-                'nama' => 'Tim Kerja Penyebarluasan Hasil Standardisasi',
-                'nama_katim' => 'Tri S',
+                'work_group_id' => 3,
+                'name' => 'Tim Kerja Layanan Sertifikasi',
+                'team_leader' => 'Ivony',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'id' => 7,
-                'kelompok_id' => 4,
-                'nama' => 'Tim Kerja Tata Usaha dan Rumah Tangga',
-                'nama_katim' => 'Kartini',
+                'work_group_id' => 4,
+                'name' => 'Tim Kerja Pengelolaan Sumber Daya Manusia',
+                'team_leader' => 'Titin',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'id' => 8,
-                'kelompok_id' => 4,
-                'nama' => 'Tim Kerja Kepegawaian',
-                'nama_katim' => 'Sulha',
+                'work_group_id' => 4,
+                'name' => 'Tim Kerja Tata Usaha dan Rumah Tangga',
+                'team_leader' => 'Karitni',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'id' => 9,
-                'kelompok_id' => 4,
-                'nama' => 'Tim Kerja Keuangan',
-                'nama_katim' => 'Sigid',
+                'work_group_id' => 4,
+                'name' => 'Tim Kerja Keuangan dan Barang Milik Negara',
+                'team_leader' => 'Sigid',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

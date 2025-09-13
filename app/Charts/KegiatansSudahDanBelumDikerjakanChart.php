@@ -2,7 +2,7 @@
 
 namespace App\Charts;
 
-use App\Models\Kegiatan;
+use App\Models\Activity;
 use ArielMejiaDev\LarapexCharts\LarapexChart;
 use Carbon\Carbon;
 
@@ -22,8 +22,8 @@ class KegiatansSudahDanBelumDikerjakanChart
 
         // Looping for monthly undone activities count
         for ($i = 1; $i <= $bulan; $i++) {
-            $totalBelum = Kegiatan::whereYear('created_at', $tahun)->whereMonth('created_at', $i)->Where('status_id', 1)->count('id');
-            $totalSudah = Kegiatan::whereYear('created_at', $tahun)->whereMonth('created_at', $i)->Where('status_id',2)->count('id');
+            $totalBelum = Activity::whereYear('created_at', $tahun)->whereMonth('created_at', $i)->Where('status_id', 1)->count('id');
+            $totalSudah = Activity::whereYear('created_at', $tahun)->whereMonth('created_at', $i)->Where('status_id',2)->count('id');
 
             $dataBulan[] = Carbon::create()->month($i)->translatedFormat('F');
             $dataTotalBelum[] = $totalBelum;

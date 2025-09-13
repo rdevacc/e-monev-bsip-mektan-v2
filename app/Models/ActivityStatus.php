@@ -6,19 +6,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class StatusKegiatan extends Model
+class ActivityStatus extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'nama'
+        'name'
     ];
 
     /**
-     * * Relationship from Status Kegiatan to User
+     * * Relationship to Activities
      */
-    public function kegiatans(): HasMany
+    public function avtivities(): HasMany
     {
-        return $this->hasMany(Kegiatan::class);
+        return $this->hasMany(Activity::class);
     }
 }

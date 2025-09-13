@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExcelController;
 use App\Http\Controllers\ForgotPasswordController;
@@ -11,6 +12,8 @@ use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SubKelompokController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WorkGroupController;
+use App\Http\Controllers\WorkTeamController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -65,60 +68,60 @@ Route::prefix('/v2')->group(function () {
      * * User Route
      */
     Route::resource('/app/user', UserController::class)->names([
-        'index' => 'user-index',
-        'create' => 'user-create',
-        'store' => 'user-create-submit',
-        'edit' => 'user-edit',
-        'update' => 'user-edit-submit',
-        'destroy' => 'user-delete',
+        'index' => 'user.index',
+        'create' => 'user.create',
+        'store' => 'user.create-submit',
+        'edit' => 'user.edit',
+        'update' => 'user.edit-submit',
+        'destroy' => 'user.delete',
     ])->middleware('admin');
 
     /**
      * * Role Route
      */
     Route::resource('/app/role', RoleController::class)->middleware('superadmin')->names([
-        'index' => 'role-index',
-        'create' => 'role-create',
-        'store' => 'role-create-submit',
-        'edit' => 'role-edit',
-        'update' => 'role-edit-submit',
-        'destroy' => 'role-delete',
+        'index' => 'role.index',
+        'create' => 'role.create',
+        'store' => 'role.create-submit',
+        'edit' => 'role.edit',
+        'update' => 'role.edit-submit',
+        'destroy' => 'role.delete',
     ]);
 
     /**
-     * * Kelompok Route
+     * * Work Group Route
      */
-    Route::resource('/app/kelompok', KelompokController::class)->middleware('admin')->names([
-        'index' => 'kelompok-index',
-        'create' => 'kelompok-create',
-        'store' => 'kelompok-create-submit',
-        'edit' => 'kelompok-edit',
-        'update' => 'kelompok-edit-submit',
-        'destroy' => 'kelompok-delete',
+    Route::resource('/app/work-group', WorkGroupController::class)->middleware('admin')->names([
+        'index' => 'work-group.index',
+        'create' => 'work-group.create',
+        'store' => 'work-group.create-submit',
+        'edit' => 'work-group.edit',
+        'update' => 'work-group.edit-submit',
+        'destroy' => 'work-group.delete',
     ]);
 
     /**
-     * * SubKelompok Route
+     * * Work Team Route
      */
-    Route::resource('/app/subkelompok', SubKelompokController::class)->middleware('admin')->names([
-        'index' => 'subkelompok-index',
-        'create' => 'subkelompok-create',
-        'store' => 'subkelompok-create-submit',
-        'edit' => 'subkelompok-edit',
-        'update' => 'subkelompok-edit-submit',
-        'destroy' => 'subkelompok-delete',
+    Route::resource('/app/work-team', WorkTeamController::class)->middleware('admin')->names([
+        'index' => 'work-team.index',
+        'create' => 'work-team.create',
+        'store' => 'work-team.create-submit',
+        'edit' => 'work-team.edit',
+        'update' => 'work-team.edit-submit',
+        'destroy' => 'work-team.delete',
     ]);
 
     /**
-     * * Kegiatan Route
+     * * Activity Route
      */
-    Route::resource('/app/kegiatan', KegiatanController::class)->middleware(['auth', 'editkegiatan'])->names([
-        'index' => 'kegiatan-index',
-        'create' => 'kegiatan-create',
-        'show' => 'kegiatan-show',
-        'store' => 'kegiatan-create-submit',
-        'edit' => 'kegiatan-edit',
-        'update' => 'kegiatan-edit-submit',
-        'destroy' => 'kegiatan-delete',
+    Route::resource('/app/activity', ActivityController::class)->middleware(['auth', 'editkegiatan'])->names([
+        'index' => 'activity.index',
+        'create' => 'activity.create',
+        'show' => 'activity.show',
+        'store' => 'activity.create-submit',
+        'edit' => 'activity.edit',
+        'update' => 'activity.edit-submit',
+        'destroy' => 'activity.delete',
     ]);
 });

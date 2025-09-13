@@ -5,57 +5,52 @@
 
         <li class="nav-heading">Utama</li>
 
-          <li class="nav-item">
-              <a class="nav-link collapsed" href="{{route('dashboard')}}">
-                  <i class="bi bi-grid"></i>
-                  <span>Dashboard</span>
-              </a>
-          </li><!-- End Dashboard Nav -->
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{route('dashboard')}}">
+                <i class="bi bi-grid"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
 
-          <li class="nav-item">
-              <a class="nav-link collapsed" href="{{route('kegiatan-index')}}">
-                  <i class="bi bi-menu-button-wide"></i><span>Kegiatan</span></i>
-              </a>
-          </li><!-- End Kegiatan Page Nav -->
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('activity') ? 'active' : '' }}" href="{{route('activity.index')}}">
+                <i class="bi bi-grid"></i>
+                <span>Kegiatan</span>
+            </a>
+        </li>
 
-          {{-- <li class="nav-item">
-              <a class="nav-link collapsed" href="#">
-                  <i class="bi bi-archive"></i><span>Laporan</span></i>
-              </a>
-          </li><!-- End Report Page Nav --> --}}
+        {{-- @canany(['isSuperAdmin', 'isAdmin']) --}}
+        <li class="nav-heading">Super Admin</li>
 
-          @canany(['isSuperAdmin', 'isAdmin'])
-          <li class="nav-heading">Super Admin</li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('user') ? 'active' : '' }}" href="{{route('user.index')}}">
+                <i class="bi bi-grid"></i>
+                <span>Users</span>
+            </a>
+        </li>
 
-          <li class="nav-item">
-              <a class="nav-link collapsed" href="{{route('user-index')}}">
-                  <i class="bi bi-people"></i>
-                  <span>Users</span>
-              </a>
-          </li><!-- End Users -->
-         
-          <li class="nav-item">
-              <a class="nav-link collapsed" href="{{route('kelompok-index')}}">
-                  <i class="bi bi-diagram-2"></i>
-                  <span>Kelompok</span>
-              </a>
-          </li><!-- End Kelompok -->
-         
-          <li class="nav-item">
-              <a class="nav-link collapsed" href="{{route('subkelompok-index')}}">
-                  <i class="bi bi-diagram-3"></i>
-                  <span>Subkelompok</span>
-              </a>
-          </li><!-- End Subkelompok -->
-          @endcanany
-          @can('isSuperAdmin')
-          <li class="nav-item">
-              <a class="nav-link collapsed" href="{{route('role-index')}}">
-                  <i class="bi bi-shield-check"></i>
-                  <span>Roles</span>
-              </a>
-          </li><!-- End Roles -->
-          @endcan
-         
+        {{-- @endcanany
+        @can('isSuperAdmin') --}}
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('role') ? 'active' : '' }}" href="{{route('role.index')}}">
+                <i class="bi bi-shield-check"></i>
+                <span>Roles</span>
+            </a>
+        </li>
+        {{-- @endcan --}}
+        
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('work-group') ? 'active' : '' }}" href="{{route('work-group.index')}}">
+                <i class="bi bi-grid"></i>
+                <span>Kelompok Kerja</span>
+            </a>
+        </li>
+        
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('work-team') ? 'active' : '' }}" href="{{route('work-team.index')}}">
+                <i class="bi bi-grid"></i>
+                <span>Tim Kerja</span>
+            </a>
+        </li>         
       </ul>
-  </aside><!-- End Sidebar-->
+  </aside>

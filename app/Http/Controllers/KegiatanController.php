@@ -21,6 +21,17 @@ class KegiatanController extends Controller
     {
         if ($request->ajax()) {
 
+            $kegiatan = Kegiatan::select(
+                'kegiatans.*',
+                'rnm.nama as role_name',
+                'atn.name as archive_type_name',
+                'stn.name as archive_subtype_name',
+                'ast.name as archive_status_name',
+                'prd.name as period_name',
+                'archives.year_period as year_period_name'
+            )
+            ->leftJoin('work_team_classifications as wtc', 'archives.work_team_classification_id', '=', 'wtc.id');
+
             /**
              * * Check Daterange Filter *
              */
@@ -29,73 +40,54 @@ class KegiatanController extends Controller
             $date = Carbon::create($thisYear, 1, 1, 0, 0, 0, 'GMT+7');
             $startOfYear = $date->startOfYear()->format('');
 
-            /**
-             * * Query for Today Filter *
-             */
-            if ($request->from_date == $request->end_date) {
-                $query = Kegiatan::with(['kelompok', 'subkelompok', 'status', 'pj'])
-                    ->whereDate('kegiatans.created_at', $request->from_date)
-                    ->select('kegiatans.*');
-            }
-            /**
-             * * Query for Date Range Filter *
-             */
-            elseif ($request->from_date && $request->end_date) {
-                $query = Kegiatan::with(['kelompok', 'subkelompok', 'status', 'pj'])
-                    ->whereBetween('kegiatans.created_at', [$request->from_date, $request->end_date])
-                    ->select('kegiatans.*');
-            }
-            /**
-             * * Query for All data Filter *
-             */
-            else {
-                $query = Kegiatan::with(['kelompok', 'subkelompok', 'status', 'pj'])->select('kegiatans.*');
-            }
 
+            $kegiatans = Kegiatan::select(
+                    'kegiatans.*',
+                    'users.nama as pj_name',
+                    'users.role_id as pj_role_id',
+                    'kelompoks.nama as kelompok_nama',
+                    'sub_kelompoks.nama as subkelompok_nama',
+                    'status_kegiatans.nama as status_nama'
+                )
+                ->leftJoin('users', 'kegiatans.user_id', '=', 'users.id')
+                ->leftJoin('kelompoks', 'kegiatans.kelompok_id', '=', 'kelompoks.id')
+                ->leftJoin('sub_kelompoks', 'kegiatans.subkelompok_id', '=', 'sub_kelompoks.id')
+                ->leftJoin('status_kegiatans', 'kegiatans.status_id', '=', 'status_kegiatans.id');
+            
+            if ($request->filterPJ) {
+                $kegiatans->where('users.role_id', $request->filterPJ);
+            }
 
             if ($request->searchField) {
                 $kata = $request->searchField;
-                $query = Kegiatan::with(['kelompok', 'subkelompok', 'status', 'pj'])
-                    ->whereHas('pj', function (Builder $query) use ($kata) {
-                        $query->where('users.nama', 'like', '%' . $kata . '%');
-                    })
-                    ->orWhereHas('kelompok', function (Builder $query) use ($kata) {
-                        $query->where('kelompoks.nama', 'like', '%' . $kata . '%');
-                    })
-                    ->orWhereHas('subkelompok', function (Builder $query) use ($kata) {
-                        $query->where('sub_kelompoks.nama', 'like', '%' . $kata . '%');
-                    })
-                    ->orWhereHas('status', function (Builder $query) use ($kata) {
-                        $query->where('status_kegiatans.nama', 'like', '%' . $kata . '%');
-                    })
-                    ->orWhere('kegiatans.nama', 'like', '%' . $kata . '%')
-                    ->select('kegiatans.*');
+                $kegiatans->where(function ($q) use ($kata) {
+                    $q->where('users.nama', 'like', "%$kata%")
+                    ->orWhere('kelompoks.nama', 'like', "%$kata%")
+                    ->orWhere('sub_kelompoks.nama', 'like', "%$kata%")
+                    ->orWhere('status_kegiatans.nama', 'like', "%$kata%")
+                    ->orWhere('kegiatans.nama', 'like', "%$kata%");
+                });
             }
 
 
-            return DataTables::of($query)
-                ->addIndexColumn()
-                ->editColumn('pj', function ($data) {
-                    return $data->pj->nama;
-                })
-                ->editColumn('kelompok', function ($data) {
-                    return $data->kelompok->nama;
-                })
-                ->editColumn('subkelompok', function ($data) {
-                    return $data->subkelompok->nama;
-                })
-                ->editColumn('status', function ($data) {
-                    return $data->status->nama;
-                })
-                ->editColumn('created_at', function ($data) {
-                    return $data->created_at->format('d F Y');
-                })
-                ->addColumn('action', 'components.admin.button')
-                ->rawColumns(['action'])
-                ->toJson();
+            return DataTables::eloquent($kegiatans)
+            ->addIndexColumn()
+            ->editColumn('pj', fn($data) => $data->pj_name ?? '-')
+            ->editColumn('kelompok', fn($data) => $data->kelompok_nama ?? '-')
+            ->editColumn('subkelompok', fn($data) => $data->subkelompok_nama ?? '-')
+            ->editColumn('status', fn($data) => $data->status_nama ?? '-')
+            ->editColumn('created_at', fn($data) => $data->created_at->format('d F Y'))
+            ->addColumn('action', 'components.admin.button')
+            ->rawColumns(['action'])
+            ->make(true);
         }
 
-        return view('apps.kegiatan.index');
+        // Data for filters (optional)
+        $pjList = User::with('role')->where('role_id', 3)->get();
+
+        return view('apps.kegiatan.index', compact([
+            'pjList',
+        ]));
     }
 
     /**

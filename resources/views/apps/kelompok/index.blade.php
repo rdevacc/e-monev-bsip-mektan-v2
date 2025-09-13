@@ -17,7 +17,7 @@
 
                         <h4 class="card-title mr-4 pr-4">Data Kelompok</h4>
                         <div class="d-flex justify-content-start mb-3">
-                            <a href="{{route('kelompok-create')}}" class="btn btn-primary py-2 px-4">Tambah
+                            <a href="{{route('work-group.create')}}" class="btn btn-primary py-2 px-4">Tambah
                                 Kelompok</a>
                         </div>
 
@@ -36,13 +36,13 @@
                                     @foreach ($dataKelompoks as $kelompok)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $kelompok->nama }}</td>
-                                            <td>{{ $kelompok->nama_kakel }}</td>
+                                            <td>{{ $kelompok->name }}</td>
+                                            <td>{{ $kelompok->group_leader }}</td>
                                             {{-- <td>{{ $kelompok->anggaran_kelompok }}</td> --}}
                                             <td>
                                                 <div class="d-flex">
                                                     <a class="btn btn-warning mx-1"
-                                                        href="{{ route('kelompok-edit', $kelompok->id) }}" data-bs-toggle="tooltip"
+                                                        href="{{ route('work-group.edit', $kelompok->id) }}" data-bs-toggle="tooltip"
                                                         data-bs-placement="top" data-bs-custom-class="custom-tooltip"
                                                         data-bs-title="Edit {{ $kelompok->nama }}">
                                                         <i class="bi bi-pencil"></i>
@@ -75,7 +75,7 @@
                                                                     <button type="button" class="btn btn-secondary"
                                                                         data-bs-dismiss="modal">Close</button>
                                                                     <form id="deleteForm"
-                                                                        action="{{ route('kelompok-delete', $kelompok->id) }}"
+                                                                        action="{{ route('work-group.delete', $kelompok->id) }}"
                                                                         method="POST">
                                                                         @method('DELETE')
                                                                         @csrf

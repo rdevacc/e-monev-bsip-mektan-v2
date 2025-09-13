@@ -37,22 +37,22 @@
                                     @foreach ($dataAdminUsers as $user)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $user->nama }}</td>
+                                        <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
-                                        <td>{{ $user->role->nama }}</td>
+                                        <td>{{ $user->role->name }}</td>
                                         <td>
                                             <div class="d-flex">
                                                 <a class="btn btn-warning mx-1"
-                                                    href="{{ route('user-edit', $user->id) }}" data-bs-toggle="tooltip"
+                                                    href="{{ route('user.edit', $user->id) }}" data-bs-toggle="tooltip"
                                                     data-bs-placement="top" data-bs-custom-class="custom-tooltip"
-                                                    data-bs-title="Edit User {{ $user->nama }}">
+                                                    data-bs-title="Edit User {{ $user->name }}">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
 
                                                 <!-- Button trigger modal -->
                                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                                                     data-bs-target="#deleteModal" data-id="{{ $user->id }}"
-                                                    data-name="{{ $user->nama }}">
+                                                    data-name="{{ $user->name }}">
                                                     <i class="bi bi-trash text-body-secondary"></i>
                                                 </button>
 
@@ -75,7 +75,7 @@
                                                                 <button type="button" class="btn btn-secondary"
                                                                     data-bs-dismiss="modal">Close</button>
                                                                 <form id="deleteForm"
-                                                                    action="{{ route('user-delete', $user->id) }}"
+                                                                    action="{{ route('user.delete', $user->id) }}"
                                                                     method="POST">
                                                                     @method('DELETE')
                                                                     @csrf
@@ -95,22 +95,22 @@
                                     @foreach ($dataUsers as $user)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $user->nama }}</td>
+                                        <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
-                                        <td>{{ $user->role->nama }}</td>
+                                        <td>{{ $user->role->name }}</td>
                                         <td>
                                             <div class="d-flex">
                                                 <a class="btn btn-warning mx-1"
-                                                    href="{{ route('user-edit', $user->id) }}" data-bs-toggle="tooltip"
+                                                    href="{{ route('user.edit', $user->id) }}" data-bs-toggle="tooltip"
                                                     data-bs-placement="top" data-bs-custom-class="custom-tooltip"
-                                                    data-bs-title="Edit User {{ $user->nama }}">
+                                                    data-bs-title="Edit User {{ $user->name }}">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
 
                                                 <!-- Button trigger modal -->
                                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                                                     data-bs-target="#deleteModal" data-id="{{ $user->id }}"
-                                                    data-name="{{ $user->nama }}">
+                                                    data-name="{{ $user->name }}">
                                                     <i class="bi bi-trash text-body-secondary"></i>
                                                 </button>
 
@@ -133,7 +133,7 @@
                                                                 <button type="button" class="btn btn-secondary"
                                                                     data-bs-dismiss="modal">Close</button>
                                                                 <form id="deleteForm"
-                                                                    action="{{ route('user-delete', $user->id) }}"
+                                                                    action="{{ route('user.delete', $user->id) }}"
                                                                     method="POST">
                                                                     @method('DELETE')
                                                                     @csrf

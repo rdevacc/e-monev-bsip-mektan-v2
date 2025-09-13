@@ -15,12 +15,12 @@
         <li class="nav-item dropdown pe-3">
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
             {{-- <img src="{{ asset('admin/assets/img/profile-img.jpg') }}" alt="Profile" class="rounded-circle"> --}}
-            <span class="d-flex d-lg-block dropdown-toggle ps-2">{{ auth()->user()->nama }}</span>
+            <span class="d-flex d-lg-block dropdown-toggle ps-2">{{ auth()->user()->name }}</span>
           </a><!-- End Profile Iamge Icon -->
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
-              <h6>{{ auth()->user()->nama }}</h6>
-              <span>{{ auth()->user()->role->nama }}</span>
+              <h6>{{ auth()->user()->name }}</h6>
+              <span>{{ auth()->user()->role->name }}</span>
             </li>
             <li>
               <hr class="dropdown-divider">

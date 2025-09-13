@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Charts\KegiatansSudahDanBelumDikerjakanChart;
 use App\Charts\MonthlyKegiatansChart;
-use App\Models\Kegiatan;
+use App\Models\Activity;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
     public function index(MonthlyKegiatansChart $chart, KegiatansSudahDanBelumDikerjakanChart $chartSudahdanBelum) {
 
-        $kegiatan = Kegiatan::orderBy('status_id')->orderBy('created_at', 'desc')->get(['id', 'nama', 'anggaran_kegiatan', 'created_at', 'status_id']);
+        $activity = Activity::orderBy('status_id')->orderBy('created_at', 'desc')->get(['id', 'name', 'activity_budget', 'created_at', 'status_id']);
 
         $currentYear = Carbon::parse(now())->translatedFormat('Y');
 
@@ -19,12 +19,12 @@ class DashboardController extends Controller
         $totalBelum = 0;
         $totalAnggaran = 0;
 
-        $jumlahTotalKegiatan = count($kegiatan);
+        $jumlahTotalKegiatan = count($activity);
 
         /**
          * * Looping for Jumlah Total
          */
-        foreach ($kegiatan as $data) {
+        foreach ($activity as $data) {
             // Count Total Anggaran
             $totalAnggaran += $data["anggaran_kegiatan"];
 
@@ -37,7 +37,7 @@ class DashboardController extends Controller
         };
 
         return view('apps.dashboard.index', [
-            'kegiatan' => $kegiatan,
+            'kegiatan' => $activity,
             'totalAnggaran' => $totalAnggaran,
             'currentYear' => $currentYear,
             'jumlahTotalKegiatan' => $jumlahTotalKegiatan,

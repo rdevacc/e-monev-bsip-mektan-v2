@@ -2,7 +2,7 @@
 
 namespace App\Charts;
 
-use App\Models\Kegiatan;
+use App\Models\Activity;
 use ArielMejiaDev\LarapexCharts\LarapexChart;
 use Carbon\Carbon;
 
@@ -22,7 +22,7 @@ class MonthlyKegiatansChart
 
         // Looping for monthly activities count
         for ($i = 1; $i <= $bulan; $i++) {
-            $totalKegiatan = Kegiatan::whereYear('created_at', $tahun)->whereMonth('created_at', $i)->count('id');
+            $totalKegiatan = Activity::whereYear('created_at', $tahun)->whereMonth('created_at', $i)->count('id');
 
             $dataBulan[] = Carbon::create()->month($i)->translatedFormat('F');
             $dataTotalKegiatan[] = $totalKegiatan;
