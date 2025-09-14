@@ -23,8 +23,8 @@ return new class extends Migration
             $table->json('issues')->nullable(); 
             $table->json('follow_ups')->nullable();  
             $table->json('planned_tasks')->nullable(); 
-            $table->foreignId('created_by')->default(2)->nullable()->constrained('users')->onDelete('set null');
-            $table->foreignId('updated_by')->default(2)->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
         });
     }

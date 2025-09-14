@@ -28,6 +28,72 @@ class ActivityController extends Controller
         return $clean;
     }
 
+    private function parseJsonArrayField(mixed $raw): array
+    {
+        // normalisasi null/empty
+        if (is_null($raw) || $raw === '') {
+            return [];
+        }
+
+        // jika sudah array
+        if (is_array($raw)) {
+            return $raw;
+        }
+
+        // jika object => cast ke array
+        if (is_object($raw)) {
+            $raw = (array) $raw;
+        }
+
+        // jika string: coba decode langsung
+        if (is_string($raw)) {
+            // 1) coba decode langsung
+            $decoded = json_decode($raw, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                // jika decoded adalah array sederhana -> return
+                if (is_array($decoded)) {
+                    // jika bentuknya ['val' => '["a","b"]'] => decode inner
+                    if (array_key_exists('val', $decoded) && is_string($decoded['val'])) {
+                        $inner = json_decode($decoded['val'], true);
+                        if (json_last_error() === JSON_ERROR_NONE && is_array($inner)) {
+                            return $inner;
+                        }
+                        // jika val sudah array
+                        if (is_array($decoded['val'])) return $decoded['val'];
+                    }
+                    return $decoded;
+                }
+            }
+
+            // 2) coba stripslashes dan decode lagi (kadang double escaped)
+            $stripped = stripslashes($raw);
+            if ($stripped !== $raw) {
+                $decoded2 = json_decode($stripped, true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded2)) {
+                    return $decoded2;
+                }
+            }
+
+            // 3) regex cari "val":"[...]"
+            if (preg_match('/"val"\s*:\s*"(.+?)"/', $raw, $m)) {
+                $valStr = stripslashes($m[1]);
+                $inner2 = json_decode($valStr, true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($inner2)) {
+                    return $inner2;
+                }
+            }
+
+            // 4) fallback: split by comma (jika string "a, b, c")
+            $parts = preg_split('/\s*,\s*/', trim($raw), -1, PREG_SPLIT_NO_EMPTY);
+            if ($parts && count($parts) > 0) {
+                return $parts;
+            }
+        }
+
+        return [];
+    }
+
+
     /**
      * * Display a listing of the resource. *
      */
@@ -88,9 +154,10 @@ class ActivityController extends Controller
             }
 
             // Eager load relasi untuk DataTables editColumn
-            $activities->with(['monthly_activity_for_month' => function($q) use ($year, $month) {
-                $q->whereYear('period', $year)->whereMonth('period', $month);
-            }]);
+            // $activities->with(['monthly_activity_for_month' => function($q) use ($year, $month) {
+            //     $q->whereYear('period', $year)->whereMonth('period', $month);
+            // }]);
+
 
             // Logging (opsional)
             Log::info('Filter period: '.$request->filterPeriod);
@@ -113,74 +180,67 @@ class ActivityController extends Controller
                         ? Carbon::parse($activity->monthly_activity_for_month->period)->format('F Y') 
                         : '-';
                 })
-                ->editColumn('monthly_completed_tasks', function($activity) use ($year, $month) {
-                    $monthly = $activity->monthly_activity_for_month($year, $month)->first();
-                    $tasks = $monthly?->completed_tasks;
+                ->editColumn('monthly_completed_tasks', function($activity) {
+                    $raw = $activity->monthly_completed_tasks;
 
-                    // Decode jika string JSON
-                    $tasksArray = is_string($tasks) ? json_decode($tasks, true) : $tasks;
+                    logger()->debug('DT_PARSER completed_tasks', [
+                        'activity_id' => $activity->id,
+                        'raw' => $raw,
+                    ]);
 
-                    // Tangani semua kemungkinan kosong: null, 'null', atau [null]
-                    if (is_null($tasksArray) || $tasksArray === 'null' || (is_array($tasksArray) && count($tasksArray) === 1 && is_null($tasksArray[0]))) {
-                        return '-';
-                    }
+                    if (empty($raw)) return [];
 
-                    // Jika array valid, gabungkan menjadi string
-                    if (is_array($tasksArray)) {
-                        return implode(', ', $tasksArray);
-                    }
+                    $arr = json_decode($raw, true) ?? [];
+                    $arr = array_filter(array_map('trim', $arr), fn($v) => $v !== '');
 
-                    // Jika scalar valid
-                    return $tasksArray;
+                    return array_values($arr);
                 })
-                ->editColumn('monthly_issues', function($activity) use ($year, $month) {
-                    $monthly = $activity->monthly_activity_for_month($year, $month)->first();
-                    $issues = $monthly?->issues;
+                ->editColumn('monthly_issues', function($activity) {
+                    $raw = $activity->monthly_issues;
 
-                    $issuesArray = is_string($issues) ? json_decode($issues, true) : $issues;
+                    logger()->debug('DT_PARSER issues', [
+                        'activity_id' => $activity->id,
+                        'raw' => $raw,
+                    ]);
 
-                    if (is_null($issuesArray) || $issuesArray === 'null' || (is_array($issuesArray) && count($issuesArray) === 1 && is_null($issuesArray[0]))) {
-                        return '-';
-                    }
+                    if (empty($raw)) return [];
 
-                    if (is_array($issuesArray)) {
-                        return implode(', ', $issuesArray);
-                    }
+                    $arr = json_decode($raw, true) ?? [];
+                    $arr = array_filter(array_map('trim', $arr), fn($v) => $v !== '');
 
-                    return $issuesArray;
+                    return array_values($arr);
                 })
-                ->editColumn('monthly_follow_ups', function($activity) use ($year, $month) {
-                    $monthly = $activity->monthly_activity_for_month($year, $month)->first();
-                    $followUps = $monthly?->follow_ups;
+                ->editColumn('monthly_follow_ups', function($activity) {
+                    $raw = $activity->monthly_follow_ups;
 
-                    $followUpsArray = is_string($followUps) ? json_decode($followUps, true) : $followUps;
+                    logger()->debug('DT_PARSER follow_ups', [
+                        'activity_id' => $activity->id,
+                        'raw' => $raw,
+                    ]);
 
-                    if (is_null($followUpsArray) || $followUpsArray === 'null' || (is_array($followUpsArray) && count($followUpsArray) === 1 && is_null($followUpsArray[0]))) {
-                        return '-';
-                    }
+                    if (empty($raw)) return [];
 
-                    if (is_array($followUpsArray)) {
-                        return implode(', ', $followUpsArray);
-                    }
+                    $arr = json_decode($raw, true) ?? [];
+                    $arr = array_filter(array_map('trim', $arr), fn($v) => $v !== '');
 
-                    return $followUpsArray;
+                    return array_values($arr);
                 })
-                ->editColumn('monthly_planned_tasks', function($activity) use ($year, $month) {
-                    $monthly = $activity->monthly_activity_for_month($year, $month)->first();
-                    $planned = $monthly?->planned_tasks;
+                ->editColumn('monthly_planned_tasks', function($activity) {
+                    $raw = $activity->monthly_planned_tasks;
 
-                    $plannedArray = is_string($planned) ? json_decode($planned, true) : $planned;
+                    logger()->debug('DT_PARSER planned_tasks', [
+                        'activity_id' => $activity->id,
+                        'raw' => $raw,
+                    ]);
 
-                    if (is_null($plannedArray) || $plannedArray === 'null' || (is_array($plannedArray) && count($plannedArray) === 1 && is_null($plannedArray[0]))) {
-                        return '-';
-                    }
+                    if (empty($raw)) return [];
 
-                    if (is_array($plannedArray)) {
-                        return implode(', ', $plannedArray);
-                    }
+                    $arr = json_decode($raw, true) ?? [];
+                    $arr = array_filter(array_map('trim', $arr), fn($v) => $v !== '');
 
-                    return $plannedArray;
+                    return array_values($arr);
                 })
+
                 ->editColumn('created_at', fn($data) => $data->created_at?->format('d F Y'))
                 ->addColumn('action', 'components.admin.button')
                 ->rawColumns(['action'])
