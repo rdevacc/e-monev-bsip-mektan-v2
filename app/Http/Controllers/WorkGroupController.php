@@ -12,10 +12,10 @@ class WorkGroupController extends Controller
      */
     public function index()
     {
-        $dataKelompoks = WorkGroup::all();
+        $workGroups = WorkGroup::all();
 
-        return view('apps.kelompok.index', compact([
-            'dataKelompoks'
+        return view('apps.work-group.index', compact([
+            'workGroups'
         ]));
     }
 
@@ -25,7 +25,7 @@ class WorkGroupController extends Controller
     public function create()
     {
 
-        return view('apps.kelompok.create');
+        return view('apps.work-group.create');
     }
 
     /**
@@ -34,14 +34,13 @@ class WorkGroupController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama' => 'required|max:50',
-            'nama_kakel' => 'required|max:20',
-            'anggaran_kelompok' => 'required|numeric',
+            'name' => 'required|max:50',
+            'group_leader' => 'required|max:20',
         ]);
 
         WorkGroup::create($validated);
 
-        return redirect()->route('kelompok-index')->with('success', 'New WorkGroup has been added!');
+        return redirect()->route('work-group.index')->with('success', 'New WorkGroup has been added!');
     }
 
     /**
@@ -57,9 +56,9 @@ class WorkGroupController extends Controller
      */
     public function edit(WorkGroup $work_group)
     {
-        return view('apps.kelompok.edit', [
-            'kelompok' => $work_group,
-        ]);
+        return view('apps.work-group.edit', compact([
+            'work_group'
+        ]));
     }
 
     /**
@@ -68,16 +67,15 @@ class WorkGroupController extends Controller
     public function update(Request $request, WorkGroup $work_group)
     {
         $rules = [
-            'nama' => 'required|max:50',
-            'nama_kakel' => 'required|max:20',
-            'anggaran_kelompok' => 'required|numeric',
+            'name' => 'required|max:50',
+            'group_leader' => 'required|max:20',
         ];
 
         $validated = $request->validate($rules);
 
         WorkGroup::where('id', $work_group->id)->update($validated);
 
-        return redirect()->route('kelompok-index')->with('success', $work_group->nama . ' has been updated!');
+        return redirect()->route('work-group.index')->with('success', $work_group->name . ' has been updated!');
     }
 
     /**
@@ -87,6 +85,6 @@ class WorkGroupController extends Controller
     {
         WorkGroup::destroy($work_group->id);
 
-        return redirect()->route('kelompok-index')->with('success',  $work_group->nama . ' has been deleted!');
+        return redirect()->route('work-group.index')->with('success',  $work_group->name . ' has been deleted!');
     }
 }

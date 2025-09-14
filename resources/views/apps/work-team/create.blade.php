@@ -6,18 +6,18 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title mr-4 pr-4">Tambah Data Kelompok</h4>
-                        <form action="{{ route('kelompok-create-submit') }}" method="POST" class="mx-2">
+                        <h4 class="card-title mr-4 pr-4">Tambah Data Tim Kerja</h4>
+                        <form action="{{ route('work-team.create-submit') }}" method="POST" class="mx-2">
                             @csrf
                             <div class="row g-3 mb-3 align-items-center">
                                 <div class="col-3 col-md-2">
-                                    <label for="nama" class="col-form-label">Nama</label>
+                                    <label for="name" class="col-form-label">Nama</label>
                                 </div>
                                 <div class="col-7">
-                                    <input type="text" id="nama" name="nama"
-                                        class="form-control @error('nama') is-invalid @enderror" autofocus
-                                        autocomplete="off" value="{{ old('nama') }}" required>
-                                    @error('nama')
+                                    <input type="text" id="name" name="name"
+                                        class="form-control @error('name') is-invalid @enderror" autofocus
+                                        autocomplete="off" value="{{ old('name') }}" required>
+                                    @error('name')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
@@ -26,13 +26,13 @@
                             </div>
                             <div class="row g-3 mb-3 align-items-center">
                                 <div class="col-3 col-md-2">
-                                    <label for="nama_kakel" class="col-form-label">Nama Ketua Kelompok</label>
+                                    <label for="team_leader" class="col-form-label">Nama Ketua Tim</label>
                                 </div>
                                 <div class="col-7">
-                                    <input type="text" id="nama_kakel" name="nama_kakel"
-                                        class="form-control @error('nama_kakel') is-invalid @enderror" autofocus
-                                        autocomplete="off" value="{{ old('nama_kakel') }}" required>
-                                    @error('nama_kakel')
+                                    <input type="text" id="team_leader" name="team_leader"
+                                        class="form-control @error('team_leader') is-invalid @enderror" autofocus
+                                        autocomplete="off" value="{{ old('team_leader') }}" required>
+                                    @error('team_leader')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
@@ -41,13 +41,22 @@
                             </div>
                             <div class="row g-3 mb-3 align-items-center">
                                 <div class="col-3 col-md-2">
-                                    <label for="anggaran_kelompok" class="col-form-label">Anggaran Kelompok</label>
+                                    <label for="work_group_id" class="col form-label">Kelompok</label>
                                 </div>
                                 <div class="col-7">
-                                    <input type="text" id="anggaran_kelompok" name="anggaran_kelompok"
-                                        class="form-control @error('anggaran_kelompok') is-invalid @enderror" autofocus
-                                        autocomplete="off" value="{{ old('anggaran_kelompok') }}" required>
-                                    @error('anggaran_kelompok')
+                                    <select class="form-select @error('subwork_group_id') is-invalid @enderror"
+                                        id="work_group_id" name="work_group_id" required>
+                                        <option selected disabled>Pilih Kelompok</option>
+                                        @foreach ($workGroups as $work_group)
+                                            @if (old('work_group_id') == $work_group->id)
+                                                <option value="{{ $work_group->id }}" selected>{{ $work_group->name }}
+                                                </option>
+                                            @else
+                                                <option value="{{ $work_group->id }}">{{ $work_group->name }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                    @error('work_group_id')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
@@ -58,7 +67,7 @@
 
                             <div class="d-flex justify-content-end">
                                 <div class="d-flex">
-                                    <a href="{{ route('kelompok-create') }}"
+                                    <a href="{{ route('work-team.create') }}"
                                         class="btn btn-warning text-white"><span>Reset</span></a>
                                 </div>
                                 <div class="d-flex ps-2">

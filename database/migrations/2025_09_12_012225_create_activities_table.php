@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('work_team_id');
             $table->foreignId('status_id');
             $table->string('name')->nullable();
-            $table->decimal('activity_budget', 16, 2)->default(0)->nullable();
+            $table->decimal('activity_budget', 20, 2)->default(0)->nullable();
             $table->foreignId('created_by')->default(2)->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('updated_by')->default(2)->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();

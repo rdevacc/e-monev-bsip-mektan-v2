@@ -29,7 +29,7 @@ class WorkTeam extends Model
     /**
      * * The Relationship to work Group
      */
-    public function group(): BelongsTo
+    public function work_group(): BelongsTo
     {
         return $this->belongsTo(WorkGroup::class);
     }

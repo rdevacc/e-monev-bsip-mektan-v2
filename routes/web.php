@@ -124,4 +124,11 @@ Route::prefix('/v2')->group(function () {
         'update' => 'activity.edit-submit',
         'destroy' => 'activity.delete',
     ]);
+
+    Route::get('/app/activity/{id}/monthly-data', [ActivityController::class, 'getMonthlyData'])
+    ->name('activity.monthly-data');
+
+    Route::post('/app/activity/{activity}/clear-monthly', [ActivityController::class, 'clearMonthlyData'])->name('activity.clearMonthlyData');
+
+
 });

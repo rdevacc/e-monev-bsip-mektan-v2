@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('monthly_activities', function (Blueprint $table) {
             $table->id();
             $table->foreignId('activity_id')->constrained('activities')->onDelete('cascade');
-            $table->decimal('financial_target', 16, 2)->default(0)->nullable();
-            $table->decimal('financial_realization', 16, 2)->default(0)->nullable();
-            $table->decimal('physical_target', 16, 2)->default(0)->nullable();
-            $table->decimal('physical_realization', 16, 2)->default(0)->nullable();
+            $table->decimal('financial_target', 20, 2)->default(0)->nullable();
+            $table->decimal('financial_realization', 20, 2)->default(0)->nullable();
+            $table->decimal('physical_target', 20)->default(0)->nullable();
+            $table->decimal('physical_realization', 20)->default(0)->nullable();
             $table->timestamp('period')->nullable();
             $table->json('completed_tasks')->nullable();
             $table->json('issues')->nullable(); 

@@ -1,579 +1,433 @@
 @extends('layouts.app-v2')
 
 @section('content')
-    <main id="main" class="main">
-        <section class="section">
-            <div class="row">
-                <div class="col">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Tambah Data Kegiatan</h5>
-                            @if ($errors->any())
-                                <div class="alert alert-danger">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
-                            @if (session('success'))
-                                <div class="pb-4">
-                                    <div
-                                        class="flex w-1/2 bg-green-800 rounded-md p-2 mx-auto text-center justify-center items-center">
-                                        <span class="text-slate-100 align-middle">{{ session('success') }}</span>
-                                    </div>
-                                </div>
-                            @endif
+<main id="main" class="main">
+    <section class="section">
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Edit Data Kegiatan</h5>
 
-                            <!-- Vertical Form -->
-                            <form method="POST" action="{{ route('kegiatan-edit-submit', $dataEdit->id) }}">
-                                @csrf
-                                @method('PUT')
-                                <div class="row">
-                                    @can('superAdminAndAdmin')
-                                    <div class="col-12 mb-2">
-                                        <label for="status_id" class="form-label">Status Kegiatan</label>
-                                        <select name="status_id" id="status_id"
-                                            class="form-select @error('status_id') is-invalid @enderror">
-                                            <option selected disabled>Pilih status</option>
-                                            @foreach ($status_kegiatan as $status)
-                                                @if (old('status_id', $dataEdit->status_id) == $status->id)
-                                                    <option value="{{ $status->id }}" selected>
-                                                        {{ $status->nama }}
-                                                    </option>
-                                                @else
-                                                    <option value="{{ $status->id }}">{{ $status->nama }}</option>
-                                                @endif
-                                            @endforeach
-                                        </select>
-                                        @error('status_id')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
-                                    </div>
-                                    @endcan
-                                    <div class="col-12 mb-2">
-                                        <label for="nama" class="form-label">Nama Kegiatan</label>
-                                        @if (Auth::user()->role->id == 1 || Auth::user()->role->id == 2)
-                                        <input type="text" class="form-control @error('nama') is-invalid @enderror"
-                                        id="nama" name="nama"
-                                        value="{{ $dataEdit->nama ? $dataEdit->nama : old('nama') }}">
-                                        @else
-                                        <input type="text" class="form-control @error('nama') is-invalid @enderror"
-                                        id="nama" name="nama"
-                                        value="{{ $dataEdit->nama ? $dataEdit->nama : old('nama') }}" disabled>
-                                        @endif
-                                        @error('nama')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
-                                    </div>
-                                    @can('superAdminAndAdmin')
-                                    <div class="col-12 mb-2">
-                                        <label for="kelompok_id" class="form-label">Kelompok</label>
-                                        <select name="kelompok_id" id="kelompok_id"
-                                            class="form-select @error('kelompok_id') is-invalid @enderror">
-                                            <option selected disabled>Pilih Kelompok</option>
-                                            @foreach ($kelompoks as $kelompok)
-                                                @if (old('kelompok_id', $dataEdit->kelompok_id) == $kelompok->id)
-                                                    <option value="{{ $kelompok->id }}" selected>
-                                                        {{ $kelompok->nama }}
-                                                    </option>
-                                                @else
-                                                    <option value="{{ $kelompok->id }}">{{ $kelompok->nama }}</option>
-                                                @endif
-                                            @endforeach
-                                        </select>
-                                        @error('kelompok_id')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
-                                    </div>
-                                    <div class="col-12 mb-2">
-                                        <label for="subkelompok_id" class="form-label">Subkelompok</label>
-                                        <select name="subkelompok_id" id="subkelompok_id"
-                                            class="form-select @error('subkelompok_id') is-invalid @enderror">
-                                            <option selected disabled>Pilih Subkelompok</option>
-                                            @foreach ($subkelompoks as $subkelompok)
-                                                @if (old('subkelompok_id', $dataEdit->subkelompok_id) == $subkelompok->id)
-                                                    <option value="{{ $subkelompok->id }}" selected>
-                                                        {{ $subkelompok->nama }}
-                                                    </option>
-                                                @else
-                                                    <option value="{{ $subkelompok->id }}">{{ $subkelompok->nama }}
-                                                    </option>
-                                                @endif
-                                            @endforeach
-                                        </select>
-                                        @error('subkelompok_id')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
-                                    </div>
-                                    <div class="col-12 mb-2">
-                                        <label for="user_id" class="form-label">PJ Kegiatan</label>
-                                        <select name="user_id" id="user_id"
-                                            class="form-select @error('user_id') is-invalid @enderror">
-                                            <option selected disabled>Pilih PJ Kegiatan</option>
-                                            @foreach ($pjs as $pj)
-                                                @if (old('pj_id', $dataEdit->pj->id) == $pj->id)
-                                                    <option value="{{ $pj->id }}" selected>
-                                                        {{ $pj->nama }}
-                                                    </option>
-                                                @else
-                                                    <option value="{{ $pj->id }}">{{ $pj->nama }}
-                                                    </option>
-                                                @endif
-                                            @endforeach
-                                        </select>
-                                        @error('user_id')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
-                                    </div>
-                                    @endcan
-                                    <div class="col-12 mb-2">
-                                        <label for="anggaran_kegiatan" class="form-label">Anggaran Kegiatan</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text">Rp.</span>
-                                            <input type="text"
-                                                class="form-control @error('anggaran_kegiatan') is-invalid @enderror"
-                                                id="anggaran_kegiatan" name="anggaran_kegiatan"
-                                                value="{{ formatRupiahAngka($dataEdit->anggaran_kegiatan) ? formatRupiahAngka($dataEdit->anggaran_kegiatan) : old('anggaran_kegiatan') }}">
-                                            @error('anggaran_kegiatan')
-                                                <div class="invalid-feedback">
-                                                    {{ $message }}
-                                                </div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-12 mb-2">
-                                        <label for="target_keuangan" class="form-label">Target Keuangan</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text">Rp.</span>
-                                            <input type="text"
-                                                class="form-control @error('target_keuangan') is-invalid @enderror"
-                                                id="target_keuangan" name="target_keuangan"
-                                                value="{{ formatRupiahAngka($dataEdit->target_keuangan) ? formatRupiahAngka($dataEdit->target_keuangan) : old('target_keuangan') }}">
-                                            @error('target_keuangan')
-                                                <div class="invalid-feedback">
-                                                    {{ $message }}
-                                                </div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-12 mb-2">
-                                        <label for="realisasi_keuangan" class="form-label">Realisasi Keuangan</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text">Rp.</span>
-                                            <input type="text"
-                                                class="form-control @error('realisasi_keuangan') is-invalid @enderror"
-                                                id="realisasi_keuangan" name="realisasi_keuangan"
-                                                value="{{ formatRupiahAngka($dataEdit->realisasi_keuangan) ? formatRupiahAngka($dataEdit->realisasi_keuangan) : old('realisasi_keuangan') }}">
-                                            @error('realisasi_keuangan')
-                                                <div class="invalid-feedback">
-                                                    {{ $message }}
-                                                </div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-12 mb-2">
-                                        <label for="target_fisik" class="form-label">Target Fisik</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text">%</span>
-                                            <input type="text"
-                                                class="form-control @error('target_fisik') is-invalid @enderror"
-                                                id="target_fisik" name="target_fisik"
-                                                value="{{ $dataEdit->target_fisik ? $dataEdit->target_fisik : old('target_fisik') }}">
-                                            @error('target_fisik')
-                                                <div class="invalid-feedback">
-                                                    {{ $message }}
-                                                </div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-12 mb-2">
-                                        <label for="realisasi_fisik" class="form-label">Realisasi Fisik</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text">%</span>
-                                            <input type="text"
-                                                class="form-control @error('realisasi_fisik') is-invalid @enderror"
-                                                id="realisasi_fisik" name="realisasi_fisik"
-                                                value="{{ $dataEdit->realisasi_fisik ? $dataEdit->realisasi_fisik : old('realisasi_fisik') }}">
-                                            @error('realisasi_fisik')
-                                                <div class="invalid-feedback">
-                                                    {{ $message }}
-                                                </div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                {{-- Dones Row --}}
-                                <div id="donesRow" class="mb-2">
-                                    <label for="donesInput" class="form-label">Kegiatan yang sudah
-                                        dilakukan</label>
-                                    @foreach ($dataEdit->dones as $dones)
-                                        <div class="row" id="donesField">
-                                            <div class="col-11 col-md-11 mb-2" id="donesInputRow">
-                                                <input type="text"
-                                                    class="form-control @error('dones.*') is-invalid @enderror"
-                                                    id="donesInput" name="dones[{{ $loop->iteration - 1 }}]"
-                                                    value="{{ $dones ? $dones : old('dones.' . $loop->iteration - 1) }}">
-                                            </div>
-                                            <div class="col-md-1 justify-content-end">
-                                                <btn type="button" class="btn btn btn-outline-danger"
-                                                    id="donesRemoveBtn">
-                                                    <i class="bi bi-dash-circle"></i>
-                                                </btn>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                    @error('dones.*')
-                                        <p class="text-danger">
-                                            <small>{{ $message }}</small>
-                                        </p>
-                                    @enderror
-                                </div>
-                                <div class="row d-flex justify-content-end" id="donesAddButtonRow">
-                                    <div class="col-md-1 justify-content-end">
-                                        <btn type="button" class="btn btn btn-outline-success" id="donesAddBtn">
-                                            <i class="bi bi-plus-circle"></i>
-                                        </btn>
-                                    </div>
-                                </div>
-
-                                {{-- Problems Row --}}
-                                <div id="problemsRow" class="mb-2">
-                                    <label for="problemsInput" class="form-label">Permasalahan</label>
-                                    @foreach ($dataEdit->problems as $problems)
-                                        <div class="row" id="problemsField">
-                                            <div class="col-11 col-md-11 mb-2" id="problemsInputRow">
-                                                <input type="text"
-                                                    class="form-control @error('problems.*') is-invalid @enderror"
-                                                    id="problemsInput" name="problems[{{ $loop->iteration - 1 }}]"
-                                                    value="{{ $problems ? $problems : old('problems.' . $loop->iteration - 1) }}">
-                                            </div>
-                                            <div class="col-md-1 justify-content-end">
-                                                <btn type="button" class="btn btn btn-outline-danger"
-                                                    id="problemsRemoveBtn">
-                                                    <i class="bi bi-dash-circle"></i>
-                                                </btn>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                    @error('problems.*')
-                                        <p class="text-danger">
-                                            <small>{{ $message }}</small>
-                                        </p>
-                                    @enderror
-                                </div>
-                                <div class="row d-flex justify-content-end" id="problemsAddButtonRow">
-                                    <div class="col-md-1 justify-content-end">
-                                        <btn type="button" class="btn btn btn-outline-success" id="problemsAddBtn">
-                                            <i class="bi bi-plus-circle"></i>
-                                        </btn>
-                                    </div>
-                                </div>
-
-                                {{-- Follow Up Row --}}
-                                <div id="follow_upRow" class="mb-2">
-                                    <label for="follow_upInput" class="form-label">Tindak Lanjut</label>
-                                    @foreach ($dataEdit->follow_up as $follow_up)
-                                        <div class="row" id="follow_upField">
-                                            <div class="col-11 col-md-11 mb-2" id="follow_upInputRow">
-                                                <input type="text"
-                                                    class="form-control @error('follow_up.*') is-invalid @enderror"
-                                                    id="follow_upInput" name="follow_up[{{ $loop->iteration - 1 }}]"
-                                                    value="{{ $follow_up ? $follow_up : old('follow_up.' . $loop->iteration - 1) }}">
-                                            </div>
-                                            <div class="col-md-1 justify-content-end">
-                                                <btn type="button" class="btn btn btn-outline-danger"
-                                                    id="follow_upRemoveBtn">
-                                                    <i class="bi bi-dash-circle"></i>
-                                                </btn>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                    @error('follow_up.*')
-                                        <p class="text-danger">
-                                            <small>{{ $message }}</small>
-                                        </p>
-                                    @enderror
-                                </div>
-                                <div class="row d-flex justify-content-end" id="follow_upAddButtonRow">
-                                    <div class="col-md-1 justify-content-end">
-                                        <btn type="button" class="btn btn btn-outline-success" id="follow_upAddBtn">
-                                            <i class="bi bi-plus-circle"></i>
-                                        </btn>
-                                    </div>
-                                </div>
-
-                                {{-- To Do Row --}}
-                                <div id="todosRow" class="mb-2">
-                                    <label for="todosInput" class="form-label">Kegiatan yang akan dilakukan</label>
-                                    @foreach ($dataEdit->todos as $todos)
-                                        <div class="row" id="todosField">
-                                            <div class="col-11 col-md-11 mb-2" id="todosInputRow">
-                                                <input type="text"
-                                                    class="form-control @error('todos.*') is-invalid @enderror"
-                                                    id="todosInput" name="todos[{{ $loop->iteration - 1 }}]"
-                                                    value="{{ $todos ? $todos : old('todos.' . $loop->iteration - 1) }}">
-                                            </div>
-                                            <div class="col-md-1 justify-content-end">
-                                                <btn type="button" class="btn btn btn-outline-danger"
-                                                    id="todosRemoveBtn">
-                                                    <i class="bi bi-dash-circle"></i>
-                                                </btn>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                    @error('todos.*')
-                                        <p class="text-danger">
-                                            <small>{{ $message }}</small>
-                                        </p>
-                                    @enderror
-                                </div>
-                                <div class="row d-flex justify-content-end" id="todosAddButtonRow">
-                                    <div class="col-md-1 justify-content-end">
-                                        <btn type="button" class="btn btn btn-outline-success" id="todosAddBtn">
-                                            <i class="bi bi-plus-circle"></i>
-                                        </btn>
-                                    </div>
-                                </div>
-                                
-                                {{-- Button --}}
-                                <div class="mt-5 mb-2 me-2 text-end">
-                                    <button type="reset" class="btn btn-secondary">Reset</button>
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                </div>
-                            </form><!-- Vertical Form -->
+                        {{-- Error & Success Message --}}
+                        @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
                         </div>
+                        @endif
+                        @if (session('success'))
+                        <div class="pb-4">
+                            <div class="flex w-1/2 bg-green-800 rounded-md p-2 mx-auto text-center justify-center items-center">
+                                <span class="text-slate-100 align-middle">{{ session('success') }}</span>
+                            </div>
+                        </div>
+                        @endif
+
+                        <form action="{{ route('activity.edit-submit', $activity->id) }}" method="POST" id="editActivityForm">
+                            @csrf
+                            @method('PUT')
+
+                            {{-- Activity Utama --}}
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Nama Kegiatan</label>
+                                <input type="text" class="form-control bg-body-secondary @error('name') is-invalid @enderror"
+                                    id="name" name="name" value="{{ old('name', $activity->name) }}" readonly>
+                                @error('name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            {{-- Work Group --}}
+                            <div class="mb-3">
+                                <label for="work_group_id" class="form-label">Kelompok Kerja</label>
+                                <select class="form-select bg-body-secondary @error('work_group_id') is-invalid @enderror" 
+                                    id="work_group_id" name="work_group_id" disabled>
+                                    <option value="">-- Pilih Kelompok --</option>
+                                    @foreach ($workGroupList as $group)
+                                        <option value="{{ $group->id }}" 
+                                            {{ old('work_group_id', $activity->work_group_id) == $group->id ? 'selected' : '' }}>
+                                            {{ $group->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <input type="hidden" name="work_group_id" value="{{ $activity->work_group_id }}">
+                                @error('work_group_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            {{-- Work Team --}}
+                            <div class="mb-3">
+                                <label for="work_team_id" class="form-label">Tim Kerja</label>
+                                <select class="form-select bg-body-secondary @error('work_team_id') is-invalid @enderror" 
+                                    id="work_team_id" name="work_team_id" disabled>
+                                    <option value="">-- Pilih Tim --</option>
+                                    @foreach ($workTeamList as $team)
+                                        <option value="{{ $team->id }}" 
+                                            {{ old('work_team_id', $activity->work_team_id) == $team->id ? 'selected' : '' }}>
+                                            {{ $team->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <input type="hidden" name="work_team_id" value="{{ $activity->work_team_id }}">
+                                @error('work_team_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            {{-- PJ --}}
+                            <div class="mb-3">
+                                <label for="user_id" class="form-label">PJ Kegiatan</label>
+                                <select class="form-select bg-body-secondary @error('user_id') is-invalid @enderror" 
+                                    id="user_id" name="user_id" disabled>
+                                    <option value="">-- Pilih PJ kegiatan --</option>
+                                    @foreach ($pjList as $pj)
+                                        <option value="{{ $pj->id }}" 
+                                            {{ old('user_id', $activity->user_id) == $pj->id ? 'selected' : '' }}>
+                                            {{ $pj->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <input type="hidden" name="user_id" value="{{ $activity->user_id }}">
+                                @error('user_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            {{-- Status --}}
+                            <div class="mb-3">
+                                <label for="status_id" class="form-label">Status</label>
+                                <select class="form-select bg-body-secondary @error('status_id') is-invalid @enderror" 
+                                    id="status_id" name="status_id" disabled>
+                                    <option value="">-- Pilih Status --</option>
+                                    @foreach ($statusList as $status)
+                                        <option value="{{ $status->id }}" 
+                                            {{ old('status_id', $activity->status_id) == $status->id ? 'selected' : '' }}>
+                                            {{ $status->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <input type="hidden" name="status_id" value="{{ $activity->status_id }}">
+                                @error('status_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            {{-- Anggaran Kegiatan --}}
+                            <div class="mb-3">
+                                <label for="activity_budget" class="form-label">Anggaran Kegiatan</label>
+                                <input type="text" 
+                                    class="form-control bg-body-secondary @error('activity_budget') is-invalid @enderror"
+                                    id="activity_budget" name="activity_budget"
+                                    value="Rp {{ number_format($activity->activity_budget, 0, ',', '.') }}" readonly>
+                                @error('activity_budget')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            {{-- Monthly Data --}}
+                            <div class="mb-3">
+                                <label for="period" class="form-label">Periode (Bulan)</label>
+                                <input type="month" class="form-control @error('period') is-invalid @enderror"
+                                    id="period" name="period" value="{{ old('period', $activity->period) }}">
+                                @error('period')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="financial_target" class="form-label">Target Keuangan</label>
+                                    <input type="text"
+                                        class="form-control @error('financial_target') is-invalid @enderror"
+                                        id="financial_target" name="financial_target" value="{{ old('financial_target', $activity->financial_target) }}">
+                                    @error('financial_target')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="financial_realization" class="form-label">Realisasi Keuangan</label>
+                                    <input type="text"
+                                        class="form-control @error('financial_realization') is-invalid @enderror"
+                                        id="financial_realization" name="financial_realization" value="{{ old('financial_realization', $activity->financial_realization) }}">
+                                    @error('financial_realization')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="physical_target" class="form-label">Target Fisik (%)</label>
+                                    <input type="text"
+                                        class="form-control @error('physical_target') is-invalid @enderror"
+                                        id="physical_target" name="physical_target" value="{{ old('physical_target', $activity->physical_target) }}">
+                                    @error('physical_target')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="physical_realization" class="form-label">Realisasi Fisik (%)</label>
+                                    <input type="text"
+                                        class="form-control @error('physical_realization') is-invalid @enderror"
+                                        id="physical_realization" name="physical_realization" value="{{ old('physical_realization', $activity->physical_realization) }}">
+                                    @error('physical_realization')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            {{-- Dynamic Fields Section --}}
+                            @php
+                                $completed = old('completed_tasks', $activity->completed_tasks ?? ['']);
+                                $issues = old('issues', $activity->issues ?? ['']);
+                                $followUps = old('follow_ups', $activity->follow_ups ?? ['']);
+                                $planned = old('planned_tasks', $activity->planned_tasks ?? ['']);
+                            @endphp
+
+                            @foreach ([
+                                ['rowId'=>'completedTasksRow','data'=>$completed,'field'=>'completed_tasks','label'=>'Kegiatan yang sudah dilakukan','addBtn'=>'completedTasksAddBtn'],
+                                ['rowId'=>'issuesRow','data'=>$issues,'field'=>'issues','label'=>'Permasalahan','addBtn'=>'issuesAddBtn'],
+                                ['rowId'=>'followUpsRow','data'=>$followUps,'field'=>'follow_ups','label'=>'Tindak Lanjut','addBtn'=>'followUpsAddBtn'],
+                                ['rowId'=>'plannedTasksRow','data'=>$planned,'field'=>'planned_tasks','label'=>'Kegiatan yang akan dilakukan','addBtn'=>'plannedTasksAddBtn'],
+                            ] as $section)
+                                <div id="{{ $section['rowId'] }}" class="mb-2">
+                                    @foreach ($section['data'] as $index => $val)
+                                        <div class="row align-items-end {{ $section['field'] }}Field my-2">
+                                            <div class="col-10 col-md-11">
+                                                @if($loop->first)<label class="form-label">{{ $section['label'] }}</label>@endif
+                                                <input type="text" 
+                                                    class="form-control @error($section['field'].'.'.$index) is-invalid @enderror" 
+                                                    name="{{ $section['field'] }}[{{ $index }}]" value="{{ $val }}">
+                                            </div>
+                                            <div class="col-2 col-md-1">
+                                                @if($loop->first)
+                                                    <button type="button" class="btn btn-outline-success" id="{{ $section['addBtn'] }}">
+                                                        <i class="bi bi-plus-circle"></i>
+                                                    </button>
+                                                @else
+                                                    <button type="button" class="btn btn-outline-danger {{ $section['field'] }}RemoveBtn">
+                                                        <i class="bi bi-dash-circle"></i>
+                                                    </button>
+                                                @endif
+                                            </div>
+                                            @error($section['field'].'.'.$index)
+                                                <p class="text-danger"><small>{{ $message }}</small></p>
+                                            @enderror
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endforeach
+
+                            {{-- Submit --}}
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-primary">Simpan</button>
+                                <a href="{{ route('activity.index') }}" class="btn btn-secondary">Batal</a>
+                                <button type="button" id="clearMonthlyData" class="btn btn-warning">
+                                    Kosongkan Data Bulanan
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
-
-        </section>
-    </main>
+        </div>
+    </section>
+</main>
 @endsection
 
 @push('scripts')
-    <script>
-        $(document).ready(function() {
+<script>
+$(document).ready(function() {
+    // ===== Helper Functions =====
+    function formatRupiah(value) {
+        if (value === null || value === undefined) return '';
+        let number = parseFloat(value);
+        if (isNaN(number)) number = 0;
+        let intPart = Math.floor(number).toString();
+        let decimalPart = Math.round((number - Math.floor(number)) * 100);
+        let decimalStr = decimalPart > 0 ? ',' + decimalPart.toString().padStart(2, '0') : '';
+        intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        return intPart + decimalStr;
+    }
 
-            $('#anggaran_kegiatan').on('input', function() {
-                $(this).val($(this).val().replace(/\D/g, ''));
-                var amount = $(this).val().replace(/[^\d]/g, ''); // Remove non-numeric characters
-                if (amount.length > 0) {
-                    amount = parseInt(amount, 10); // Convert to integer
-                    $(this).val(formatRupiah(amount)); // Format as Rupiah
-                }
-            });
+    function rupiahToNumber(str) {
+        if (!str) return 0;
+        return parseFloat(str.replace(/\./g, '').replace(',', '.')) || 0;
+    }
 
-            $('#target_keuangan').on('input', function() {
-                $(this).val($(this).val().replace(/\D/g, ''));
-                var amount = $(this).val().replace(/[^\d]/g, ''); // Remove non-numeric characters
-                if (amount.length > 0) {
-                    amount = parseInt(amount, 10); // Convert to integer
-                    $(this).val(formatRupiah(amount)); // Format as Rupiah
-                }
-            });
+    function onlyNumber(value) {
+        return value.replace(/[^\d]/g, '');
+    }
 
-            $('#realisasi_keuangan').on('input', function() {
-                $(this).val($(this).val().replace(/\D/g, ''));
-                var amount = $(this).val().replace(/[^\d]/g, ''); // Remove non-numeric characters
-                if (amount.length > 0) {
-                    amount = parseInt(amount, 10); // Convert to integer
-                    $(this).val(formatRupiah(amount)); // Format as Rupiah
-                }
-            });
+    function handleCurrencyInput(selector) {
+        $(selector).on('input', function() {
+            var amount = onlyNumber($(this).val());
+            $(this).val(amount.length ? formatRupiah(amount) : '');
+        });
+    }
 
-            $('#target_fisik').on('input', function() {
-                $(this).val($(this).val().replace(/[^0-9,]/g, ''));
-
-                // Allow only one decimal point
-                var inputVal = $(this).val();
-                var decimalCount = (inputVal.match(/\,/g) || []).length;
-
-                if (decimalCount > 1) {
-                    // More than one decimal point found, remove extra
-                    var lastIndex = inputVal.lastIndexOf(',');
-                    $(this).val(inputVal.substring(0, lastIndex));
-                }
-            });
-
-            $('#realisasi_fisik').on('input', function() {
-                $(this).val($(this).val().replace(/[^0-9,]/g, ''));
-
-                // Allow only one decimal point
-                var inputVal = $(this).val();
-                var decimalCount = (inputVal.match(/\,/g) || []).length;
-
-                if (decimalCount > 1) {
-                    // More than one decimal point found, remove extra
-                    var lastIndex = inputVal.lastIndexOf('.');
-                    $(this).val(inputVal.substring(0, lastIndex));
-                }
-            });
-
-
-            function formatRupiah(angka) {
-                var number_string = angka.toString();
-                var split = number_string.split(',');
-                var sisa = split[0].length % 3;
-                var rupiah = split[0].substr(0, sisa);
-                var ribuan = split[0].substr(sisa).match(/\d{1,3}/gi);
-
-                if (ribuan) {
-                    separator = sisa ? '.' : '';
-                    rupiah += separator + ribuan.join('.');
-                }
-
-                rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-                return rupiah;
+    function handleDecimalInput(selector, separator = ',') {
+        $(selector).on('input', function() {
+            $(this).val($(this).val().replace(new RegExp(`[^0-9${separator}]`, 'g'), ''));
+            var inputVal = $(this).val();
+            var decimalCount = (inputVal.match(new RegExp(`\\${separator}`, 'g')) || []).length;
+            if (decimalCount > 1) {
+                $(this).val(inputVal.substring(0, inputVal.lastIndexOf(separator)));
             }
+        });
+    }
 
+    // ===== Input Formatting =====
+    handleCurrencyInput('#activity_budget');
+    handleCurrencyInput('#financial_target');
+    handleCurrencyInput('#financial_realization');
+    handleDecimalInput('#physical_target', ',');
+    handleDecimalInput('#physical_realization', ',');
 
-            // Checking Input Field
-            $(document).ready(function() {
-                var dones_len = $("#donesRow input").length;
+    // ===== Dynamic Fields Handler =====
+    function setupDynamicField(rowId, addBtnId, fieldClass, fieldName, fieldLabel) {
+        function addField(val = '') {
+            let newIndex = $(`${rowId} .${fieldClass}`).length;
+            $(rowId).append(`
+                <div class="row align-items-end ${fieldClass} my-2">
+                    <div class="col-10 col-md-11">
+                        ${newIndex === 0 ? `<label class="form-label">${fieldLabel}</label>` : ''}
+                        <input type="text" class="form-control" name="${fieldName}[${newIndex}]" value="${val}">
+                    </div>
+                    <div class="col-2 col-md-1">
+                        <button type="button" class="btn btn-outline-danger ${fieldClass}RemoveBtn">
+                            <i class="bi bi-dash-circle"></i>
+                        </button>
+                    </div>
+                </div>
+            `);
+        }
 
-                if(dones_len == 1) {
-                    $("#donesRemoveBtn*").addClass('disabled');
-                } else {
-                    $("#donesRemoveBtn").removeClass('disabled');
-                }
-            });
-            
-            // Checking Problems Input Field
-            $(document).ready(function() {
-                var problems_len = $("#problemsRow input").length;
-               
-                if(problems_len == 1) {
-                    $("#problemsRemoveBtn*").addClass('disabled');
-                } else {
-                    $("#problemsRemoveBtn").removeClass('disabled');
-                }
-            });
+        // Add Button
+        $(document).on('click', `#${addBtnId}`, function() {
+            addField('');
+        });
 
-
-            // Handle Dones Field Row
-            var dones_len = $("#donesInputRow input").length;
-            var i = dones_len
-            // Add Dones Button Function
-            $("#donesAddBtn").click(function() {
-                var dones_len = $("#donesRow input").length;
-                console.log(dones_len);
-                if(dones_len > 1) {
-                    $("#donesRemoveBtn").addClass('disabled');
-                } else{
-                    $("#donesRemoveBtn").removeClass('disabled');
-                }
-                ++i;
-                $("#donesRow").append(
-                    `<div class="row" id="donesField">
-                        <div class="col-11 col-md-11 mb-2">
-                            <input type="text" class="form-control" id="donesInput" name="dones[`+ i +`]" value="">
-                        </div>
-                        <div class="col-2 col-md-1">
-                            <btn type="button" class="btn btn btn-outline-danger" id="donesRemoveBtn">
-                                <i class="bi bi-dash-circle"></i>
-                            </btn>     
-                        </div>
-                     </div>`
-                );
-            });
-
-            // Remove Dones Button Function
-            $(document).on('click', '#donesRemoveBtn', function() {
-                var dones_len = $("#donesRow input").length;
-                if(dones_len <= 2) {
-                    $("#donesRemoveBtn*").addClass('disabled');
-                } else{
-                    $("#donesRemoveBtn").removeClass('disabled');
-                }
-                $(this).parents('#donesField').remove();
-                console.log(dones_len);
-            });
-
-            // Handle Problems Field Row
-            var problems_len = $("#problemsInputRow input").length;
-            var j = problems_len;
-            $("#problemsAddBtn").click(function() {
-                ++j;
-                $("#problemsRow").append(
-                    `<div class="row" id="problemsField">
-                        <div class="col-11 col-md-11 mb-2">
-                            <input type="text" class="form-control" id="problemsInput" name="problems[`+ j +`]" value="">
-                        </div>
-                        <div class="col-2 col-md-1">
-                            <btn type="button" class="btn btn btn-outline-danger" id="problemsRemoveBtn">
-                                <i class="bi bi-dash-circle"></i>
-                            </btn>     
-                        </div>
-                     </div>`
-                );
-            });
-            $(document).on('click', '#problemsRemoveBtn', function() {
-                var problems_len = $("#problemsRow input").length;
-                if(problems_len <= 2) {
-                    $("#problemsRemoveBtn*").addClass('disabled');
-                } else{
-                    $("#problemsRemoveBtn").removeClass('disabled');
-                }
-                $(this).parents('#problemsField').remove();
-                console.log(problems_len);
-            });
-
-            // Handle FollowUp Field Row
-            var follow_up_len = $("#follow_upInputRow input").length;
-            var k = follow_up_len;
-            $("#follow_upAddBtn").click(function() {
-                ++k;
-                $("#follow_upRow").append(
-                    `<div class="row" id="follow_upField">
-                        <div class="col-11 col-md-11 mb-2">
-                            <input type="text" class="form-control" id="follow_upInput" name="follow_up[`+ k +`]" value="">
-                        </div>
-                        <div class="col-2 col-md-1">
-                            <btn type="button" class="btn btn btn-outline-danger" id="follow_upRemoveBtn">
-                                <i class="bi bi-dash-circle"></i>
-                            </btn>     
-                        </div>
-                     </div>`
-                );
-            });
-            $(document).on('click', '#follow_upRemoveBtn', function() {
-                $(this).parents('#follow_upField').remove();
-            });
-
-            // Handle Todos Field Row
-            var todos_len = $("#todosInputRow input").length;
-            var l = todos_len;
-            $("#todosAddBtn").click(function() {
-                ++l;
-                $("#todosRow").append(
-                    `<div class="row" id="todosField">
-                        <div class="col-11 col-md-11 mb-2">
-                            <input type="text" class="form-control" id="todosInput" name="todos[`+ l +`]" value="">
-                        </div>
-                        <div class="col-2 col-md-1">
-                            <btn type="button" class="btn btn btn-outline-danger" id="todosRemoveBtn">
-                                <i class="bi bi-dash-circle"></i>
-                            </btn>     
-                        </div>
-                     </div>`
-                );
-            });
-            $(document).on('click', '#todosRemoveBtn', function() {
-                $(this).parents('#todosField').remove();
+        // Remove Button
+        $(document).on('click', `.${fieldClass}RemoveBtn`, function() {
+            $(this).closest(`.${fieldClass}`).remove();
+            $(`${rowId} .${fieldClass}`).each(function(i, el) {
+                $(el).find('input').attr('name', `${fieldName}[${i}]`);
             });
         });
-    </script>
+    }
+
+    setupDynamicField("#completedTasksRow", "completedTasksAddBtn", "completedTasksField", "completed_tasks", "Kegiatan yang sudah dilakukan");
+    setupDynamicField("#issuesRow", "issuesAddBtn", "issuesField", "issues", "Permasalahan");
+    setupDynamicField("#followUpsRow", "followUpsAddBtn", "followUpsField", "follow_ups", "Tindak Lanjut");
+    setupDynamicField("#plannedTasksRow", "plannedTasksAddBtn", "plannedTasksField", "planned_tasks", "Kegiatan yang akan dilakukan");
+
+    // ===== AJAX Update Berdasarkan Periode =====
+    $('#period').on('change', function() {
+        let period = $(this).val();
+        let activityId = "{{ $activity->id }}";
+        let url = "{{ route('activity.monthly-data', ':id') }}".replace(':id', activityId);
+        if (!period) return;
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            data: { period: period },
+            success: function(response) {
+                $('#financial_target').val(formatRupiah(parseFloat(response.financial_target) || 0));
+                $('#financial_realization').val(formatRupiah(parseFloat(response.financial_realization) || 0));
+                $('#physical_target').val(response.physical_target ?? '');
+                $('#physical_realization').val(response.physical_realization ?? '');
+
+                function updateFields(rowId, fieldClass, fieldName, dataArray, fieldLabel, addBtnId) {
+                    $(rowId).empty();
+                    if (!dataArray || !dataArray.length) dataArray = [''];
+                    dataArray.forEach((val, i) => {
+                        $(rowId).append(`
+                            <div class="row align-items-end ${fieldClass} my-2">
+                                <div class="col-10 col-md-11">
+                                    ${i === 0 ? `<label class="form-label">${fieldLabel}</label>` : ''}
+                                    <input type="text" class="form-control" name="${fieldName}[${i}]" value="${val}">
+                                </div>
+                                <div class="col-2 col-md-1">
+                                    ${i === 0 ? `<button type="button" class="btn btn-outline-success" id="${addBtnId}"><i class="bi bi-plus-circle"></i></button>` :
+                                    `<button type="button" class="btn btn-outline-danger ${fieldClass}RemoveBtn"><i class="bi bi-dash-circle"></i></button>`}
+                                </div>
+                            </div>
+                        `);
+                    });
+                }
+
+                updateFields('#completedTasksRow', 'completedTasksField', 'completed_tasks', response.completed_tasks, 'Kegiatan yang sudah dilakukan', 'completedTasksAddBtn');
+                updateFields('#issuesRow', 'issuesField', 'issues', response.issues, 'Permasalahan', 'issuesAddBtn');
+                updateFields('#followUpsRow', 'followUpsField', 'follow_ups', response.follow_ups, 'Tindak Lanjut', 'followUpsAddBtn');
+                updateFields('#plannedTasksRow', 'plannedTasksField', 'planned_tasks', response.planned_tasks, 'Kegiatan yang akan dilakukan', 'plannedTasksAddBtn');
+            }
+        });
+    });
+
+
+    $('#clearMonthlyData').on('click', function() {
+        Swal.fire({
+            title: 'Apakah kamu yakin?',
+            text: "Data bulanan akan dikosongkan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, kosongkan!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Kosongkan input keuangan & fisik
+                $('#financial_target').val('');
+                $('#financial_realization').val('');
+                $('#physical_target').val('');
+                $('#physical_realization').val('');
+
+                // Fungsi untuk kosongkan dynamic field
+                function clearDynamicFields(rowId, fieldClass, fieldName, fieldLabel, addBtnId) {
+                    $(rowId).empty();
+                    // Sisakan 1 field kosong agar submit tidak error
+                    $(rowId).append(`
+                        <div class="row align-items-end ${fieldClass} my-2">
+                            <div class="col-10 col-md-11">
+                                <label class="form-label">${fieldLabel}</label>
+                                <input type="text" class="form-control" name="${fieldName}[0]" value="">
+                            </div>
+                            <div class="col-2 col-md-1">
+                                <button type="button" class="btn btn-outline-success" id="${addBtnId}">
+                                    <i class="bi bi-plus-circle"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `);
+                }
+
+                clearDynamicFields('#completedTasksRow','completedTasksField','completed_tasks','Kegiatan yang sudah dilakukan','completedTasksAddBtn');
+                clearDynamicFields('#issuesRow','issuesField','issues','Permasalahan','issuesAddBtn');
+                clearDynamicFields('#followUpsRow','followUpsField','follow_ups','Tindak Lanjut','followUpsAddBtn');
+                clearDynamicFields('#plannedTasksRow','plannedTasksField','planned_tasks','Kegiatan yang akan dilakukan','plannedTasksAddBtn');
+
+                Swal.fire(
+                    'Berhasil!',
+                    'Data bulanan telah dikosongkan.',
+                    'success'
+                );
+            }
+        });
+    });
+
+    // ===== Form Submit convert Rupiah to number =====
+    $('#editActivityForm').on('submit', function() {
+    $('#financial_target').val(rupiahToNumber($('#financial_target').val()));
+    $('#financial_realization').val(rupiahToNumber($('#financial_realization').val()));
+    });
+});
+</script>
 @endpush

@@ -26,49 +26,17 @@ class MonthlyActivity extends Model
         'updated_by',
     ];
 
-    // Casting completed_tasks
-    protected function completed_tasks(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value) => json_decode($value, true),
-            set: fn ($value) => json_encode($value),
-
-        );
-    }
-
-    // Casting issues
-    protected function issues(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value) => json_decode($value, true),
-            set: fn ($value) => json_encode($value),
-        );
-    }
-
-    // Casting follow_ups
-    protected function follow_ups(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value) => json_decode($value, true),
-            set: fn ($value) => json_encode($value),
-
-        );
-    }
-
-    // Casting planned_tasks
-    protected function planned_tasks(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value) => json_decode($value, true),
-            set: fn ($value) => json_encode($value),
-
-        );
-    }
+    protected $casts = [
+        'completed_tasks' => 'array',
+        'issues'          => 'array',
+        'follow_ups'      => 'array',
+        'planned_tasks'   => 'array',
+    ];
     
     /**
-     * * The Relationship from Monthly Activity to Activity *
+     * * The Relationship to Activity *
      */
-    public function monthly_activity(): BelongsTo
+    public function activity(): BelongsTo
     {
         return $this->belongsTo(Activity::class);
     }

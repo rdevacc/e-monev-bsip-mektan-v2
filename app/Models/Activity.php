@@ -83,4 +83,15 @@ class Activity extends Model
     {
         return $this->hasMany(MonthlyActivity::class);
     }
+
+   public function monthly_activity_for_month($year = null, $month = null)
+    {
+        $year = $year ?? now()->year;
+        $month = $month ?? now()->month;
+
+        return $this->hasOne(MonthlyActivity::class)
+                    ->whereYear('period', $year)
+                    ->whereMonth('period', $month)
+                    ->withDefault();
+    }
 }

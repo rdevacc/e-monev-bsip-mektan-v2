@@ -2,7 +2,6 @@
 
 @section('content')
     <main id="main" class="main">
-
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -15,10 +14,10 @@
                             </div>
                         @endif
 
-                        <h4 class="card-title mr-4 pr-4">Data Kelompok</h4>
+                        <h4 class="card-title mr-4 pr-4">Data Tim Kerja</h4>
                         <div class="d-flex justify-content-start mb-3">
-                            <a href="{{route('work-group.create')}}" class="btn btn-primary py-2 px-4">Tambah
-                                Kelompok</a>
+                            <a href="{{route('work-team.create')}}" class="btn btn-primary py-2 px-4">Tambah
+                                Tim Kerja</a>
                         </div>
 
                         <div class="table-responsive">
@@ -27,31 +26,31 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Nama</th>
-                                        <th>Nama Ketua Kelompok</th>
-                                        {{-- <th>Anggaran Kelompok</th> --}}
+                                        <th>Nama Ketua Tim Kerja</th>
+                                        <th>Nama Kelompok</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($dataKelompoks as $kelompok)
+                                    @foreach ($workTeams as $work_team)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $kelompok->name }}</td>
-                                            <td>{{ $kelompok->group_leader }}</td>
-                                            {{-- <td>{{ $kelompok->anggaran_kelompok }}</td> --}}
+                                            <td>{{ $work_team->name }}</td>
+                                            <td>{{ $work_team->team_leader }}</td>
+                                            <td>{{ $work_team->work_group->name }}</td>
                                             <td>
                                                 <div class="d-flex">
                                                     <a class="btn btn-warning mx-1"
-                                                        href="{{ route('work-group.edit', $kelompok->id) }}" data-bs-toggle="tooltip"
+                                                        href="{{ route('work-team.edit', $work_team->id) }}" data-bs-toggle="tooltip"
                                                         data-bs-placement="top" data-bs-custom-class="custom-tooltip"
-                                                        data-bs-title="Edit {{ $kelompok->nama }}">
+                                                        data-bs-title="Edit {{ $work_team->nama }}">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
 
                                                     <!-- Button trigger modal -->
                                                     <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                                        data-bs-target="#deleteModal" data-id="{{ $kelompok->id }}"
-                                                        data-name="{{ $kelompok->nama }}">
+                                                        data-bs-target="#deleteModal" data-id="{{ $work_team->id }}"
+                                                        data-name="{{ $work_team->name }}">
                                                         <i class="bi bi-trash text-body-secondary"></i>
                                                     </button>
 
@@ -68,14 +67,14 @@
                                                                         data-bs-dismiss="modal" aria-label="Close"></button>
                                                                 </div>
                                                                 <div class="modal-body">
-                                                                    Are you sure you want to delete kelompok <span
+                                                                    Are you sure you want to delete Tim Kerja <span
                                                                         id="itemName"></span>?
                                                                 </div>
                                                                 <div class="modal-footer">
                                                                     <button type="button" class="btn btn-secondary"
                                                                         data-bs-dismiss="modal">Close</button>
                                                                     <form id="deleteForm"
-                                                                        action="{{ route('work-group.delete', $kelompok->id) }}"
+                                                                        action="{{ route('work-team.delete', $work_team->id) }}"
                                                                         method="POST">
                                                                         @method('DELETE')
                                                                         @csrf
@@ -114,7 +113,7 @@
             console.log(itemName);
 
             modal.find('#itemName').text(itemName);
-            modal.find('#deleteForm').attr('action', '/v2/app/kelompok/' + itemId);
+            modal.find('#deleteForm').attr('action', '/v2/app/work-team/' + itemId);
         });
     </script>
 @endpush

@@ -1,9 +1,9 @@
   <!-- ======= Footer ======= -->
-  <footer id="footer" class="footer">
+  <footer id="footer" class="footer d-flex flex-column justify-content-center align-items-center m-0">
     <div class="copyright">
-      &copy; Copyright <strong><span>BSIPMektan</span></strong>. All Rights Reserved
+      &copy; Copyright <strong><span>BRMP Mektan</span></strong>. All Rights Reserved
     </div>
     <div class="credits">
-      Designed by <a href="#">Muhammad Rizky A M</a>
+      Develop by <a href="https://www.linkedin.com/in/rizky-munsyarief-413aa9160/" target="_blank">Muhammad Rizky A M</a>
     </div>
-  </footer><!-- End Footer -->
+  </footer>
