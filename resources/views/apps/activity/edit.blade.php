@@ -139,94 +139,102 @@
                                 @enderror
                             </div>
 
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="financial_target" class="form-label">Target Keuangan</label>
-                                    <input type="text"
-                                        class="form-control @error('financial_target') is-invalid @enderror"
-                                        id="financial_target" name="financial_target" value="{{ old('financial_target', $activity->financial_target) }}">
-                                    @error('financial_target')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="financial_realization" class="form-label">Realisasi Keuangan</label>
-                                    <input type="text"
-                                        class="form-control @error('financial_realization') is-invalid @enderror"
-                                        id="financial_realization" name="financial_realization" value="{{ old('financial_realization', $activity->financial_realization) }}">
-                                    @error('financial_realization')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
+                            {{-- Card Data Bulanan (disembunyikan dulu) --}}
+                            <div id="monthlyCard" class="card mt-3" style="display: none;">
+                                <div class="card-body">
+                                    <h5 class="card-title">Data Bulanan <span id="periodText" style="font-weight: bold; color: #0d6efd;"></span></h5>
 
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="physical_target" class="form-label">Target Fisik (%)</label>
-                                    <input type="text"
-                                        class="form-control @error('physical_target') is-invalid @enderror"
-                                        id="physical_target" name="physical_target" value="{{ old('physical_target', $activity->physical_target) }}">
-                                    @error('physical_target')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="physical_realization" class="form-label">Realisasi Fisik (%)</label>
-                                    <input type="text"
-                                        class="form-control @error('physical_realization') is-invalid @enderror"
-                                        id="physical_realization" name="physical_realization" value="{{ old('physical_realization', $activity->physical_realization) }}">
-                                    @error('physical_realization')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            {{-- Dynamic Fields Section --}}
-                            @php
-                                $completed = old('completed_tasks', $activity->completed_tasks ?? ['']);
-                                $issues = old('issues', $activity->issues ?? ['']);
-                                $followUps = old('follow_ups', $activity->follow_ups ?? ['']);
-                                $planned = old('planned_tasks', $activity->planned_tasks ?? ['']);
-                            @endphp
-
-                            @foreach ([
-                                ['rowId'=>'completedTasksRow','data'=>$completed,'field'=>'completed_tasks','label'=>'Kegiatan yang sudah dilakukan','addBtn'=>'completedTasksAddBtn'],
-                                ['rowId'=>'issuesRow','data'=>$issues,'field'=>'issues','label'=>'Permasalahan','addBtn'=>'issuesAddBtn'],
-                                ['rowId'=>'followUpsRow','data'=>$followUps,'field'=>'follow_ups','label'=>'Tindak Lanjut','addBtn'=>'followUpsAddBtn'],
-                                ['rowId'=>'plannedTasksRow','data'=>$planned,'field'=>'planned_tasks','label'=>'Kegiatan yang akan dilakukan','addBtn'=>'plannedTasksAddBtn'],
-                            ] as $section)
-                                <div id="{{ $section['rowId'] }}" class="mb-2">
-                                    @foreach ($section['data'] as $index => $val)
-                                        <div class="row align-items-end {{ $section['field'] }}Field my-2">
-                                            <div class="col-10 col-md-11">
-                                                @if($loop->first)<label class="form-label">{{ $section['label'] }}</label>@endif
-                                                <input type="text" 
-                                                    class="form-control @error($section['field'].'.'.$index) is-invalid @enderror" 
-                                                    name="{{ $section['field'] }}[{{ $index }}]" value="{{ $val }}">
-                                            </div>
-                                            <div class="col-2 col-md-1">
-                                                @if($loop->first)
-                                                    <button type="button" class="btn btn-outline-success" id="{{ $section['addBtn'] }}">
-                                                        <i class="bi bi-plus-circle"></i>
-                                                    </button>
-                                                @else
-                                                    <button type="button" class="btn btn-outline-danger {{ $section['field'] }}RemoveBtn">
-                                                        <i class="bi bi-dash-circle"></i>
-                                                    </button>
-                                                @endif
-                                            </div>
-                                            @error($section['field'].'.'.$index)
-                                                <p class="text-danger"><small>{{ $message }}</small></p>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="financial_target" class="form-label">Target Keuangan</label>
+                                            <input type="text"
+                                                class="form-control @error('financial_target') is-invalid @enderror"
+                                                id="financial_target" name="financial_target" value="{{ old('financial_target', $activity->financial_target) }}">
+                                            @error('financial_target')
+                                                <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="financial_realization" class="form-label">Realisasi Keuangan</label>
+                                            <input type="text"
+                                                class="form-control @error('financial_realization') is-invalid @enderror"
+                                                id="financial_realization" name="financial_realization" value="{{ old('financial_realization', $activity->financial_realization) }}">
+                                            @error('financial_realization')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="physical_target" class="form-label">Target Fisik (%)</label>
+                                            <input type="text"
+                                                class="form-control @error('physical_target') is-invalid @enderror"
+                                                id="physical_target" name="physical_target" value="{{ old('physical_target', $activity->physical_target) }}">
+                                            @error('physical_target')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="physical_realization" class="form-label">Realisasi Fisik (%)</label>
+                                            <input type="text"
+                                                class="form-control @error('physical_realization') is-invalid @enderror"
+                                                id="physical_realization" name="physical_realization" value="{{ old('physical_realization', $activity->physical_realization) }}">
+                                            @error('physical_realization')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    {{-- Dynamic Fields Section --}}
+                                    @php
+                                        $completed = old('completed_tasks', $activity->completed_tasks ?? ['']);
+                                        $issues = old('issues', $activity->issues ?? ['']);
+                                        $followUps = old('follow_ups', $activity->follow_ups ?? ['']);
+                                        $planned = old('planned_tasks', $activity->planned_tasks ?? ['']);
+                                    @endphp
+
+                                    @foreach ([
+                                        ['rowId'=>'completedTasksRow','data'=>$completed,'field'=>'completed_tasks','label'=>'Kegiatan yang sudah dilakukan','addBtn'=>'completedTasksAddBtn'],
+                                        ['rowId'=>'issuesRow','data'=>$issues,'field'=>'issues','label'=>'Permasalahan','addBtn'=>'issuesAddBtn'],
+                                        ['rowId'=>'followUpsRow','data'=>$followUps,'field'=>'follow_ups','label'=>'Tindak Lanjut','addBtn'=>'followUpsAddBtn'],
+                                        ['rowId'=>'plannedTasksRow','data'=>$planned,'field'=>'planned_tasks','label'=>'Kegiatan yang akan dilakukan','addBtn'=>'plannedTasksAddBtn'],
+                                    ] as $section)
+                                        <div id="{{ $section['rowId'] }}" class="mb-2">
+                                            @foreach ($section['data'] as $index => $val)
+                                                <div class="row align-items-end {{ $section['field'] }}Field my-2">
+                                                    <div class="col-10 col-md-11">
+                                                        @if($loop->first)<label class="form-label">{{ $section['label'] }}</label>@endif
+                                                        <input type="text" 
+                                                            class="form-control @error($section['field'].'.'.$index) is-invalid @enderror" 
+                                                            name="{{ $section['field'] }}[{{ $index }}]" value="{{ $val }}">
+                                                    </div>
+                                                    <div class="col-2 col-md-1">
+                                                        @if($loop->first)
+                                                            <button type="button" class="btn btn-outline-success" id="{{ $section['addBtn'] }}">
+                                                                <i class="bi bi-plus-circle"></i>
+                                                            </button>
+                                                        @else
+                                                            <button type="button" class="btn btn-outline-danger {{ $section['field'] }}RemoveBtn">
+                                                                <i class="bi bi-dash-circle"></i>
+                                                            </button>
+                                                        @endif
+                                                    </div>
+                                                    @error($section['field'].'.'.$index)
+                                                        <p class="text-danger"><small>{{ $message }}</small></p>
+                                                    @enderror
+                                                </div>
+                                            @endforeach
                                         </div>
                                     @endforeach
                                 </div>
-                            @endforeach
+                            </div>
 
                             {{-- Submit --}}
                             <div class="mt-4">
                                 <button type="submit" class="btn btn-primary">Simpan</button>
                                 <a href="{{ route('activity.index') }}" class="btn btn-secondary">Batal</a>
+                                {{-- Clear button --}}
                                 <button type="button" id="clearMonthlyData" class="btn btn-warning">
                                     Kosongkan Data Bulanan
                                 </button>
@@ -244,20 +252,57 @@
 <script>
 $(document).ready(function() {
     // ===== Helper Functions =====
+    function updatePeriodTitle() {
+        let val = $('#period').val();
+        if (!val) {
+            $('#periodText').text('');
+            return;
+        }
+
+        // val formatnya 'YYYY-MM'
+        let [year, month] = val.split('-');
+        const monthNames = ["Januari","Februari","Maret","April","Mei","Juni",
+                            "Juli","Agustus","September","Oktober","November","Desember"];
+        let monthText = monthNames[parseInt(month)-1] + ' ' + year;
+
+        $('#periodText').text(monthText);
+        console.log("Selected period:", monthText);
+    }
+
     function formatRupiah(value) {
-        if (value === null || value === undefined) return '';
-        let number = parseFloat(value);
-        if (isNaN(number)) number = 0;
+        if (value === null || value === undefined || value === '') return '';
+        // accept either number or string
+        let number = Number(value);
+        if (isNaN(number)) {
+            // try to parse formatted string like "1.234,56" or "Rp 1.234"
+            number = rupiahToNumber(String(value));
+        }
+        number = Math.abs(number);
         let intPart = Math.floor(number).toString();
         let decimalPart = Math.round((number - Math.floor(number)) * 100);
         let decimalStr = decimalPart > 0 ? ',' + decimalPart.toString().padStart(2, '0') : '';
         intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        return intPart + decimalStr;
+        return intPart + decimalStr; // NOTE: no "Rp " prefix to keep input consistent
     }
 
     function rupiahToNumber(str) {
-        if (!str) return 0;
-        return parseFloat(str.replace(/\./g, '').replace(',', '.')) || 0;
+        if (str === null || str === undefined || String(str).trim() === '') return 0;
+        let s = String(str).trim();
+        // remove any non-digit, non-dot, non-comma, non-minus characters (removes "Rp", spaces)
+        s = s.replace(/[^0-9.,-]/g, '');
+
+        // If both dot and comma present, assume dots are thousands separator and comma decimal
+        if (s.indexOf('.') > -1 && s.indexOf(',') > -1) {
+            s = s.replace(/\./g, '').replace(/,/g, '.');
+        } else if (s.indexOf('.') > -1 && s.indexOf(',') === -1) {
+            // only dot present -> treat as thousands separator -> remove dots
+            s = s.replace(/\./g, '');
+        } else if (s.indexOf(',') > -1 && s.indexOf('.') === -1) {
+            // only comma present -> decimal separator -> replace with dot
+            s = s.replace(/,/g, '.');
+        }
+        let n = parseFloat(s);
+        return isNaN(n) ? 0 : n;
     }
 
     function onlyNumber(value) {
@@ -265,14 +310,16 @@ $(document).ready(function() {
     }
 
     function handleCurrencyInput(selector) {
-        $(selector).on('input', function() {
-            var amount = onlyNumber($(this).val());
+        $(document).on('input', selector, function() {
+            var raw = $(this).val();
+            // keep only digits for building number, then format
+            var amount = onlyNumber(raw);
             $(this).val(amount.length ? formatRupiah(amount) : '');
         });
     }
 
     function handleDecimalInput(selector, separator = ',') {
-        $(selector).on('input', function() {
+        $(document).on('input', selector, function() {
             $(this).val($(this).val().replace(new RegExp(`[^0-9${separator}]`, 'g'), ''));
             var inputVal = $(this).val();
             var decimalCount = (inputVal.match(new RegExp(`\\${separator}`, 'g')) || []).length;
@@ -282,17 +329,43 @@ $(document).ready(function() {
         });
     }
 
-    // ===== Input Formatting =====
-    handleCurrencyInput('#activity_budget');
+    // ===== Input Formatting Binding =====
+    handleCurrencyInput('#activity_budget'); // readonly, harmless
     handleCurrencyInput('#financial_target');
     handleCurrencyInput('#financial_realization');
     handleDecimalInput('#physical_target', ',');
     handleDecimalInput('#physical_realization', ',');
 
-    // ===== Dynamic Fields Handler =====
-    function setupDynamicField(rowId, addBtnId, fieldClass, fieldName, fieldLabel) {
+    // ===== Utility: normalize dynamic rows (label only first, add button only first) =====
+    function normalizeDynamicRows(rowId, fieldName, fieldLabel, addBtnId) {
+        const fieldClass = fieldName + 'Field';
+        const removeBtnClass = fieldName + 'RemoveBtn';
+
+        $(rowId).find('.' + fieldClass).each(function(i, el) {
+            // rename inputs sequentially
+            $(el).find('input').attr('name', fieldName + '[' + i + ']');
+
+            // label only for first
+            if (i === 0) {
+                if ($(el).find('label.form-label').length === 0) {
+                    $(el).find('.col-10').prepend(`<label class="form-label">${fieldLabel}</label>`);
+                }
+                // make first action button be add (green) with correct id
+                $(el).find('.col-2').html(`<button type="button" class="btn btn-outline-success" id="${addBtnId}"><i class="bi bi-plus-circle"></i></button>`);
+            } else {
+                $(el).find('label.form-label').remove();
+                $(el).find('.col-2').html(`<button type="button" class="btn btn-outline-danger ${removeBtnClass}"><i class="bi bi-dash-circle"></i></button>`);
+            }
+        });
+    }
+
+    // ===== Dynamic Fields Handler (uses fieldName like 'completed_tasks') =====
+    function setupDynamicField(rowId, addBtnId, fieldName, fieldLabel) {
+        const fieldClass = fieldName + 'Field';
+        const removeBtnClass = fieldName + 'RemoveBtn';
+
         function addField(val = '') {
-            let newIndex = $(`${rowId} .${fieldClass}`).length;
+            const newIndex = $(rowId).find('.' + fieldClass).length;
             $(rowId).append(`
                 <div class="row align-items-end ${fieldClass} my-2">
                     <div class="col-10 col-md-11">
@@ -300,78 +373,130 @@ $(document).ready(function() {
                         <input type="text" class="form-control" name="${fieldName}[${newIndex}]" value="${val}">
                     </div>
                     <div class="col-2 col-md-1">
-                        <button type="button" class="btn btn-outline-danger ${fieldClass}RemoveBtn">
-                            <i class="bi bi-dash-circle"></i>
-                        </button>
+                        ${newIndex === 0 ? `<button type="button" class="btn btn-outline-success" id="${addBtnId}"><i class="bi bi-plus-circle"></i></button>` : `<button type="button" class="btn btn-outline-danger ${removeBtnClass}"><i class="bi bi-dash-circle"></i></button>`}
                     </div>
                 </div>
             `);
         }
 
-        // Add Button
+        // delegated add button (works for dynamic content)
         $(document).on('click', `#${addBtnId}`, function() {
             addField('');
+            normalizeDynamicRows(rowId, fieldName, fieldLabel, addBtnId);
         });
 
-        // Remove Button
-        $(document).on('click', `.${fieldClass}RemoveBtn`, function() {
-            $(this).closest(`.${fieldClass}`).remove();
-            $(`${rowId} .${fieldClass}`).each(function(i, el) {
-                $(el).find('input').attr('name', `${fieldName}[${i}]`);
-            });
+        // delegated remove button
+        $(document).on('click', `.${removeBtnClass}`, function() {
+            $(this).closest('.' + fieldClass).remove();
+            // re-index and normalize
+            normalizeDynamicRows(rowId, fieldName, fieldLabel, addBtnId);
         });
     }
 
-    setupDynamicField("#completedTasksRow", "completedTasksAddBtn", "completedTasksField", "completed_tasks", "Kegiatan yang sudah dilakukan");
-    setupDynamicField("#issuesRow", "issuesAddBtn", "issuesField", "issues", "Permasalahan");
-    setupDynamicField("#followUpsRow", "followUpsAddBtn", "followUpsField", "follow_ups", "Tindak Lanjut");
-    setupDynamicField("#plannedTasksRow", "plannedTasksAddBtn", "plannedTasksField", "planned_tasks", "Kegiatan yang akan dilakukan");
+    // initialize dynamic fields (matching Blade field names)
+    setupDynamicField("#completedTasksRow", "completedTasksAddBtn", "completed_tasks", "Kegiatan yang sudah dilakukan");
+    setupDynamicField("#issuesRow", "issuesAddBtn", "issues", "Permasalahan");
+    setupDynamicField("#followUpsRow", "followUpsAddBtn", "follow_ups", "Tindak Lanjut");
+    setupDynamicField("#plannedTasksRow", "plannedTasksAddBtn", "planned_tasks", "Kegiatan yang akan dilakukan");
+
+    // ===== Show monthly card when appropriate =====
+    function showMonthlyIfNeeded() {
+        const periodVal = $('#period').val();
+        const anyMonthlyInput = ($('#financial_target').val() || '').toString().trim()
+            || ($('#financial_realization').val() || '').toString().trim()
+            || ($('#physical_target').val() || '').toString().trim()
+            || ($('#physical_realization').val() || '').toString().trim()
+            || $('#completedTasksRow input').filter(function(){ return $(this).val().toString().trim() !== '' }).length > 0
+            || $('#issuesRow input').filter(function(){ return $(this).val().toString().trim() !== '' }).length > 0
+            || $('#followUpsRow input').filter(function(){ return $(this).val().toString().trim() !== '' }).length > 0
+            || $('#plannedTasksRow input').filter(function(){ return $(this).val().toString().trim() !== '' }).length > 0;
+
+        if (periodVal || anyMonthlyInput) {
+            $('#monthlyCard').show();
+            updatePeriodTitle();
+            // format any existing numeric values
+            const ft = $('#financial_target').val();
+            if (ft) $('#financial_target').val(formatRupiah(rupiahToNumber(ft)));
+            const fr = $('#financial_realization').val();
+            if (fr) $('#financial_realization').val(formatRupiah(rupiahToNumber(fr)));
+        } else {
+            $('#monthlyCard').hide();
+        }
+
+        // normalize rows to ensure add/remove buttons and labels correct
+        normalizeDynamicRows('#completedTasksRow', 'completed_tasks', 'Kegiatan yang sudah dilakukan', 'completedTasksAddBtn');
+        normalizeDynamicRows('#issuesRow', 'issues', 'Permasalahan', 'issuesAddBtn');
+        normalizeDynamicRows('#followUpsRow', 'follow_ups', 'Tindak Lanjut', 'followUpsAddBtn');
+        normalizeDynamicRows('#plannedTasksRow', 'planned_tasks', 'Kegiatan yang akan dilakukan', 'plannedTasksAddBtn');
+    }
+
+    // run on load
+    showMonthlyIfNeeded();
 
     // ===== AJAX Update Berdasarkan Periode =====
     $('#period').on('change', function() {
         let period = $(this).val();
         let activityId = "{{ $activity->id }}";
         let url = "{{ route('activity.monthly-data', ':id') }}".replace(':id', activityId);
-        if (!period) return;
+
+        if (!period) {
+            // jika periode dikosongkan, sembunyikan card (sesuai requirement)
+            showMonthlyIfNeeded();
+            return;
+        }
 
         $.ajax({
             url: url,
             type: 'GET',
             data: { period: period },
             success: function(response) {
-                $('#financial_target').val(formatRupiah(parseFloat(response.financial_target) || 0));
-                $('#financial_realization').val(formatRupiah(parseFloat(response.financial_realization) || 0));
+                // safe parsing + formatting
+                $('#financial_target').val(response.financial_target ? formatRupiah(rupiahToNumber(response.financial_target)) : '');
+                $('#financial_realization').val(response.financial_realization ? formatRupiah(rupiahToNumber(response.financial_realization)) : '');
                 $('#physical_target').val(response.physical_target ?? '');
                 $('#physical_realization').val(response.physical_realization ?? '');
 
-                function updateFields(rowId, fieldClass, fieldName, dataArray, fieldLabel, addBtnId) {
+                function updateFields(rowId, fieldName, dataArray, fieldLabel, addBtnId) {
                     $(rowId).empty();
                     if (!dataArray || !dataArray.length) dataArray = [''];
                     dataArray.forEach((val, i) => {
+                        const fieldClass = fieldName + 'Field';
+                        const removeBtnClass = fieldName + 'RemoveBtn';
                         $(rowId).append(`
                             <div class="row align-items-end ${fieldClass} my-2">
                                 <div class="col-10 col-md-11">
                                     ${i === 0 ? `<label class="form-label">${fieldLabel}</label>` : ''}
-                                    <input type="text" class="form-control" name="${fieldName}[${i}]" value="${val}">
+                                    <input type="text" class="form-control" name="${fieldName}[${i}]" value="${val ?? ''}">
                                 </div>
                                 <div class="col-2 col-md-1">
                                     ${i === 0 ? `<button type="button" class="btn btn-outline-success" id="${addBtnId}"><i class="bi bi-plus-circle"></i></button>` :
-                                    `<button type="button" class="btn btn-outline-danger ${fieldClass}RemoveBtn"><i class="bi bi-dash-circle"></i></button>`}
+                                    `<button type="button" class="btn btn-outline-danger ${removeBtnClass}"><i class="bi bi-dash-circle"></i></button>`}
                                 </div>
                             </div>
                         `);
                     });
+                    // ensure proper labels/buttons after insertion
+                    normalizeDynamicRows(rowId, fieldName, fieldLabel, addBtnId);
                 }
 
-                updateFields('#completedTasksRow', 'completedTasksField', 'completed_tasks', response.completed_tasks, 'Kegiatan yang sudah dilakukan', 'completedTasksAddBtn');
-                updateFields('#issuesRow', 'issuesField', 'issues', response.issues, 'Permasalahan', 'issuesAddBtn');
-                updateFields('#followUpsRow', 'followUpsField', 'follow_ups', response.follow_ups, 'Tindak Lanjut', 'followUpsAddBtn');
-                updateFields('#plannedTasksRow', 'plannedTasksField', 'planned_tasks', response.planned_tasks, 'Kegiatan yang akan dilakukan', 'plannedTasksAddBtn');
+                updateFields('#completedTasksRow', 'completed_tasks', response.completed_tasks, 'Kegiatan yang sudah dilakukan', 'completedTasksAddBtn');
+                updateFields('#issuesRow', 'issues', response.issues, 'Permasalahan', 'issuesAddBtn');
+                updateFields('#followUpsRow', 'follow_ups', response.follow_ups, 'Tindak Lanjut', 'followUpsAddBtn');
+                updateFields('#plannedTasksRow', 'planned_tasks', response.planned_tasks, 'Kegiatan yang akan dilakukan', 'plannedTasksAddBtn');
+
+                // tampilkan card bila sukses load data
+                $('#monthlyCard').slideDown();
+                updatePeriodTitle();
+            },
+            error: function(xhr) {
+                // tampilkan card agar user bisa tetap input manual jika data tidak ditemukan
+                $('#monthlyCard').slideDown();
+                updatePeriodTitle();
             }
         });
     });
 
-
+    // ===== Clear Monthly Data =====
     $('#clearMonthlyData').on('click', function() {
         Swal.fire({
             title: 'Apakah kamu yakin?',
@@ -390,12 +515,11 @@ $(document).ready(function() {
                 $('#physical_target').val('');
                 $('#physical_realization').val('');
 
-                // Fungsi untuk kosongkan dynamic field
-                function clearDynamicFields(rowId, fieldClass, fieldName, fieldLabel, addBtnId) {
+                // Fungsi untuk kosongkan dynamic field - sisakan 1 kosong
+                function clearDynamicFields(rowId, fieldName, fieldLabel, addBtnId) {
                     $(rowId).empty();
-                    // Sisakan 1 field kosong agar submit tidak error
                     $(rowId).append(`
-                        <div class="row align-items-end ${fieldClass} my-2">
+                        <div class="row align-items-end ${fieldName}Field my-2">
                             <div class="col-10 col-md-11">
                                 <label class="form-label">${fieldLabel}</label>
                                 <input type="text" class="form-control" name="${fieldName}[0]" value="">
@@ -409,10 +533,10 @@ $(document).ready(function() {
                     `);
                 }
 
-                clearDynamicFields('#completedTasksRow','completedTasksField','completed_tasks','Kegiatan yang sudah dilakukan','completedTasksAddBtn');
-                clearDynamicFields('#issuesRow','issuesField','issues','Permasalahan','issuesAddBtn');
-                clearDynamicFields('#followUpsRow','followUpsField','follow_ups','Tindak Lanjut','followUpsAddBtn');
-                clearDynamicFields('#plannedTasksRow','plannedTasksField','planned_tasks','Kegiatan yang akan dilakukan','plannedTasksAddBtn');
+                clearDynamicFields('#completedTasksRow','completed_tasks','Kegiatan yang sudah dilakukan','completedTasksAddBtn');
+                clearDynamicFields('#issuesRow','issues','Permasalahan','issuesAddBtn');
+                clearDynamicFields('#followUpsRow','follow_ups','Tindak Lanjut','followUpsAddBtn');
+                clearDynamicFields('#plannedTasksRow','planned_tasks','Kegiatan yang akan dilakukan','plannedTasksAddBtn');
 
                 Swal.fire(
                     'Berhasil!',
@@ -425,9 +549,12 @@ $(document).ready(function() {
 
     // ===== Form Submit convert Rupiah to number =====
     $('#editActivityForm').on('submit', function() {
-    $('#financial_target').val(rupiahToNumber($('#financial_target').val()));
-    $('#financial_realization').val(rupiahToNumber($('#financial_realization').val()));
+        // convert formatted rupiah to plain number for server
+        $('#financial_target').val(rupiahToNumber($('#financial_target').val()));
+        $('#financial_realization').val(rupiahToNumber($('#financial_realization').val()));
+        // physical_target/realization kept as-is (they accept decimal like "12,5")
     });
+
 });
 </script>
 @endpush

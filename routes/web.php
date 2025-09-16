@@ -31,26 +31,26 @@ Route::get('/', function(){
     return redirect()->route('login');
 });
 
-Route::prefix('/v2')->group(function () {
+/**
+ * * Authentication Route *
+ */
+Route::get('/v2/app/login', [LoginController::class, 'index'])->middleware('guest')->name('login');
+Route::post('/v2/app/login', [LoginController::class, 'authenticate'])->name('login-submit');
+Route::post('/v2/app/logout', [LoginController::class, 'logout'])->name('logout');
 
-    /**
-     * * Authentication Route
-     */
-    Route::get('/app/login', [LoginController::class, 'index'])->middleware('guest')->name('login');
-    Route::post('/app/login', [LoginController::class, 'authenticate'])->name('login-submit');
-    Route::post('/app/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('/v2/app/forgot-password', [ForgotPasswordController::class, 'forgot_password'])->middleware('guest')->name('forgot-password');
+Route::post('/v2/app/forgot-password-submit', [ForgotPasswordController::class, 'forgot_password_submit'])->name('forgot-password-submit');
 
-    Route::get('/app/forgot-password', [ForgotPasswordController::class, 'forgot_password'])->middleware('guest')->name('forgot-password');
-    Route::post('/app/forgot-password-submit', [ForgotPasswordController::class, 'forgot_password_submit'])->name('forgot-password-submit');
+Route::get('/v2/app/reset-password/{token}', [ResetPasswordController::class, 'reset_password'])->middleware('guest')->name('password.reset');
+Route::post('/v2/app/reset-password/', [ResetPasswordController::class, 'reset_password_submit'])->middleware('guest')->name('password.update');
 
-    Route::get('/app/reset-password/{token}', [ResetPasswordController::class, 'reset_password'])->middleware('guest')->name('password.reset');
-    Route::post('/app/reset-password/', [ResetPasswordController::class, 'reset_password_submit'])->middleware('guest')->name('password.update');
+
+Route::prefix('/v2')->middleware('auth')->group(function () {
 
     /**
      * * Dashboard Route
      */
-    Route::get('/app/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
-
+    Route::get('/app/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     /**
      * * Excel Route
@@ -79,7 +79,7 @@ Route::prefix('/v2')->group(function () {
     /**
      * * Role Route
      */
-    Route::resource('/app/role', RoleController::class)->middleware('superadmin')->names([
+    Route::resource('/app/role', RoleController::class)->names([
         'index' => 'role.index',
         'create' => 'role.create',
         'store' => 'role.create-submit',
@@ -91,7 +91,7 @@ Route::prefix('/v2')->group(function () {
     /**
      * * Work Group Route
      */
-    Route::resource('/app/work-group', WorkGroupController::class)->middleware('admin')->names([
+    Route::resource('/app/work-group', WorkGroupController::class)->names([
         'index' => 'work-group.index',
         'create' => 'work-group.create',
         'store' => 'work-group.create-submit',
@@ -103,7 +103,7 @@ Route::prefix('/v2')->group(function () {
     /**
      * * Work Team Route
      */
-    Route::resource('/app/work-team', WorkTeamController::class)->middleware('admin')->names([
+    Route::resource('/app/work-team', WorkTeamController::class)->names([
         'index' => 'work-team.index',
         'create' => 'work-team.create',
         'store' => 'work-team.create-submit',
@@ -115,7 +115,7 @@ Route::prefix('/v2')->group(function () {
     /**
      * * Activity Route
      */
-    Route::resource('/app/activity', ActivityController::class)->middleware(['auth', 'editkegiatan'])->names([
+    Route::resource('/app/activity', ActivityController::class)->names([
         'index' => 'activity.index',
         'create' => 'activity.create',
         'show' => 'activity.show',
@@ -129,6 +129,5 @@ Route::prefix('/v2')->group(function () {
     ->name('activity.monthly-data');
 
     Route::post('/app/activity/{activity}/clear-monthly', [ActivityController::class, 'clearMonthlyData'])->name('activity.clearMonthlyData');
-
 
 });

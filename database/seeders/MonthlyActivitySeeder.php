@@ -63,9 +63,31 @@ class MonthlyActivitySeeder extends Seeder
             ];
         }
 
-            DB::table('monthly_activities')->insert($data);
-        }
+        DB::table('monthly_activities')->insert($data);
+
+
+        DB::table('monthly_activities')->insert([
+            [
+                'id' => 22,
+                'activity_id' => 1,
+                'financial_target' => null,
+                'financial_realization' => 227200000,
+                'physical_target' => null,
+                'physical_realization' => null,
+                'period' => Carbon::create(now('Asia/Jakarta')->year, 9, 1, 0, 0, 0, 'Asia/Jakarta'),
+                'completed_tasks' => null,
+                'issues' => null,
+                'follow_ups' => null,
+                'planned_tasks' => null,
+                'created_by' => $activity->user_id,
+                'updated_by' => $activity->user_id,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+
     }
+}
 
 //         DB::table('monthly_activities')->insert([
 //             [
