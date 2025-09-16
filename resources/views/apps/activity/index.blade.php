@@ -7,6 +7,8 @@
     <!-- DataTables + Buttons + Bootstrap 5 -->
     <link rel="stylesheet" href="https://cdn.datatables.net/v/bs5/dt-1.13.10/b-2.4.1/datatables.min.css">
 
+    <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/4.3.0/css/fixedColumns.dataTables.min.css"/>
+
     <!-- Daterangepicker -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
@@ -84,7 +86,7 @@
 <main id="main" class="main">
     <section class="section">
         <div class="pagetitle">
-            <h1>Data Kegiatan BRMP Mektan</h1>
+            <h1>Data Kegiatan BBRM Mektan</h1>
         </div>
 
         <!-- Session Alert -->
@@ -104,9 +106,9 @@
                 <div class="row mx-1 py-2 d-flex justify-content-between align-items-center">
                     <div class="row mx-1 mb-3">
                         <div class="col-12 col-md-3">
-                            <label for="filterPeriod" class="form-label">Periode Kegiatan</label>
+                            <label for="filterPeriod" class="form-label">Bulan</label>
                             <select id="filterPeriod" class="form-select">
-                                <option value="">-- Semua Periode --</option>
+                                <option value="">-- Semua Bulan --</option>
                                 @foreach ($periods as $period)
                                     <option value="{{ $period['id'] }}" {{ $period['id'] === now()->format('Y-m') ? 'selected' : '' }}>
                                         {{ $period['name'] }}
@@ -188,7 +190,7 @@
                                             Status Kegiatan
                                         </th>
                                         <th rowspan="3" colspan="1" class="period text-center align-middle">
-                                            Periode
+                                            Bulan
                                         </th>
                                         <th rowspan="1" colspan="4" class="text-center align-middle">Target dan
                                             Realisasi</th>
@@ -237,6 +239,9 @@
     <!-- DataTables + Buttons -->
     <script src="https://cdn.datatables.net/v/bs5/dt-1.13.10/b-2.4.1/datatables.min.js"></script>
 
+    <script src="https://cdn.datatables.net/fixedcolumns/4.3.0/js/dataTables.fixedColumns.min.js"></script>
+
+
     <!-- Daterangepicker -->
     <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
@@ -264,11 +269,24 @@
             return number.toLocaleString('id-ID'); // 227200000 → 227.200.000
         }
 
+        function formatDecimalOne(value) {
+            if (value === null || value === undefined || value === '' || value === '-') return '-';
+            let num = parseFloat(value);
+            if (isNaN(num)) return '-';
+            return num.toFixed(1).replace('.', ','); // 55.5 -> "55,5"
+        }
+
         $(function () {
             var activityTable = $('#activity-table').DataTable({
                 processing: true,
                 serverSide: true,
                 searching: false,
+                scrollX: true,
+                scrollCollapse: true,
+                paging: true,
+                fixedColumns: {
+                    leftColumns: 4,
+                },
                 ajax: {
                     url: "{{ route('activity.index') }}",
                     data: function(data) {
@@ -336,14 +354,14 @@
                         data: 'physical_target',
                         name: 'physical_target',
                         render: function(data, type, row, meta) {
-                            return formatNumberToRupiah(data);
+                            return data;
                         }
                     },
                     {
                         data: 'physical_realization',
                         name: 'physical_realization',
                         render: function(data, type, row, meta) {
-                            return formatNumberToRupiah(data);
+                            return data;
                         }
                     },
                     {

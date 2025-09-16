@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Login | E-Monev BBPSI Mektan</title>
+  <title>Login | E-Monev BBRM Mektan</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 

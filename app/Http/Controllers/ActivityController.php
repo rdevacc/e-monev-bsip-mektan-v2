@@ -173,12 +173,23 @@ class ActivityController extends Controller
                 ->editColumn('activity_budget', fn($data) => $data->activity_budget ?? '-')
                 ->editColumn('financial_target', fn($data) => $data->monthly_financial_target ?? '-')
                 ->editColumn('financial_realization', fn($data) => $data->monthly_financial_realization ?? '-')
-                ->editColumn('physical_target', fn($data) => $data->monthly_physical_target ?? '-')
-                ->editColumn('physical_realization', fn($data) => $data->monthly_physical_realization ?? '-')
-                ->editColumn('monthly_period', function($activity) {
-                    return $activity->monthly_activity_for_month?->period 
-                        ? Carbon::parse($activity->monthly_activity_for_month->period)->format('F Y') 
-                        : '-';
+                ->editColumn('physical_target', fn($data) =>
+                    $data->monthly_physical_target !== null
+                        ? str_replace('.', ',', sprintf('%.1f', (float) $data->monthly_physical_target))
+                        : '-'
+                )
+                ->editColumn('physical_realization', fn($data) =>
+                    $data->monthly_physical_realization !== null
+                        ? str_replace('.', ',', sprintf('%.1f', (float) $data->monthly_physical_realization))
+                        : '-'
+                )
+                ->editColumn('monthly_period', function ($activity) use ($request, $period) {
+                    if ($activity->monthly_period) {
+                        return Carbon::parse($activity->monthly_period)->locale('id')->translatedFormat('F Y');
+                    }
+
+                    // fallback ke filterPeriod (misalnya "2025-09")
+                    return Carbon::createFromFormat('Y-m', $period)->locale('id')->translatedFormat('F Y');
                 })
                 ->editColumn('monthly_completed_tasks', function($activity) {
                     $raw = $activity->monthly_completed_tasks;
@@ -188,12 +199,16 @@ class ActivityController extends Controller
                         'raw' => $raw,
                     ]);
 
-                    if (empty($raw)) return [];
+                    if (empty($raw)) return '-';
 
                     $arr = json_decode($raw, true) ?? [];
-                    $arr = array_filter(array_map('trim', $arr), fn($v) => $v !== '');
 
-                    return array_values($arr);
+                    $arr = array_filter(array_map(function ($v) {
+                        if (is_null($v)) return '';
+                        return strtolower(trim((string)$v)) === 'null' ? '' : trim((string)$v);
+                    }, (array)$arr), fn($v) => $v !== '');
+
+                    return empty($arr) ? '-' : array_values($arr);
                 })
                 ->editColumn('monthly_issues', function($activity) {
                     $raw = $activity->monthly_issues;
@@ -203,12 +218,16 @@ class ActivityController extends Controller
                         'raw' => $raw,
                     ]);
 
-                    if (empty($raw)) return [];
+                    if (empty($raw)) return '-';
 
                     $arr = json_decode($raw, true) ?? [];
-                    $arr = array_filter(array_map('trim', $arr), fn($v) => $v !== '');
 
-                    return array_values($arr);
+                    $arr = array_filter(array_map(function ($v) {
+                        if (is_null($v)) return '';
+                        return strtolower(trim((string)$v)) === 'null' ? '' : trim((string)$v);
+                    }, (array)$arr), fn($v) => $v !== '');
+
+                    return empty($arr) ? '-' : array_values($arr);
                 })
                 ->editColumn('monthly_follow_ups', function($activity) {
                     $raw = $activity->monthly_follow_ups;
@@ -218,12 +237,16 @@ class ActivityController extends Controller
                         'raw' => $raw,
                     ]);
 
-                    if (empty($raw)) return [];
+                    if (empty($raw)) return '-';
 
                     $arr = json_decode($raw, true) ?? [];
-                    $arr = array_filter(array_map('trim', $arr), fn($v) => $v !== '');
 
-                    return array_values($arr);
+                    $arr = array_filter(array_map(function ($v) {
+                        if (is_null($v)) return '';
+                        return strtolower(trim((string)$v)) === 'null' ? '' : trim((string)$v);
+                    }, (array)$arr), fn($v) => $v !== '');
+
+                    return empty($arr) ? '-' : array_values($arr);
                 })
                 ->editColumn('monthly_planned_tasks', function($activity) {
                     $raw = $activity->monthly_planned_tasks;
@@ -233,12 +256,16 @@ class ActivityController extends Controller
                         'raw' => $raw,
                     ]);
 
-                    if (empty($raw)) return [];
+                    if (empty($raw)) return '-';
 
                     $arr = json_decode($raw, true) ?? [];
-                    $arr = array_filter(array_map('trim', $arr), fn($v) => $v !== '');
 
-                    return array_values($arr);
+                    $arr = array_filter(array_map(function ($v) {
+                        if (is_null($v)) return '';
+                        return strtolower(trim((string)$v)) === 'null' ? '' : trim((string)$v);
+                    }, (array)$arr), fn($v) => $v !== '');
+
+                    return empty($arr) ? '-' : array_values($arr);
                 })
 
                 ->editColumn('created_at', fn($data) => $data->created_at?->format('d F Y'))
@@ -341,10 +368,10 @@ class ActivityController extends Controller
         $monthly->financial_realization = $this->cleanNumber($request->financial_realization);
         $monthly->physical_target       = $request->physical_target;
         $monthly->physical_realization  = $request->physical_realization;
-        $monthly->completed_tasks       = $request->completed_tasks ?? [];
-        $monthly->issues                = $request->issues ?? [];
-        $monthly->follow_ups            = $request->follow_ups ?? [];
-        $monthly->planned_tasks         = $request->planned_tasks ?? [];
+        $monthly->completed_tasks       = $request->completed_tasks ?? '-';
+        $monthly->issues                = $request->issues ?? '-';
+        $monthly->follow_ups            = $request->follow_ups ?? '-';
+        $monthly->planned_tasks         = $request->planned_tasks ?? '-';
         $monthly->created_by            = auth()->id();
         $monthly->updated_by            = auth()->id();
         $monthly->save();
@@ -390,14 +417,15 @@ class ActivityController extends Controller
             ->first();
 
         $data = [
+            'period' => $monthly?->period !== null ? $monthly : 0,
             'financial_target' => $monthly?->financial_target !== null ? (float) $monthly->financial_target : 0,
             'financial_realization' => $monthly?->financial_realization !== null ? (float) $monthly->financial_realization : 0,
             'physical_target' => $monthly?->physical_target ?? '',
             'physical_realization' => $monthly?->physical_realization ?? '',
-            'completed_tasks' => $monthly?->completed_tasks ?? [''],
-            'issues' => $monthly?->issues ?? [''],
-            'follow_ups' => $monthly?->follow_ups ?? [''],
-            'planned_tasks' => $monthly?->planned_tasks ?? [''],
+            'completed_tasks' => $monthly?->completed_tasks ?? ['-'],
+            'issues' => $monthly?->issues ?? ['-'],
+            'follow_ups' => $monthly?->follow_ups ?? ['-'],
+            'planned_tasks' => $monthly?->planned_tasks ?? ['-'],
         ];
 
         return response()->json($data);

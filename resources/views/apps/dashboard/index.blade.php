@@ -18,11 +18,8 @@
                     <h5 class="card-title">Total Kegiatan</h5>
   
                     <div class="d-flex align-items-center">
-                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                        <i class="bi bi-database"></i>
-                      </div>
-                      <div class="ps-3">
-                        <h6>{{ $jumlahTotalKegiatan }}</h6>
+                      <div class="ps-3 d-flex flex-column">
+                        <span class="fw-bold fs-5">{{ $jumlahTotalKegiatan }}</span>
                         <span class="text-success small pt-1 fw-bold">Tahun {{ $currentYear }}</span>
                       </div>
                     </div>
@@ -34,16 +31,11 @@
               <!-- Total Kegiatan Yang sudah dikerjakan Card -->
               <div class="col-xxl-3 col-md-6">
                 <div class="card info-card sudah-dikerjakan-card">
-  
                   <div class="card-body">
                     <h5 class="card-title">Sudah dikerjakan</h5>
-  
                     <div class="d-flex align-items-center">
-                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                        <i class="bi bi-database-check"></i>
-                      </div>
-                      <div class="ps-3">
-                        <h6>{{ $totalSudah }}</h6>
+                      <div class="ps-3 d-flex flex-column">
+                        <span class="fw-bold fs-5">{{ $totalSudah }}</span>
                         <span class="text-success small pt-1 fw-bold">Tahun {{ $currentYear }}</span>
                       </div>
                     </div>
@@ -58,11 +50,8 @@
                   <div class="card-body">
                     <h5 class="card-title">Belum dikerjakan</h5>
                     <div class="d-flex align-items-center">
-                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                        <i class="bi bi-database-exclamation"></i>
-                      </div>
-                      <div class="ps-3">
-                        <h6>{{ $totalBelum }}</h6>
+                      <div class="ps-3 d-flex flex-column">
+                        <span class="fw-bold fs-5">{{ $totalBelum }}</span>
                         <span class="text-success small pt-1 fw-bold">Tahun {{ $currentYear }}</span>
                       </div>
                     </div>
@@ -76,11 +65,8 @@
                   <div class="card-body">
                     <h5 class="card-title">Total Anggaran Kegiatan</h5>
                     <div class="d-flex align-items-center">
-                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                        <i class="bi bi-currency-dollar"></i>
-                      </div>
-                      <div class="ps-3">
-                        <h6>{{ formatRupiahAngka($totalAnggaran) }}</h6>
+                      <div class="ps-3 d-flex flex-column">
+                        <span class="fw-bold fs-5">Rp. {{ formatRupiahAngka($totalAnggaran) }}</span>
                         <span class="text-success small pt-1 fw-bold">Tahun {{ $currentYear }}</span>
                       </div>
                     </div>
@@ -114,6 +100,9 @@
 @endsection
 
 @push('scripts')
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
     {{-- Script for call Charts --}}
     <script src="{{ $chart->cdn() }}"></script>

@@ -26,7 +26,7 @@ class DashboardController extends Controller
          */
         foreach ($activity as $data) {
             // Count Total Anggaran
-            $totalAnggaran += $data["anggaran_kegiatan"];
+            $totalAnggaran += $data["activity_budget"];
 
             // Count total kegitan yg sudah dan belum
             if($data["status_id"] == 2){

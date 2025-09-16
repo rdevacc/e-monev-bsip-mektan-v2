@@ -131,7 +131,7 @@
 
                             {{-- Monthly Data --}}
                             <div class="mb-3">
-                                <label for="period" class="form-label">Periode (Bulan)</label>
+                                <label for="period" class="form-label">Bulan</label>
                                 <input type="month" class="form-control @error('period') is-invalid @enderror"
                                     id="period" name="period" value="{{ old('period', $activity->period) }}">
                                 @error('period')
@@ -549,10 +549,11 @@ $(document).ready(function() {
 
     // ===== Form Submit convert Rupiah to number =====
     $('#editActivityForm').on('submit', function() {
-        // convert formatted rupiah to plain number for server
         $('#financial_target').val(rupiahToNumber($('#financial_target').val()));
         $('#financial_realization').val(rupiahToNumber($('#financial_realization').val()));
-        // physical_target/realization kept as-is (they accept decimal like "12,5")
+
+        $('#physical_target').val($('#physical_target').val().trim().replace(/,/g, '.'));
+        $('#physical_realization').val($('#physical_realization').val().trim().replace(/,/g, '.'));
     });
 
 });
