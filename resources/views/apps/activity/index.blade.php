@@ -339,16 +339,10 @@
                     {
                         data: 'financial_target',
                         name: 'financial_target',
-                        render: function(data, type, row, meta) {
-                            return formatNumberToRupiah(data);
-                        }
                     },
                     {
                         data: 'financial_realization',
                         name: 'financial_realization',
-                        render: function(data, type, row, meta) {
-                            return formatNumberToRupiah(data);
-                        }
                     },
                     {
                         data: 'physical_target',

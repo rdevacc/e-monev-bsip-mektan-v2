@@ -153,12 +153,6 @@ class ActivityController extends Controller
                 $activities->whereRaw('LOWER(activities.name) like ?', ["%{$search}%"]);
             }
 
-            // Eager load relasi untuk DataTables editColumn
-            // $activities->with(['monthly_activity_for_month' => function($q) use ($year, $month) {
-            //     $q->whereYear('period', $year)->whereMonth('period', $month);
-            // }]);
-
-
             // Logging (opsional)
             Log::info('Filter period: '.$request->filterPeriod);
             Log::info('Filter PJ: '.$request->filterPJ);
@@ -171,8 +165,38 @@ class ActivityController extends Controller
                 ->editColumn('work_team', fn($data) => $data->work_team_name ?? '-')
                 ->editColumn('status', fn($data) => $data->status_nama ?? '-')
                 ->editColumn('activity_budget', fn($data) => $data->activity_budget ?? '-')
-                ->editColumn('financial_target', fn($data) => $data->monthly_financial_target ?? '-')
-                ->editColumn('financial_realization', fn($data) => $data->monthly_financial_realization ?? '-')
+                ->editColumn('activity_budget', function($data) {
+                    return $data->activity_budget
+                        ? 'Rp. ' . number_format($data->activity_budget, 0, ',', '.')
+                        : '-';
+                })
+
+                ->editColumn('financial_target', function($data) {
+                    $budget = $data->activity_budget;
+                    $target = $data->monthly_financial_target;
+
+                    if (!$target) return "Rp. 0 (0%)";
+
+                    $percent = ($budget && $budget > 0)
+                        ? round(($target / $budget) * 100, 1)
+                        : 0;
+
+                    return 'Rp. ' . number_format($target, 0, ',', '.') . " ({$percent}%)";
+                })
+
+                ->editColumn('financial_realization', function($data) {
+                    $budget = $data->activity_budget;
+                    $realization = $data->monthly_financial_realization;
+
+                    if (!$realization) return "Rp. 0 (0%)";
+
+                    $percent = ($budget && $budget > 0)
+                        ? round(($realization / $budget) * 100, 1)
+                        : 0;
+
+                    return 'Rp. ' . number_format($realization, 0, ',', '.') . " ({$percent}%)";
+                })
+
                 ->editColumn('physical_target', fn($data) =>
                     $data->monthly_physical_target !== null
                         ? str_replace('.', ',', sprintf('%.1f', (float) $data->monthly_physical_target))
