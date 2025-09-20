@@ -7,20 +7,17 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title mr-4 pr-4">Tambah Data User</h4>
-                        <form action="{{ route('user-create-submit') }}" method="POST" class="mx-2">
+                        <form action="{{ route('user.create-submit') }}" method="POST" class="mx-2">
                             @csrf
                             <div class="row g-3 mb-3 align-items-center">
                                 <div class="col-3 col-md-2">
-                                    <label for="nama" class="col-form-label">Nama</label>
+                                    <label for="name" class="col-form-label">Nama</label>
                                 </div>
                                 <div class="col-7">
-                                    <input type="text" id="nama" name="nama"
-                                        class="form-control @error('nama') is-invalid @enderror" autofocus
-                                        autocomplete="off" value="{{ old('nama') }}" required>
-                                    @error('nama')
-                                        {{-- <span class="help-block text-danger fs-6">
-                                                {{ $message }}
-                                            </span> --}}
+                                    <input type="text" id="name" name="name"
+                                        class="form-control @error('name') is-invalid @enderror" autofocus
+                                        autocomplete="off" value="{{ old('name') }}" required>
+                                    @error('name')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
@@ -36,6 +33,77 @@
                                         class="form-control @error('email') is-invalid @enderror" autocomplete="off"
                                         value="{{ old('email') }}" required>
                                     @error('email')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-3 align-items-center">
+                                <div class="col-3 col-md-2">
+                                    <label for="work_group_id" class="col form-label">Kelompok Kerja</label>
+                                </div>
+                                <div class="col-7">
+                                    <select class="form-select @error('work_group_id') is-invalid @enderror"
+                                        id="work_group_id" name="work_group_id" required>
+                                        <option selected disabled>Pilih Kelompok Kerja</option>
+                                        @foreach ($work_groups as $work_group)
+                                            @if (old('work_group_id') == $work_group->id)
+                                                <option value="{{ $work_group->id }}" selected>{{ $work_group->name }}
+                                                </option>
+                                            @else
+                                                <option value="{{ $work_group->id }}">{{ $work_group->name }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                    @error('work_group_id')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-3 align-items-center">
+                                <div class="col-3 col-md-2">
+                                    <label for="work_team_id" class="col form-label">Tim Kerja</label>
+                                </div>
+                                <div class="col-7">
+                                    <select class="form-select @error('work_team_id') is-invalid @enderror"
+                                        id="work_team_id" name="work_team_id" required>
+                                        <option selected disabled>Pilih Tim Kerja</option>
+                                        @foreach ($work_teams as $work_team)
+                                            @if (old('work_team_id') == $work_team->id)
+                                                <option value="{{ $work_team->id }}" selected>{{ $work_team->name }}
+                                                </option>
+                                            @else
+                                                <option value="{{ $work_team->id }}">{{ $work_team->name }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                    @error('work_team_id')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-3 align-items-center">
+                                <div class="col-3 col-md-2">
+                                    <label for="role_id" class="col form-label">Role</label>
+                                </div>
+                                <div class="col-7">
+                                    <select class="form-select @error('role_id') is-invalid @enderror" name="role_id" id="role_id"
+                                        required>
+                                        <option selected disabled>Pilih Role</option>
+                                        @foreach ($roles as $role)
+                                            @if (old('role_id') == $role->id)
+                                                <option value="{{ $role->id }}" selected>{{ $role->name }}</option>
+                                            @else
+                                                <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                    @error('role_id')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
@@ -84,59 +152,11 @@
                                     </button>
                                 </div>
                             </div>
-                            <div class="row g-3 mb-3 align-items-center">
-                                <div class="col-3 col-md-2">
-                                    <label for="subkelompok_id" class="col form-label">Subkelompok</label>
-                                </div>
-                                <div class="col-7">
-                                    <select class="form-select @error('subkelompok_id') is-invalid @enderror"
-                                        id="subkelompok_id" name="subkelompok_id" required>
-                                        <option selected disabled>Pilih Kelompok</option>
-                                        @foreach ($subkelompoks as $subkelompok)
-                                            @if (old('subkelompok_id') == $subkelompok->id)
-                                                <option value="{{ $subkelompok->id }}" selected>{{ $subkelompok->nama }}
-                                                </option>
-                                            @else
-                                                <option value="{{ $subkelompok->id }}">{{ $subkelompok->nama }}</option>
-                                            @endif
-                                        @endforeach
-                                    </select>
-                                    @error('subkelompok_id')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="row g-3 mb-3 align-items-center">
-                                <div class="col-3 col-md-2">
-                                    <label for="role_id" class="col form-label">Role</label>
-                                </div>
-                                <div class="col-7">
-                                    <select class="form-select @error('role_id') is-invalid @enderror" name="role_id" id="role_id"
-                                        required>
-                                        <option selected disabled>Pilih Role</option>
-                                        @foreach ($roles as $role)
-                                            @if (old('role_id') == $role->id)
-                                                <option value="{{ $role->id }}" selected>{{ $role->nama }}</option>
-                                            @else
-                                                <option value="{{ $role->id }}">{{ $role->nama }}</option>
-                                            @endif
-                                        @endforeach
-                                    </select>
-                                    @error('role_id')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-
-
+                            
                             <div class="d-flex justify-content-end">
                                 <div class="d-flex">
-                                    <a href="{{ route('user-create') }}"
-                                        class="btn btn-warning text-white"><span>Reset</span></a>
+                                    <a href="{{ route('user.index') }}"
+                                        class="btn btn-warning text-white"><span>Kembali</span></a>
                                 </div>
                                 <div class="d-flex ps-2">
                                     <button type="submit" class="btn btn-primary">Submit</button>
@@ -151,6 +171,7 @@
 @endsection
 
 @push('scripts')
+    <script src="{{ asset('admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script>
         // Password Input
         $(document).ready(function(){

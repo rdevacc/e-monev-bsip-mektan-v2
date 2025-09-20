@@ -69,8 +69,8 @@
 
                             <div class="d-flex justify-content-end">
                                 <div class="d-flex">
-                                    <a href="{{ route('work-team.create') }}"
-                                        class="btn btn-warning text-white"><span>Reset</span></a>
+                                    <a href="{{ route('work-team.index') }}"
+                                        class="btn btn-warning text-white"><span>Kembali</span></a>
                                 </div>
                                 <div class="d-flex ps-2">
                                     <button type="submit" class="btn btn-primary">Update</button>
@@ -83,3 +83,7 @@
         </div>
     </main>
 @endsection
+
+@push('scripts')
+    <script src="{{ asset('admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+@endpush

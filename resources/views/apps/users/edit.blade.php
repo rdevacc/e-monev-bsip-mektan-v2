@@ -7,18 +7,18 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title mr-4 pr-4">Edit Data User</h4>
-                        <form action="{{ route('user-edit-submit', $user->id) }}" method="POST" class="mx-2">
+                        <form action="{{ route('user.edit-submit', $user->id) }}" method="POST" class="mx-2">
                             @csrf
                             @method('PUT')
                             <div class="row g-3 mb-3 align-items-center">
                                 <div class="col-3 col-md-2">
-                                    <label for="nama" class="col-form-label">Nama</label>
+                                    <label for="name" class="col-form-label">Nama</label>
                                 </div>
                                 <div class="col-7">
-                                    <input type="text" id="nama" name="nama"
-                                        class="form-control @error('nama') is-invalid @enderror" autofocus
-                                        autocomplete="off" value="{{ old('nama', $user->nama) }}" required>
-                                    @error('nama')
+                                    <input type="text" id="name" name="name"
+                                        class="form-control @error('name') is-invalid @enderror" autofocus
+                                        autocomplete="off" value="{{ old('name', $user->name) }}" required>
+                                    @error('name')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
@@ -42,23 +42,23 @@
                             </div>
                             <div class="row g-3 mb-3 align-items-center">
                                 <div class="col-3 col-md-2">
-                                    <label for="subkelompok_id" class="col form-label">Subkelompok</label>
+                                    <label for="work_team_id" class="col form-label">Subkelompok</label>
                                 </div>
                                 <div class="col-7">
-                                    <select class="form-select @error('subkelompok_id') is-invalid @enderror"
-                                        name="subkelompok_id" required>
-                                        <option value="{{ $user->subkelompok_id }}">{{ $user->subkelompok->nama }}</option>
-                                        @foreach ($subkelompoks as $subkelompok)
-                                            @if (old('subkelompok_id', $user->subkelompok_id) == $subkelompok->id)
-                                                <option value="{{ $subkelompok->id }}" selected>
-                                                    {{ $subkelompok->nama }}
+                                    <select class="form-select @error('work_team_id') is-invalid @enderror"
+                                        name="work_team_id" required>
+                                        <option value="{{ $user->work_team_id }}">{{ $user->work_team->name }}</option>
+                                        @foreach ($work_teams as $work_team)
+                                            @if (old('work_team_id', $user->work_team_id) == $work_team->id)
+                                                <option value="{{ $work_team->id }}" selected>
+                                                    {{ $work_team->name }}
                                                 </option>
                                             @else
-                                                <option value="{{ $subkelompok->id }}">{{ $subkelompok->nama }}</option>
+                                                <option value="{{ $work_team->id }}">{{ $work_team->name }}</option>
                                             @endif
                                         @endforeach
                                     </select>
-                                    @error('subkelompok_id')
+                                    @error('work_team_id')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
@@ -75,9 +75,9 @@
                                         <option selected disabled>Pilih Role</option>
                                         @foreach ($roles as $role)
                                             @if (old('role_id', $user->role->id) == $role->id)
-                                                <option value="{{ $role->id }}" selected>{{ $role->nama }}</option>
+                                                <option value="{{ $role->id }}" selected>{{ $role->name }}</option>
                                             @else
-                                                <option value="{{ $role->id }}">{{ $role->nama }}</option>
+                                                <option value="{{ $role->id }}">{{ $role->name }}</option>
                                             @endif
                                         @endforeach
                                     </select>
@@ -92,8 +92,8 @@
 
                             <div class="d-flex justify-content-end">
                                 <div class="d-flex">
-                                    <a href="{{ route('user-create') }}"
-                                        class="btn btn-warning text-white"><span>Reset</span></a>
+                                    <a href="{{ route('user.index') }}"
+                                        class="btn btn-warning text-white"><span>Kembali</span></a>
                                 </div>
                                 <div class="d-flex ps-2">
                                     <button type="submit" class="btn btn-primary">Update</button>
@@ -108,6 +108,7 @@
 @endsection
 
 @push('scripts')
+    <script src="{{ asset('admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script>
         // Password Input
         $('#show_eye').on('click', function() {

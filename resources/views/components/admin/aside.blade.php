@@ -19,25 +19,8 @@
             </a>
         </li>
 
-        {{-- @canany(['isSuperAdmin', 'isAdmin']) --}}
+        @canany(['isSuperAdmin', 'isAdmin'])
         <li class="nav-heading">Super Admin</li>
-
-        <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('user') ? 'active' : '' }}" href="{{route('user.index')}}">
-                <i class="bi bi-grid"></i>
-                <span>Users</span>
-            </a>
-        </li>
-
-        {{-- @endcanany
-        @can('isSuperAdmin') --}}
-        <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('role') ? 'active' : '' }}" href="{{route('role.index')}}">
-                <i class="bi bi-shield-check"></i>
-                <span>Roles</span>
-            </a>
-        </li>
-        {{-- @endcan --}}
         
         <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('work-group') ? 'active' : '' }}" href="{{route('work-group.index')}}">
@@ -51,6 +34,23 @@
                 <i class="bi bi-grid"></i>
                 <span>Tim Kerja</span>
             </a>
-        </li>         
+        </li>  
+
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('user') ? 'active' : '' }}" href="{{route('user.index')}}">
+                <i class="bi bi-grid"></i>
+                <span>Users</span>
+            </a>
+        </li>
+        @endcanany
+        
+        @can('isSuperAdmin')
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('role') ? 'active' : '' }}" href="{{route('role.index')}}">
+                <i class="bi bi-shield-check"></i>
+                <span>Roles</span>
+            </a>
+        </li>
+        @endcan
       </ul>
   </aside>

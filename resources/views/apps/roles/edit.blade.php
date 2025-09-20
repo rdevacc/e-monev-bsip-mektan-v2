@@ -7,18 +7,18 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title mr-4 pr-4">Tambah Data Role</h4>
-                        <form action="{{ route('role-edit-submit', $role->id) }}" method="POST" class="mx-2">
+                        <form action="{{ route('role.edit-submit', $role->id) }}" method="POST" class="mx-2">
                             @csrf
                             @method('put')
                             <div class="row g-3 mb-3 align-items-center">
                                 <div class="col-3 col-md-2">
-                                    <label for="nama" class="col-form-label">Nama</label>
+                                    <label for="name" class="col-form-label">Nama</label>
                                 </div>
                                 <div class="col-7">
-                                    <input type="text" id="nama" name="nama"
-                                        class="form-control @error('nama') is-invalid @enderror" autofocus
-                                        autocomplete="off" value="{{ old('nama', $role->nama) }}" required>
-                                    @error('nama')
+                                    <input type="text" id="name" name="name"
+                                        class="form-control @error('name') is-invalid @enderror" autofocus
+                                        autocomplete="off" value="{{ old('name', $role->name) }}" required>
+                                    @error('name')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
@@ -29,11 +29,11 @@
 
                             <div class="d-flex justify-content-end">
                                 <div class="d-flex">
-                                    <a href="{{ route('role-edit', $role->id) }}"
-                                        class="btn btn-warning text-white"><span>Reset</span></a>
+                                    <a href="{{ route('role.index') }}"
+                                        class="btn btn-warning text-white"><span>Kembali</span></a>
                                 </div>
                                 <div class="d-flex ps-2">
-                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <button type="submit" class="btn btn-primary">Update</button>
                                 </div>
                             </div>
                         </form>
@@ -43,3 +43,7 @@
         </div>
     </main>
 @endsection
+
+@push('scripts')
+    <script src="{{ asset('admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+@endpush

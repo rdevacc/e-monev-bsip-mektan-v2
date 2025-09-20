@@ -117,10 +117,10 @@ class ActivityController extends Controller
                 'monthly_activities.financial_realization as monthly_financial_realization',
                 'monthly_activities.physical_target as monthly_physical_target',
                 'monthly_activities.physical_realization as monthly_physical_realization',
-                'monthly_activities.completed_tasks as monthly_completed_tasks',
-                'monthly_activities.issues as monthly_issues',
-                'monthly_activities.follow_ups as monthly_follow_ups',
-                'monthly_activities.planned_tasks as monthly_planned_tasks',
+                // 'monthly_activities.completed_tasks as monthly_completed_tasks',
+                // 'monthly_activities.issues as monthly_issues',
+                // 'monthly_activities.follow_ups as monthly_follow_ups',
+                // 'monthly_activities.planned_tasks as monthly_planned_tasks',
                 'users.name as pj_name',
                 'users.role_id as pj_role_id',
                 'work_groups.name as work_group_name',
@@ -161,8 +161,8 @@ class ActivityController extends Controller
             return DataTables::eloquent($activities)
                 ->addIndexColumn()
                 ->editColumn('pj', fn($data) => $data->pj_name ?? '-')
-                ->editColumn('work_group', fn($data) => $data->work_group_name ?? '-')
-                ->editColumn('work_team', fn($data) => $data->work_team_name ?? '-')
+                // ->editColumn('work_group', fn($data) => $data->work_group_name ?? '-')
+                // ->editColumn('work_team', fn($data) => $data->work_team_name ?? '-')
                 ->editColumn('status', fn($data) => $data->status_nama ?? '-')
                 ->editColumn('activity_budget', fn($data) => $data->activity_budget ?? '-')
                 ->editColumn('activity_budget', function($data) {
@@ -215,82 +215,82 @@ class ActivityController extends Controller
                     // fallback ke filterPeriod (misalnya "2025-09")
                     return Carbon::createFromFormat('Y-m', $period)->locale('id')->translatedFormat('F Y');
                 })
-                ->editColumn('monthly_completed_tasks', function($activity) {
-                    $raw = $activity->monthly_completed_tasks;
+                // ->editColumn('monthly_completed_tasks', function($activity) {
+                //     $raw = $activity->monthly_completed_tasks;
 
-                    logger()->debug('DT_PARSER completed_tasks', [
-                        'activity_id' => $activity->id,
-                        'raw' => $raw,
-                    ]);
+                //     logger()->debug('DT_PARSER completed_tasks', [
+                //         'activity_id' => $activity->id,
+                //         'raw' => $raw,
+                //     ]);
 
-                    if (empty($raw)) return '-';
+                //     if (empty($raw)) return '-';
 
-                    $arr = json_decode($raw, true) ?? [];
+                //     $arr = json_decode($raw, true) ?? [];
 
-                    $arr = array_filter(array_map(function ($v) {
-                        if (is_null($v)) return '';
-                        return strtolower(trim((string)$v)) === 'null' ? '' : trim((string)$v);
-                    }, (array)$arr), fn($v) => $v !== '');
+                //     $arr = array_filter(array_map(function ($v) {
+                //         if (is_null($v)) return '';
+                //         return strtolower(trim((string)$v)) === 'null' ? '' : trim((string)$v);
+                //     }, (array)$arr), fn($v) => $v !== '');
 
-                    return empty($arr) ? '-' : array_values($arr);
-                })
-                ->editColumn('monthly_issues', function($activity) {
-                    $raw = $activity->monthly_issues;
+                //     return empty($arr) ? '-' : array_values($arr);
+                // })
+                // ->editColumn('monthly_issues', function($activity) {
+                //     $raw = $activity->monthly_issues;
 
-                    logger()->debug('DT_PARSER issues', [
-                        'activity_id' => $activity->id,
-                        'raw' => $raw,
-                    ]);
+                //     logger()->debug('DT_PARSER issues', [
+                //         'activity_id' => $activity->id,
+                //         'raw' => $raw,
+                //     ]);
 
-                    if (empty($raw)) return '-';
+                //     if (empty($raw)) return '-';
 
-                    $arr = json_decode($raw, true) ?? [];
+                //     $arr = json_decode($raw, true) ?? [];
 
-                    $arr = array_filter(array_map(function ($v) {
-                        if (is_null($v)) return '';
-                        return strtolower(trim((string)$v)) === 'null' ? '' : trim((string)$v);
-                    }, (array)$arr), fn($v) => $v !== '');
+                //     $arr = array_filter(array_map(function ($v) {
+                //         if (is_null($v)) return '';
+                //         return strtolower(trim((string)$v)) === 'null' ? '' : trim((string)$v);
+                //     }, (array)$arr), fn($v) => $v !== '');
 
-                    return empty($arr) ? '-' : array_values($arr);
-                })
-                ->editColumn('monthly_follow_ups', function($activity) {
-                    $raw = $activity->monthly_follow_ups;
+                //     return empty($arr) ? '-' : array_values($arr);
+                // })
+                // ->editColumn('monthly_follow_ups', function($activity) {
+                //     $raw = $activity->monthly_follow_ups;
 
-                    logger()->debug('DT_PARSER follow_ups', [
-                        'activity_id' => $activity->id,
-                        'raw' => $raw,
-                    ]);
+                //     logger()->debug('DT_PARSER follow_ups', [
+                //         'activity_id' => $activity->id,
+                //         'raw' => $raw,
+                //     ]);
 
-                    if (empty($raw)) return '-';
+                //     if (empty($raw)) return '-';
 
-                    $arr = json_decode($raw, true) ?? [];
+                //     $arr = json_decode($raw, true) ?? [];
 
-                    $arr = array_filter(array_map(function ($v) {
-                        if (is_null($v)) return '';
-                        return strtolower(trim((string)$v)) === 'null' ? '' : trim((string)$v);
-                    }, (array)$arr), fn($v) => $v !== '');
+                //     $arr = array_filter(array_map(function ($v) {
+                //         if (is_null($v)) return '';
+                //         return strtolower(trim((string)$v)) === 'null' ? '' : trim((string)$v);
+                //     }, (array)$arr), fn($v) => $v !== '');
 
-                    return empty($arr) ? '-' : array_values($arr);
-                })
-                ->editColumn('monthly_planned_tasks', function($activity) {
-                    $raw = $activity->monthly_planned_tasks;
+                //     return empty($arr) ? '-' : array_values($arr);
+                // })
+                // ->editColumn('monthly_planned_tasks', function($activity) {
+                //     $raw = $activity->monthly_planned_tasks;
 
-                    logger()->debug('DT_PARSER planned_tasks', [
-                        'activity_id' => $activity->id,
-                        'raw' => $raw,
-                    ]);
+                //     logger()->debug('DT_PARSER planned_tasks', [
+                //         'activity_id' => $activity->id,
+                //         'raw' => $raw,
+                //     ]);
 
-                    if (empty($raw)) return '-';
+                //     if (empty($raw)) return '-';
 
-                    $arr = json_decode($raw, true) ?? [];
+                //     $arr = json_decode($raw, true) ?? [];
 
-                    $arr = array_filter(array_map(function ($v) {
-                        if (is_null($v)) return '';
-                        return strtolower(trim((string)$v)) === 'null' ? '' : trim((string)$v);
-                    }, (array)$arr), fn($v) => $v !== '');
+                //     $arr = array_filter(array_map(function ($v) {
+                //         if (is_null($v)) return '';
+                //         return strtolower(trim((string)$v)) === 'null' ? '' : trim((string)$v);
+                //     }, (array)$arr), fn($v) => $v !== '');
 
-                    return empty($arr) ? '-' : array_values($arr);
-                })
+                //     return empty($arr) ? '-' : array_values($arr);
+                // })
 
                 ->editColumn('created_at', fn($data) => $data->created_at?->format('d F Y'))
                 ->addColumn('action', 'components.admin.button')
@@ -325,13 +325,13 @@ class ActivityController extends Controller
         ]));
     }
 
-
-
      /**
      * * Show the form for creating a new resource. *
      */
     public function create()
     {
+        $this->authorize('create', Activity::class);
+
         // Initiate Data
         $workGroupList = WorkGroup::orderBy('name')->get(['id', 'name']);
         $workTeamList = WorkTeam::orderBy('name')->get(['id', 'name']);
@@ -351,6 +351,8 @@ class ActivityController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Activity::class);
+        
         $request->validate([
             // kolom Activity
             'user_id'         => 'required',
@@ -409,6 +411,8 @@ class ActivityController extends Controller
      */
     public function edit(Activity $activity)
     {
+         $this->authorize('update', $activity);
+
         // Initiate Data
         $workGroupList = WorkGroup::orderBy('name')->get(['id', 'name']);
         $workTeamList = WorkTeam::orderBy('name')->get(['id', 'name']);
@@ -429,19 +433,22 @@ class ActivityController extends Controller
      */
     public function getMonthlyData(Request $request, $id)
     {
+        
         $request->validate([
             'period' => 'required|date_format:Y-m',
         ]);
-
+        
         $activity = Activity::findOrFail($id);
-
+        
+        $this->authorize('update', $activity);
+        
         $monthly = $activity->monthly_activity()
             ->whereYear('period', date('Y', strtotime($request->period . '-01')))
             ->whereMonth('period', date('m', strtotime($request->period . '-01')))
             ->first();
 
         $data = [
-            'period' => $monthly?->period !== null ? $monthly : 0,
+            'period' => $monthly?->period ?? '',
             'financial_target' => $monthly?->financial_target !== null ? (float) $monthly->financial_target : 0,
             'financial_realization' => $monthly?->financial_realization !== null ? (float) $monthly->financial_realization : 0,
             'physical_target' => $monthly?->physical_target ?? '',
@@ -460,8 +467,14 @@ class ActivityController extends Controller
      */
     public function update(Request $request, Activity $activity)
     {
+         $this->authorize('update', $activity);
+
         $request->validate([
             'name' => 'required',
+            'work_group_id' => 'required',
+            'work_team_id' => 'required',
+            'user_id' => 'required',
+            'status_id' => 'required',
             'activity_budget' => 'nullable',
             'period' => 'required',
             'financial_target' => 'nullable',
@@ -474,9 +487,14 @@ class ActivityController extends Controller
             'planned_tasks' => 'nullable|array',
         ]);
 
+        // return dd($request->user_id);
         // Update activity
         $activity->update([
             'name' => $request->name,
+            'work_group_id' => $request->work_group_id,
+            'work_team_id' => $request->work_team_id,
+            'user_id' => $request->user_id,
+            'status_id' => $request->status_id,
             'activity_budget' => parseRupiah($request->activity_budget),
         ]);
 
@@ -506,6 +524,8 @@ class ActivityController extends Controller
      */
     public function destroy(Activity $activity)
     {
+         $this->authorize('delete', $activity);
+        
         // Destroy data by id
         Activity::destroy($activity->id);
 
@@ -514,6 +534,8 @@ class ActivityController extends Controller
 
     public function clearMonthlyData(Request $request, Activity $activity)
     {
+         $this->authorize('update', $activity);
+
         $monthId = $request->month_id;
 
         // hapus semua data bulanan untuk bulan tersebut
@@ -538,10 +560,19 @@ class ActivityController extends Controller
      */
     public function show(Activity $activity)
     {
-        $activityShow = $activity->find($activity->id);
+        $activity = $activity->find($activity->id);
+
+        $workGroupList = WorkGroup::orderBy('name')->get(['id', 'name']);
+        $workTeamList = WorkTeam::orderBy('name')->get(['id', 'name']);
+        $pjList = User::orderBy('name')->get(['id', 'name']);
+        $statusList = ActivityStatus::orderBy('name')->get(['id', 'name']);
 
         return view('apps.activity.show',compact([
-            'activityShow',
+            'activity',
+            'workGroupList',
+            'workTeamList',
+            'pjList',
+            'statusList',
         ]));
     }
 }

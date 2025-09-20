@@ -28,6 +28,7 @@
                                         <th>#</th>
                                         <th>Nama</th>
                                         <th>Email</th>
+                                        <th>Tim Kerja</th>
                                         <th>Role</th>
                                         <th>Action</th>
                                     </tr>
@@ -39,6 +40,7 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
+                                        <td>{{ $user->work_team->name }}</td>
                                         <td>{{ $user->role->name }}</td>
                                         <td>
                                             <div class="d-flex">
@@ -97,6 +99,7 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
+                                        <td>{{ $user->work_team->name }}</td>
                                         <td>{{ $user->role->name }}</td>
                                         <td>
                                             <div class="d-flex">
@@ -161,6 +164,7 @@
 @endsection
 
 @push('scripts')
+    <script src="{{ asset('admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script>
         // Update modal content when the button is clicked
         $('#deleteModal').on('show.bs.modal', function(event) {

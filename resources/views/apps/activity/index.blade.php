@@ -53,17 +53,11 @@
     #activity-table th.follow-ups, #activity-table td.follow-ups { min-width: 200px; }
     #activity-table th.planned-tasks, #activity-table td.planned-tasks { min-width: 250px; }
 
-    /* Khusus Target & Realisasi */
-    #activity-table th.financial-target, #activity-table td.financial-target,
-    #activity-table th.financial-realization, #activity-table td.financial-realization {
-        min-width: 150px; /* lebar untuk keuangan */
-    }
+    /* Kolom keuangan */
+    #activity-table th.financial-target, #activity-table td.financial-target, #activity-table th.financial-realization, #activity-table td.financial-realization { min-width: 200px; text-align: center !important; vertical-align: middle !important; }
 
-    #activity-table th.physical-target, #activity-table td.physical-target,
-    #activity-table th.physical-realization, #activity-table td.physical-realization {
-        width: 100px; /* fisik tetap sempit */
-    }
-
+    /* Kolom fisik */
+    #activity-table th.physical-target, #activity-table td.physical-target, #activity-table th.physical-realization, #activity-table td.physical-realization { min-width: 100px; text-align: center !important; vertical-align: middle !important; }
     
     .select-ellipsis {
         max-width: 150px;
@@ -150,9 +144,14 @@
                             <span class="input-group-text"><i class="bi bi-search"></i></span>
                         </div>
                     </div>
+                    @php
+                        use App\Models\Activity;
+                    @endphp
+                    @can('create', Activity::class)
                     <div class="col-md-auto d-flex gap-2 mx-3">
                         <a href="{{ route('activity.create') }}" class="btn btn-primary">Tambah</a>
                     </div>
+                    @endcan
                 </div>
             </div>
         </div>
@@ -180,21 +179,21 @@
                                         <th rowspan="3" colspan="1" class="activity-budget text-center align-middle">
                                             Anggaran Kegiatan (Rp)
                                         </th>
-                                        <th rowspan="3" colspan="1" class="workgroup text-center align-middle">
+                                        {{-- <th rowspan="3" colspan="1" class="workgroup text-center align-middle">
                                             Kelompok Kerja
                                         </th>
                                         <th rowspan="3" colspan="1" class="workteam text-center align-middle">
                                             Tim Kerja
-                                        </th>
+                                        </th> --}}
                                         <th rowspan="3" colspan="1" class="status text-center align-middle">
                                             Status Kegiatan
                                         </th>
                                         <th rowspan="3" colspan="1" class="period text-center align-middle">
                                             Bulan
                                         </th>
-                                        <th rowspan="1" colspan="4" class="text-center align-middle">Target dan
+                                        <th rowspan="1" colspan="4" class="text-center align-middle" style="font-weight:600; text-align:center; vertical-align:middle; white-space:nowrap;">Target dan
                                             Realisasi</th>
-                                        <th rowspan="3" colspan="1" class="completed-tasks text-center align-middle">Kegiatan
+                                        {{-- <th rowspan="3" colspan="1" class="completed-tasks text-center align-middle">Kegiatan
                                             yang
                                             sudah dikerjakan</th>
                                         <th rowspan="3" colspan="1" class="issues text-center align-middle">
@@ -202,19 +201,19 @@
                                         </th>
                                         <th rowspan="3" colspan="1" style="width: 10%"
                                             class="follow-ups text-center align-middle">Tindak Lantjut</th>
-                                        <th rowspan="3" colspan="1" class="planned-tasks text-center align-middle">Kegiatan yang akan dilakukan</th>
+                                        <th rowspan="3" colspan="1" class="planned-tasks text-center align-middle">Kegiatan yang akan dilakukan</th> --}}
                                         <th rowspan="3" colspan="1" class="text-center align-middle">Action</th>
                                     </tr>
                                     <tr>
-                                        <th rowspan="1" colspan="2" class="text-center align-middle">Keuangan (Rp)
+                                        <th rowspan="1" colspan="2" class="text-center align-middle" style="font-weight:500; text-align:center; vertical-align:middle; white-space:nowrap;">Keuangan (Rp)
                                         </th>
-                                        <th rowspan="1" colspan="2" class="text-center align-middle">Fisik (%)</th>
+                                        <th rowspan="1" colspan="2" class="text-center align-middle" style="font-weight:500; text-align:center; vertical-align:middle; white-space:nowrap;">Fisik (%)</th>
                                     </tr>
                                     <tr>
-                                        <th rowspan="1" colspan="1" class="financial-target text-center align-middle">T</th>
-                                        <th rowspan="1" colspan="1" class="financial-realization text-center align-middle">R</th>
-                                        <th rowspan="1" colspan="1" class="physical-target text-center align-middle">T</th>
-                                        <th rowspan="1" colspan="1" class="physical-realization text-center align-middle">R</th>
+                                        <th rowspan="1" colspan="1" class="financial-target text-center align-middle" style="font-weight:500; text-align:center; vertical-align:middle; white-space:nowrap;min-width: 200px;">T</th>
+                                        <th rowspan="1" colspan="1" class="financial-realization text-center align-middle" style="font-weight:500; text-align:center; vertical-align:middle; white-space:nowrap; min-width: 200px;">R</th>
+                                        <th rowspan="1" colspan="1" class="physical-target text-center align-middle" style="font-weight:500; text-align:center; vertical-align:middle; white-space:nowrap; min-width: 100px;">T</th>
+                                        <th rowspan="1" colspan="1" class="physical-realization text-center align-middle" style="font-weight:500; text-align:center; vertical-align:middle; white-space:nowrap; min-width: 100px;">R</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -284,6 +283,8 @@
                 scrollX: true,
                 scrollCollapse: true,
                 paging: true,
+                pageLength: 25,
+                lengthMenu: [ [25, 50, 100], [25, 50, 100] ],
                 fixedColumns: {
                     leftColumns: 4,
                 },
@@ -316,18 +317,16 @@
                     {
                         data: 'activity_budget',
                         name: 'activity_budget',
-                        render: function(data, type, row, meta) {
-                            return formatNumberToRupiah(data);
-                        }
+                       
                     },
-                    {
-                        data: 'work_group',
-                        name: 'work_group',
-                    },
-                    {
-                        data: 'work_team',
-                        name: 'work_team',
-                    },
+                    // {
+                    //     data: 'work_group',
+                    //     name: 'work_group',
+                    // },
+                    // {
+                    //     data: 'work_team',
+                    //     name: 'work_team',
+                    // },
                     {
                         data: 'status',
                         name: 'status',
@@ -358,46 +357,46 @@
                             return data;
                         }
                     },
-                    {
-                        data: 'monthly_completed_tasks',
-                        name: 'monthly_completed_tasks',
-                        render: function(data) {
-                            if (Array.isArray(data) && data.length > 0) {
-                                return data.map((item, idx) => (idx + 1) + ". " + item).join("<br>");
-                            }
-                            return '-';
-                        }
-                    },
-                    {
-                        data: 'monthly_issues',
-                        name: 'monthly_issues',
-                        render: function(data) {
-                            if (Array.isArray(data) && data.length > 0) {
-                                return data.map((item, idx) => (idx + 1) + ". " + item).join("<br>");
-                            }
-                            return '-';
-                        }
-                    },
-                    {
-                        data: 'monthly_follow_ups',
-                        name: 'monthly_follow_ups',
-                        render: function(data) {
-                            if (Array.isArray(data) && data.length > 0) {
-                                return data.map((item, idx) => (idx + 1) + ". " + item).join("<br>");
-                            }
-                            return '-';
-                        }
-                    },
-                    {
-                        data: 'monthly_planned_tasks',
-                        name: 'monthly_planned_tasks',
-                        render: function(data) {
-                            if (Array.isArray(data) && data.length > 0) {
-                                return data.map((item, idx) => (idx + 1) + ". " + item).join("<br>");
-                            }
-                            return '-';
-                        }
-                    },
+                    // {
+                    //     data: 'monthly_completed_tasks',
+                    //     name: 'monthly_completed_tasks',
+                    //     render: function(data) {
+                    //         if (Array.isArray(data) && data.length > 0) {
+                    //             return data.map((item, idx) => (idx + 1) + ". " + item).join("<br>");
+                    //         }
+                    //         return '-';
+                    //     }
+                    // },
+                    // {
+                    //     data: 'monthly_issues',
+                    //     name: 'monthly_issues',
+                    //     render: function(data) {
+                    //         if (Array.isArray(data) && data.length > 0) {
+                    //             return data.map((item, idx) => (idx + 1) + ". " + item).join("<br>");
+                    //         }
+                    //         return '-';
+                    //     }
+                    // },
+                    // {
+                    //     data: 'monthly_follow_ups',
+                    //     name: 'monthly_follow_ups',
+                    //     render: function(data) {
+                    //         if (Array.isArray(data) && data.length > 0) {
+                    //             return data.map((item, idx) => (idx + 1) + ". " + item).join("<br>");
+                    //         }
+                    //         return '-';
+                    //     }
+                    // },
+                    // {
+                    //     data: 'monthly_planned_tasks',
+                    //     name: 'monthly_planned_tasks',
+                    //     render: function(data) {
+                    //         if (Array.isArray(data) && data.length > 0) {
+                    //             return data.map((item, idx) => (idx + 1) + ". " + item).join("<br>");
+                    //         }
+                    //         return '-';
+                    //     }
+                    // },
                     {
                         data: 'action',
                         name: 'action',

@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
-use App\Models\SubKelompok;
 use App\Models\User;
+use App\Models\WorkGroup;
+use App\Models\WorkTeam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,13 +17,15 @@ class UserController extends Controller
     public function index()
     {
         $dataAdminUsers = User::orderBy('role_id')->get();
-        $datausers = User::where('role_id', '!=', 1)
-                    ->get();
 
-        return view('apps.users.index', [
-            'dataAdminUsers' => $dataAdminUsers,
-            'dataUsers' => $datausers,
-        ]);
+        $dataUsers = User::whereNot('role_id', 1)
+                        ->orderBy('role_id')
+                        ->get();
+
+        return view('apps.users.index', compact([
+            'dataAdminUsers',
+            'dataUsers',
+        ]));
     }
 
     /**
@@ -30,13 +33,21 @@ class UserController extends Controller
      */
     public function create()
     {
-        $roles = Role::get(['id', 'nama']);
-        $subkelompoks = SubKelompok::get(['id', 'nama']);
+        if(auth()->id() == 1 || auth()->user()->role_id == 1) {
+            $roles = Role::orderBy('name')->get();
+        }else {
+            $roles = Role::whereNot('id', 1)
+                        ->orderBy('name')
+                        ->get();
+        };
+        $work_groups = WorkGroup::orderBy('name')->get();
+        $work_teams = WorkTeam::orderBy('name')->get();
 
-        return view('apps.users.create', [
-            'subkelompoks' => $subkelompoks,
-            'roles' => $roles,
-        ]);
+        return view('apps.users.create', compact([
+            'roles',
+            'work_groups',
+            'work_teams',
+        ]));
     }
 
     /**
@@ -45,11 +56,11 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama' => 'required|max:50',
+            'name' => 'required|max:50',
             'email' => 'required|email',
             'password' => 'required|same:confirmed_password',
             'confirmed_password' => 'required|same:password',
-            'subkelompok_id' => 'required',
+            'work_team_id' => 'required',
             'role_id' => 'required',
         ]);
 
@@ -63,14 +74,14 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $roles = Role::get(['id', 'nama']);
-        $subkelompoks = SubKelompok::get(['id', 'nama']);
+        $roles = Role::get(['id', 'name']);
+        $work_teams = WorkTeam::get(['id', 'name']);
 
-        return view('apps.users.edit', [
-            'user' => $user,
-            'subkelompoks' => $subkelompoks,
-            'roles' => $roles,
-        ]);
+        return view('apps.users.edit', compact([
+            'user',
+            'roles',
+            'work_teams',
+        ]));
     }
 
     /**
@@ -79,9 +90,9 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $rules = [
-            'nama' => 'required|max:50',
+            'name' => 'required|max:50',
             'email' => 'required|email',
-            'subkelompok_id' => 'required',
+            'work_team_id' => 'required',
             'role_id' => 'required',
         ];
 
@@ -103,7 +114,7 @@ class UserController extends Controller
          */
         User::where('id', $user->id)->update($validated);
 
-        return redirect()->route('user-index')->with('success', 'User ' . $user->nama . ' has been updated!');
+        return redirect()->route('user-index')->with('success', 'User ' . $user->name . ' has been updated!');
     }
 
     /**
@@ -114,11 +125,13 @@ class UserController extends Controller
         // Check Super admin role
         if($user->id == 1 && Auth::user()->role->id !== 1) {
             return abort(403);
-        }
+        } 
+
+        // $this->authorize();
 
         // Query for delete data
         User::destroy($user->id);
 
-        return redirect()->route('user-index')->with('success', 'User ' . $user->nama . ' has been deleted!');
+        return redirect()->route('user-index')->with('success', 'User ' . $user->name . ' has been deleted!');
     }
 }

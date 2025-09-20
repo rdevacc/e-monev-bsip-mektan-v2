@@ -98,6 +98,7 @@
 @endsection
 
 @push('scripts')
+    <script src="{{ asset('admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script>
         // Update modal content when the button is clicked
         $('#deleteModal').on('show.bs.modal', function(event) {

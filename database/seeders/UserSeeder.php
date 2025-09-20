@@ -60,7 +60,7 @@ class UserSeeder extends Seeder
                 'work_group_id' => 1,
                 'work_team_id' => 1,
                 'name' => 'Harsono',
-                'email' => 'Harsono@gmail',
+                'email' => 'Harsono@gmail.com',
                 'email_verified_at' => now(),
                 'password' => Hash::make('password'),
                 'remember_token' => '',

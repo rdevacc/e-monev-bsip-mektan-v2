@@ -7,7 +7,7 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title mr-4 pr-4">Tambah Data Role</h4>
-                        <form action="{{ route('role-create-submit') }}" method="POST" class="mx-2">
+                        <form action="{{ route('role.create-submit') }}" method="POST" class="mx-2">
                             @csrf
                             <div class="row g-3 mb-3 align-items-center">
                                 <div class="col-3 col-md-2">
@@ -28,8 +28,8 @@
 
                             <div class="d-flex justify-content-end">
                                 <div class="d-flex">
-                                    <a href="{{ route('role-create') }}"
-                                        class="btn btn-warning text-white"><span>Reset</span></a>
+                                    <a href="{{ route('role.index') }}"
+                                        class="btn btn-warning text-white"><span>Kembali</span></a>
                                 </div>
                                 <div class="d-flex ps-2">
                                     <button type="submit" class="btn btn-primary">Submit</button>
@@ -42,3 +42,7 @@
         </div>
     </main>
 @endsection
+
+@push('scripts')
+    <script src="{{ asset('admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+@endpush

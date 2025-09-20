@@ -34,8 +34,8 @@
                             {{-- Activity Utama --}}
                             <div class="mb-3">
                                 <label for="name" class="form-label">Nama Kegiatan</label>
-                                <input type="text" class="form-control bg-body-secondary @error('name') is-invalid @enderror"
-                                    id="name" name="name" value="{{ old('name', $activity->name) }}" readonly>
+                                <input type="text" class="form-control @cannot('adminUpdate', $activity) bg-body-secondary @endcannot @error('name') is-invalid @enderror"
+                                    id="name" name="name" value="{{ old('name', $activity->name) }}" @cannot('adminUpdate', $activity) readonly @endcannot>
                                 @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -44,8 +44,8 @@
                             {{-- Work Group --}}
                             <div class="mb-3">
                                 <label for="work_group_id" class="form-label">Kelompok Kerja</label>
-                                <select class="form-select bg-body-secondary @error('work_group_id') is-invalid @enderror" 
-                                    id="work_group_id" name="work_group_id" disabled>
+                                <select class="form-select @cannot('adminUpdate', $activity) bg-body-secondary @endcannot @error('work_group_id') is-invalid @enderror" 
+                                    id="work_group_id" name="work_group_id" @cannot('adminUpdate', $activity) disabled @endcannot>
                                     <option value="">-- Pilih Kelompok --</option>
                                     @foreach ($workGroupList as $group)
                                         <option value="{{ $group->id }}" 
@@ -63,8 +63,8 @@
                             {{-- Work Team --}}
                             <div class="mb-3">
                                 <label for="work_team_id" class="form-label">Tim Kerja</label>
-                                <select class="form-select bg-body-secondary @error('work_team_id') is-invalid @enderror" 
-                                    id="work_team_id" name="work_team_id" disabled>
+                                <select class="form-select @cannot('adminUpdate', $activity) bg-body-secondary @endcannot @error('work_team_id') is-invalid @enderror" 
+                                    id="work_team_id" name="work_team_id" @cannot('adminUpdate', $activity) disabled @endcannot>
                                     <option value="">-- Pilih Tim --</option>
                                     @foreach ($workTeamList as $team)
                                         <option value="{{ $team->id }}" 
@@ -82,8 +82,8 @@
                             {{-- PJ --}}
                             <div class="mb-3">
                                 <label for="user_id" class="form-label">PJ Kegiatan</label>
-                                <select class="form-select bg-body-secondary @error('user_id') is-invalid @enderror" 
-                                    id="user_id" name="user_id" disabled>
+                                <select class="form-select @cannot('adminUpdate', $activity) bg-body-secondary @endcannot @error('user_id') is-invalid @enderror" 
+                                    id="user_id" name="user_id" @cannot('adminUpdate', $activity) disabled @endcannot>
                                     <option value="">-- Pilih PJ kegiatan --</option>
                                     @foreach ($pjList as $pj)
                                         <option value="{{ $pj->id }}" 
@@ -92,7 +92,11 @@
                                         </option>
                                     @endforeach
                                 </select>
+
+                                @cannot('adminUpdate', $activity)
                                 <input type="hidden" name="user_id" value="{{ $activity->user_id }}">
+                                @endcannot
+                                
                                 @error('user_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -101,8 +105,8 @@
                             {{-- Status --}}
                             <div class="mb-3">
                                 <label for="status_id" class="form-label">Status</label>
-                                <select class="form-select bg-body-secondary @error('status_id') is-invalid @enderror" 
-                                    id="status_id" name="status_id" disabled>
+                                <select class="form-select @cannot('adminUpdate', $activity) bg-body-secondary @endcannot @error('status_id') is-invalid @enderror" 
+                                    id="status_id" name="status_id" @cannot('adminUpdate', $activity) disabled @endcannot>
                                     <option value="">-- Pilih Status --</option>
                                     @foreach ($statusList as $status)
                                         <option value="{{ $status->id }}" 
@@ -121,9 +125,9 @@
                             <div class="mb-3">
                                 <label for="activity_budget" class="form-label">Anggaran Kegiatan</label>
                                 <input type="text" 
-                                    class="form-control bg-body-secondary @error('activity_budget') is-invalid @enderror"
+                                    class="form-control @cannot('adminUpdate', $activity) bg-body-secondary @endcannot @error('activity_budget') is-invalid @enderror"
                                     id="activity_budget" name="activity_budget"
-                                    value="Rp {{ number_format($activity->activity_budget, 0, ',', '.') }}" readonly>
+                                    value="Rp {{ number_format($activity->activity_budget, 0, ',', '.') }}" @cannot('adminUpdate', $activity) readonly @endcannot>
                                 @error('activity_budget')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -231,13 +235,13 @@
                             </div>
 
                             {{-- Submit --}}
-                            <div class="mt-4">
+                            <div class="mt-4 text-end">
                                 <button type="submit" class="btn btn-primary">Simpan</button>
                                 <a href="{{ route('activity.index') }}" class="btn btn-secondary">Batal</a>
                                 {{-- Clear button --}}
-                                <button type="button" id="clearMonthlyData" class="btn btn-warning">
+                                {{-- <button type="button" id="clearMonthlyData" class="btn btn-warning">
                                     Kosongkan Data Bulanan
-                                </button>
+                                </button> --}}
                             </div>
                         </form>
                     </div>
@@ -249,6 +253,7 @@
 @endsection
 
 @push('scripts')
+<script src="{{ asset('admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script>
 $(document).ready(function() {
     // ===== Helper Functions =====
@@ -330,7 +335,7 @@ $(document).ready(function() {
     }
 
     // ===== Input Formatting Binding =====
-    handleCurrencyInput('#activity_budget'); // readonly, harmless
+    handleCurrencyInput('#activity_budget');
     handleCurrencyInput('#financial_target');
     handleCurrencyInput('#financial_realization');
     handleDecimalInput('#physical_target', ',');
@@ -453,8 +458,8 @@ $(document).ready(function() {
                 // safe parsing + formatting
                 $('#financial_target').val(response.financial_target ? formatRupiah(rupiahToNumber(response.financial_target)) : '');
                 $('#financial_realization').val(response.financial_realization ? formatRupiah(rupiahToNumber(response.financial_realization)) : '');
-                $('#physical_target').val(response.physical_target ?? '');
-                $('#physical_realization').val(response.physical_realization ?? '');
+                $('#physical_target').val(response.physical_target ? response.physical_target.toString().replace('.', ',') : '');
+                $('#physical_realization').val(response.physical_realization ? response.physical_realization.toString().replace('.', ',') : '');
 
                 function updateFields(rowId, fieldName, dataArray, fieldLabel, addBtnId) {
                     $(rowId).empty();
