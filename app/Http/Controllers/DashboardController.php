@@ -5,44 +5,62 @@ namespace App\Http\Controllers;
 use App\Charts\KegiatansSudahDanBelumDikerjakanChart;
 use App\Charts\MonthlyKegiatansChart;
 use App\Models\Activity;
-use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
     public function index(MonthlyKegiatansChart $chart, KegiatansSudahDanBelumDikerjakanChart $chartSudahdanBelum) {
 
-        $activity = Activity::orderBy('status_id')->orderBy('created_at', 'desc')->get(['id', 'name', 'activity_budget', 'created_at', 'status_id']);
+        $activity = Activity::with(['status', 'monthly_activity'])->orderBy('created_at', 'desc')->get();
 
-        $currentYear = Carbon::parse(now())->translatedFormat('Y');
+        $currentYear = now()->timezone('Asia/Jakarta')->translatedFormat('Y');
 
-        $totalSudah = 0;
-        $totalBelum = 0;
-        $totalAnggaran = 0;
+        $totalCompleted = 0;
+        $totalIncomplete = 0;
+        $totalBudget = 0;
+        $totalFinancialTarget = 0;
+        $totalFinancialRealization = 0;
 
-        $jumlahTotalKegiatan = count($activity);
+        /**
+         * * Counting Total of Activities *
+         */
+        $totalNumberOfActivities = count($activity);
 
         /**
          * * Looping for Jumlah Total
          */
         foreach ($activity as $data) {
+            // return dd($data->monthly_activity);
             // Count Total Anggaran
-            $totalAnggaran += $data["activity_budget"];
+            $totalBudget += $data["activity_budget"];
+           
+            foreach($data->monthly_activity as $monthly) {
+                $totalFinancialTarget += $monthly->financial_target ?? 0;
+                $totalFinancialRealization += $monthly->financial_realization ?? 0;
+            }; 
 
             // Count total kegitan yg sudah dan belum
             if($data["status_id"] == 2){
-                $totalSudah += 1;
+                $totalCompleted += 1;
             } else {
-                $totalBelum += 1;
+                $totalIncomplete += 1;
             }
         };
+        /**
+         * * Counting Total Financial Target *
+        */
+        $totalFinancialTargetPercent = $totalBudget ? round(($totalFinancialTarget / $totalBudget * 100), 2) : 0;
+        $totalFinancialRealizationPercent = $totalBudget ? round(($totalFinancialRealization / $totalBudget * 100), 2) : 0;
 
         return view('apps.dashboard.index', [
-            'kegiatan' => $activity,
-            'totalAnggaran' => $totalAnggaran,
+            'totalBudget' => $totalBudget,
             'currentYear' => $currentYear,
-            'jumlahTotalKegiatan' => $jumlahTotalKegiatan,
-            'totalSudah' => $totalSudah,
-            'totalBelum' => $totalBelum,
+            'totalNumberOfActivities' => $totalNumberOfActivities,
+            'totalCompleted' => $totalCompleted,
+            'totalIncomplete' => $totalIncomplete,
+            'totalFinancialTarget' => $totalFinancialTarget,
+            'totalFinancialTargetPercent' => $totalFinancialTargetPercent,
+            'totalFinancialRealization' => $totalFinancialRealization,
+            'totalFinancialRealizationPercent' => $totalFinancialRealizationPercent,
             'chart' => $chart->build(),
             'chartSudahdanBelum' => $chartSudahdanBelum->build(),
         ]);
