@@ -13,6 +13,8 @@ class DashboardController extends Controller
         $activity = Activity::with(['status', 'monthly_activity'])->orderBy('created_at', 'desc')->get();
 
         $currentYear = now()->timezone('Asia/Jakarta')->translatedFormat('Y');
+        $currentMonth = now()->timezone('Asia/Jakarta')->translatedFormat('m');
+        $lastMonth = now()->timezone('Asia/Jakarta')->startOfMonth()->subMonth();
 
         $totalCompleted = 0;
         $totalIncomplete = 0;
@@ -28,16 +30,10 @@ class DashboardController extends Controller
         /**
          * * Looping for Jumlah Total
          */
-        foreach ($activity as $data) {
-            // return dd($data->monthly_activity);
+        foreach ($activity as $data) {            
             // Count Total Anggaran
             $totalBudget += $data["activity_budget"];
-           
-            foreach($data->monthly_activity as $monthly) {
-                $totalFinancialTarget += $monthly->financial_target ?? 0;
-                $totalFinancialRealization += $monthly->financial_realization ?? 0;
-            }; 
-
+            
             // Count total kegitan yg sudah dan belum
             if($data["status_id"] == 2){
                 $totalCompleted += 1;
@@ -45,6 +41,18 @@ class DashboardController extends Controller
                 $totalIncomplete += 1;
             }
         };
+
+        foreach ($activity as $data) {
+            foreach ($data->monthly_activity as $monthly) {
+                $monthlyDate = \Carbon\Carbon::parse($monthly->period);
+
+                if ($monthlyDate->year == $lastMonth->year && $monthlyDate->month == $lastMonth->month) {
+                    $totalFinancialTarget      += $monthly->financial_target ?? 0;
+                    $totalFinancialRealization += $monthly->financial_realization ?? 0;
+                }
+            }
+        }
+        
         /**
          * * Counting Total Financial Target *
         */

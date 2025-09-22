@@ -27,14 +27,6 @@
 
   <!-- Template Main CSS File -->
   <link href="{{ asset('admin/assets/css/style.css') }}" rel="stylesheet">
-
-  <!-- =======================================================
-  * Template Name: NiceAdmin
-  * Updated: Nov 17 2023 with Bootstrap v5.3.2
-  * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
 </head>
 
 <body>
@@ -100,7 +92,7 @@
                 </div>
               </div>
               <div class="credits">
-                Designed by <a href="#">Muhammad Rizky A.M</a>
+                Develop by <a href="#">Muhammad Rizky A.M</a>
               </div>
             </div>
           </div>

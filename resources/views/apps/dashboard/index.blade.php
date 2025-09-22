@@ -1,5 +1,9 @@
 @extends('layouts.app-v2')
 
+@section('title')
+    Dashboard | E-Monev BBRM Mektan
+@endsection
+
 @push('css')
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
 @endpush
@@ -109,39 +113,12 @@
               </div>
           </div>
         </div>
-
-          {{-- <div class="row pb-4">
-              <div class="col-lg-12">
-                  <!-- Total Kegiatan Chart -->
-                  <div class="p-6 m-20 bg-white rounded shadow">
-                      {!! $chart->container() !!}
-                  </div>     
-              </div>
-          </div>
-          
-          <div class="row pb-4">
-              <div class="col-lg-12">
-                  <!-- Total Kegiatan Sudah Chart -->
-                  <div class="p-6 m-20 bg-white rounded shadow">
-                      {!! $chartSudahdanBelum->container() !!}
-                  </div>     
-              </div>
-          </div> --}}
       </div>
     </section>
 </main>
 @endsection
 
 @push('scripts')
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-
-    {{-- Script for call Charts --}}
-    {{-- <script src="{{ $chart->cdn() }}"></script>
-    {{ $chart->script() }}
-
-    <script src="{{ $chartSudahdanBelum->cdn() }}"></script>
-    {{ $chartSudahdanBelum->script() }} --}}
-
 @endpush()

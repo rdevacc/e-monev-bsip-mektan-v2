@@ -1,5 +1,9 @@
 @extends('layouts.app-v2')
 
+@section('title')
+    Kegiatan | E-Monev BBRM Mektan
+@endsection
+
 @push('css')
     <!-- Bootstrap CSS (lokal) -->
     <link href="{{ asset('admin/assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -13,65 +17,64 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
     <style>
-    /* Table responsive */
-    .table-responsive {
-        overflow-x: auto;
-    }
+        /* Table responsive */
+        .table-responsive {
+            overflow-x: auto;
+        }
 
-    /* Table layout auto supaya menyesuaikan konten */
-    #activity-table {
-        width: 100%;
-        table-layout: auto;
-    }
+        /* Table layout auto supaya menyesuaikan konten */
+        #activity-table {
+            width: 100%;
+            table-layout: auto;
+        }
 
-    /* Semua kolom teks panjang */
-    #activity-table th,
-    #activity-table td {
-        white-space: normal;
-        word-wrap: break-word;
-    }
+        /* Semua kolom teks panjang */
+        #activity-table th,
+        #activity-table td {
+            white-space: normal;
+            word-wrap: break-word;
+        }
 
-    /* Kolom pertama tetap kecil */
-    th:first-child,
-    td:first-child {
-        width: 1% !important;
-        white-space: nowrap;
-        padding-left: 0.25rem !important;
-        padding-right: 0.25rem !important;
-    }
+        /* Kolom pertama tetap kecil */
+        th:first-child,
+        td:first-child {
+            width: 1% !important;
+            white-space: nowrap;
+            padding-left: 0.25rem !important;
+            padding-right: 0.25rem !important;
+        }
 
-    /* Khusus kolom yang butuh lebih luas */
-    #activity-table th.judul, #activity-table td.judul { min-width: 300px; }
-    #activity-table th.pj, #activity-table td.pj { min-width: 150px; }
-    #activity-table th.activity-budget, #activity-table td.activity-budget,
-    #activity-table th.workgroup, #activity-table td.workgroup { min-width: 150px; }
-    #activity-table th.workteam, #activity-table td.workteam { min-width: 350px; }
-    #activity-table th.status, #activity-table td.status { min-width: 120px; }
-    #activity-table th.period, #activity-table td.period { min-width: 120px; }
-    #activity-table th.completed-tasks, #activity-table td.completed-tasks { min-width: 250px; }
-    #activity-table th.issues, #activity-table td.issues { min-width: 250px; }
-    #activity-table th.follow-ups, #activity-table td.follow-ups { min-width: 200px; }
-    #activity-table th.planned-tasks, #activity-table td.planned-tasks { min-width: 250px; }
+        /* Khusus kolom yang butuh lebih luas */
+        #activity-table th.judul, #activity-table td.judul { min-width: 300px; }
+        #activity-table th.pj, #activity-table td.pj { min-width: 150px; }
+        #activity-table th.activity-budget, #activity-table td.activity-budget,
+        #activity-table th.workgroup, #activity-table td.workgroup { min-width: 150px; }
+        #activity-table th.workteam, #activity-table td.workteam { min-width: 350px; }
+        #activity-table th.status, #activity-table td.status { min-width: 120px; }
+        #activity-table th.period, #activity-table td.period { min-width: 120px; }
+        #activity-table th.completed-tasks, #activity-table td.completed-tasks { min-width: 250px; }
+        #activity-table th.issues, #activity-table td.issues { min-width: 250px; }
+        #activity-table th.follow-ups, #activity-table td.follow-ups { min-width: 200px; }
+        #activity-table th.planned-tasks, #activity-table td.planned-tasks { min-width: 250px; }
 
-    /* Kolom keuangan */
-    #activity-table th.financial-target, #activity-table td.financial-target, #activity-table th.financial-realization, #activity-table td.financial-realization { min-width: 200px; text-align: center !important; vertical-align: middle !important; }
+        /* Kolom keuangan */
+        #activity-table th.financial-target, #activity-table td.financial-target, #activity-table th.financial-realization, #activity-table td.financial-realization { min-width: 200px; text-align: center !important; vertical-align: middle !important; }
 
-    /* Kolom fisik */
-    #activity-table th.physical-target, #activity-table td.physical-target, #activity-table th.physical-realization, #activity-table td.physical-realization { min-width: 100px; text-align: center !important; vertical-align: middle !important; }
-    
-    .select-ellipsis {
-        max-width: 150px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+        /* Kolom fisik */
+        #activity-table th.physical-target, #activity-table td.physical-target, #activity-table th.physical-realization, #activity-table td.physical-realization { min-width: 100px; text-align: center !important; vertical-align: middle !important; }
+        
+        .select-ellipsis {
+            max-width: 150px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
-    .cool-mist {
-        background: #a8dadc;
-        color: #1d1d1d;    
-    }
-</style>
-
+        .cool-mist {
+            background: #a8dadc;
+            color: #1d1d1d;    
+        }
+    </style>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 @endpush

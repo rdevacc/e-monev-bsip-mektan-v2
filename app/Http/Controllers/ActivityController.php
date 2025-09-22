@@ -93,7 +93,6 @@ class ActivityController extends Controller
         return [];
     }
 
-
     /**
      * * Display a listing of the resource. *
      */

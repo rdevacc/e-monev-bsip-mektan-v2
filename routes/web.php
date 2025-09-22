@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\ActivityExportController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExcelController;
 use App\Http\Controllers\ForgotPasswordController;
@@ -55,7 +56,7 @@ Route::prefix('/v2')->middleware('auth')->group(function () {
     /**
      * * Excel Route
      */
-    Route::post('/app/kegiatan/excel', [ExcelController::class, 'generateExcel'])->name('excel');
+    Route::get('/app/export', [ActivityExportController::class, 'index'])->name('export.index');
 
     /**
      * * PDF Route

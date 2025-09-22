@@ -19,6 +19,13 @@
             </a>
         </li>
 
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('export') ? 'active' : '' }}" href="{{route('export.index')}}">
+                <i class="bi bi-grid"></i>
+                <span>Cetak Laporan</span>
+            </a>
+        </li>
+
         @canany(['isSuperAdmin', 'isAdmin'])
         <li class="nav-heading">Super Admin</li>
         

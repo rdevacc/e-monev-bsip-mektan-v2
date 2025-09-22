@@ -1,5 +1,9 @@
 @extends('layouts.app-v2')
 
+@section('title')
+    Users | E-Monev BBRM Mektan
+@endsection
+
 @section('content')
     <main id="main" class="main">
         <div class="row">
