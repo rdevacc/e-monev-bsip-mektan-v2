@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ActivityExport;
 use App\Models\Activity;
 use App\Models\User;
 use App\Models\WorkGroup;
 use App\Models\WorkTeam;
-use App\Models\ActivityStatus;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
 class ActivityExportController extends Controller
 {
-   public function index(Request $request)
+    public function index(Request $request)
     {
         if ($request->ajax()) {
 
@@ -36,31 +38,23 @@ class ActivityExportController extends Controller
                 'monthly_activities.financial_realization as monthly_financial_realization',
                 'monthly_activities.physical_target as monthly_physical_target',
                 'monthly_activities.physical_realization as monthly_physical_realization',
+                'monthly_activities.completed_tasks as monthly_completed_tasks',
+                'monthly_activities.issues as monthly_issues',
+                'monthly_activities.follow_ups as monthly_follow_ups',
+                'monthly_activities.planned_tasks as monthly_planned_tasks',
                 'users.name as pj_name',
                 'users.role_id as pj_role_id',
                 'work_groups.name as work_group_name',
                 'work_teams.name as work_team_name',
                 'activity_statuses.name as status_nama'
             )
-            ->leftJoin('monthly_activities', function($join) use ($parsedPeriods) {
-                $join->on('activities.id', '=', 'monthly_activities.activity_id');
-                // Hanya filter kalau ada periode dipilih
-                if ($parsedPeriods->isNotEmpty()) {
-                    $join->where(function($q) use ($parsedPeriods) {
-                        foreach ($parsedPeriods as $p) {
-                            $q->orWhere(function($q2) use ($p) {
-                                $q2->whereYear('monthly_activities.period', $p['year'])
-                                ->whereMonth('monthly_activities.period', $p['month']);
-                            });
-                        }
-                    });
-                }
-            })
+            ->leftJoin('monthly_activities', 'activities.id', '=', 'monthly_activities.activity_id')
             ->leftJoin('users', 'activities.user_id', '=', 'users.id')
             ->leftJoin('work_groups', 'activities.work_group_id', '=', 'work_groups.id')
             ->leftJoin('work_teams', 'activities.work_team_id', '=', 'work_teams.id')
             ->leftJoin('activity_statuses', 'activities.status_id', '=', 'activity_statuses.id')
-            ->orderBy('activities.created_at','desc');
+            ->orderBy('activities.id','asc')
+            ->orderBy('monthly_activities.period','asc');
 
             // Filter PJ
             $activities->when($request->filterPJ, fn($q) => $q->where('users.id', $request->filterPJ));
@@ -70,6 +64,16 @@ class ActivityExportController extends Controller
 
             // Filter WorkTeam
             $activities->when($request->filterWorkTeam, fn($q) => $q->where('activities.work_team_id', $request->filterWorkTeam));
+
+            // Filter tahun (jika ada)
+            if (!empty($request->filterYear)) {
+                $activities->whereIn(DB::raw('YEAR(monthly_activities.period)'), $request->filterYear);
+            }
+
+            // Filter bulan (jika ada)
+            if (!empty($request->filterMonth)) {
+                $activities->whereIn(DB::raw('MONTH(monthly_activities.period)'), $request->filterMonth);
+            }
 
             // Text Search
             if ($request->text_search) {
@@ -82,8 +86,8 @@ class ActivityExportController extends Controller
             return DataTables::eloquent($activities)
                 ->addIndexColumn()
                 ->editColumn('pj', fn($data) => $data->pj_name ?? '-')
-                ->editColumn('work_group', fn($data) => $data->work_group_name ?? '-')
-                ->editColumn('work_team', fn($data) => $data->work_team_name ?? '-')
+                // ->editColumn('work_group', fn($data) => $data->work_group_name ?? '-')
+                // ->editColumn('work_team', fn($data) => $data->work_team_name ?? '-')
                 ->editColumn('status', fn($data) => $data->status_nama ?? '-')
                 ->editColumn('activity_budget', fn($data) => $data->activity_budget ?? '-')
                 ->editColumn('activity_budget', function($data) {
@@ -226,13 +230,22 @@ class ActivityExportController extends Controller
 
         $currentYear = now()->year;
 
-        $periods = collect(range(1,12))->map(function($month) use ($currentYear) {
+        // Buat array bulan (1-12) dengan format "01", "02", dst.
+        $months = collect(range(1, 12))->map(function($month) use ($currentYear) {
             $monthPadded = str_pad($month, 2, '0', STR_PAD_LEFT);
             $tanggal = Carbon::parse("$currentYear-$monthPadded-01");
             $tanggal->locale('id');
             return [
-                'id' => "$currentYear-$monthPadded",
-                'name' => $tanggal->isoFormat('MMMM YYYY')
+                'id' => $monthPadded,
+                'name' => $tanggal->isoFormat('MMMM')
+            ];
+        });
+
+        // Buat array tahun, misal 5 tahun terakhir
+        $years = collect(range($currentYear - 4, $currentYear))->map(function($year) {
+            return [
+                'id' => $year,
+                'name' => $year
             ];
         });
 
@@ -240,7 +253,29 @@ class ActivityExportController extends Controller
             'pjList',
             'workGroupList',
             'workTeamList',
-            'periods',
+            'months',
+            'years',
         ]));
+    }
+
+    public function exportExcel(Request $request)
+    {
+        // Ambil filter dari request (sesuai index)
+        $filters = [
+            'filterPJ'        => $request->filterPJ,
+            'filterWorkGroup' => $request->filterWorkGroup,
+            'filterWorkTeam'  => $request->filterWorkTeam,
+            'text_search'     => $request->text_search,
+            'filterMonth'     => $request->filterMonth,
+            'filterYear'      => $request->filterYear,
+            'filterPeriod'    => $request->filterPeriod,
+        ];
+
+        Log::info('Export Excel filters: ' . json_encode($filters));
+
+        $currentYear = now()->year;
+
+        // Lakukan export menggunakan ActivityExport
+        return Excel::download(new ActivityExport($filters), "Laporan Kegiatan BBRM Mektan Tahun $currentYear.xlsx");
     }
 }

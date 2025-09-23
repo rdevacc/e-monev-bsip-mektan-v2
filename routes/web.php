@@ -57,6 +57,7 @@ Route::prefix('/v2')->middleware('auth')->group(function () {
      * * Excel Route
      */
     Route::get('/app/export', [ActivityExportController::class, 'index'])->name('export.index');
+    Route::get('/app/export-excel', [ActivityExportController::class, 'exportExcel'])->name('export.excel');
 
     /**
      * * PDF Route
