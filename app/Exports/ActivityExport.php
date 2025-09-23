@@ -3,10 +3,13 @@
 namespace App\Exports;
 
 use App\Models\Activity;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class ActivityExport implements WithEvents, WithStyles
@@ -98,32 +101,40 @@ class ActivityExport implements WithEvents, WithStyles
                 // Header tabel merge row 4-6
                 $sheet->mergeCells('A4:A6'); $sheet->setCellValue('A4','No');
                 $sheet->mergeCells('B4:B6'); $sheet->setCellValue('B4','Judul Kegiatan');
-                $sheet->mergeCells('C4:C6'); $sheet->setCellValue('C4','Tim Kerja');
-                $sheet->mergeCells('D4:D6'); $sheet->setCellValue('D4','Kelompok Kerja');
-                $sheet->mergeCells('E4:E6'); $sheet->setCellValue('E4','Anggaran Kegiatan');
+                $sheet->mergeCells('C4:C6'); $sheet->setCellValue('C4','PJ Kegiatan');
+                $sheet->mergeCells('D4:D6'); $sheet->setCellValue('D4','Tim Kerja');
+                $sheet->mergeCells('E4:E6'); $sheet->setCellValue('E4','Kelompok Kerja');
+                $sheet->mergeCells('F4:F6'); $sheet->setCellValue('F4','Anggaran Kegiatan');
 
-                $sheet->mergeCells('F4:J4'); $sheet->setCellValue('F4','Target & Realisasi (Kumulatif)');
-                $sheet->mergeCells('F5:H5'); $sheet->setCellValue('F5','Keuangan');
-                $sheet->mergeCells('I5:J5'); $sheet->setCellValue('I5','Fisik');
-                $sheet->setCellValue('F6','T'); $sheet->setCellValue('G6','R'); $sheet->setCellValue('H6','%');
-                $sheet->setCellValue('I6','T'); $sheet->setCellValue('J6','R');
+                // Kolom Bulan baru
+                $sheet->mergeCells('G4:G6'); 
+                $sheet->setCellValue('G4','Bulan');
 
-                $sheet->mergeCells('K4:K6'); $sheet->setCellValue('K4','Kegiatan yang sudah dikerjakan');
-                $sheet->mergeCells('L4:L6'); $sheet->setCellValue('L4','Permasalahan');
-                $sheet->mergeCells('M4:M6'); $sheet->setCellValue('M4','Tindak Lanjut');
+                // Geser header Target & Realisasi ke kanan (sekarang H-L)
+                $sheet->mergeCells('H4:L4'); $sheet->setCellValue('H4','Target & Realisasi (Kumulatif)');
+                $sheet->mergeCells('H5:J5'); $sheet->setCellValue('H5','Keuangan');
+                $sheet->mergeCells('K5:L5'); $sheet->setCellValue('K5','Fisik');
+                $sheet->setCellValue('H6','T'); $sheet->setCellValue('I6','R'); $sheet->setCellValue('J6','%');
+                $sheet->setCellValue('K6','T'); $sheet->setCellValue('L6','R');
 
-                // Tentukan bulan untuk header planned tasks (N)
+                $sheet->mergeCells('M4:M6'); $sheet->setCellValue('M4','Kegiatan yang sudah dikerjakan');
+                $sheet->mergeCells('N4:N6'); $sheet->setCellValue('N4','Permasalahan');
+                $sheet->mergeCells('O4:O6'); $sheet->setCellValue('O4','Tindak Lanjut');
+
+                // Planned tasks sekarang pindah ke P
                 $lastMonth = !empty($this->filters['filterMonth']) ? max($this->filters['filterMonth']) : now()->month;
                 $nextMonth = \Carbon\Carbon::createFromDate($startYear, $lastMonth, 1)->addMonth()->format('F');
-                $sheet->mergeCells('N4:N6');
-                $sheet->setCellValue('N4', 'Kegiatan yang akan dilakukan (' . $nextMonth . ')');
+                $sheet->mergeCells('P4:P6');
+                $sheet->setCellValue('P4', 'Kegiatan yang akan dilakukan (' . $nextMonth . ')');
 
                 // Styling header
-                $sheet->getStyle('A1:N6')->getFont()->setBold(true);
-                $sheet->getStyle('A1:N6')->getAlignment()->setHorizontal('center')->setVertical('center');
+                $sheet->getStyle('A1:P6')->getFont()->setBold(true);
+                $sheet->getStyle('A1:P6')->getAlignment()->setHorizontal('center')->setVertical('center');
 
-                // Set wrap text untuk kolom K-N agar newline tampil
-                $sheet->getStyle('K:N')->getAlignment()->setWrapText(true)->setVertical('top');
+                // Wrap text untuk kolom M-P
+                $sheet->getStyle('M:P')->getAlignment()->setWrapText(true)->setVertical('top');
+
+
 
                 // Ambil data dan tulis baris mulai row 7
                 $activities = $this->getActivities();
@@ -176,7 +187,7 @@ class ActivityExport implements WithEvents, WithStyles
                 foreach ($grouped as $name => $items) {
                     $startRow = $row;
                     foreach ($items as $activity) {
-                       // isi nomor hanya di baris pertama group
+                        // isi nomor hanya di baris pertama group
                         if ($row === $startRow) {
                             $sheet->setCellValue("A{$row}", $no);
                         } else {
@@ -186,39 +197,52 @@ class ActivityExport implements WithEvents, WithStyles
                         // isi judul (akan di-merge nanti)
                         $sheet->setCellValue("B{$row}", $activity->name);
 
-                        // sisanya isi per-baris
-                        $sheet->setCellValue("C{$row}", $activity->work_team);
-                        $sheet->setCellValue("D{$row}", $activity->work_group);
-                        $sheet->setCellValue("E{$row}", $formatCurrency($activity->activity_budget));
-                        $sheet->setCellValue("F{$row}", $formatCurrency($activity->financial_target));
-                        $sheet->setCellValue("G{$row}", $formatCurrency($activity->financial_realization));
+                        // isi PJ Kegiatan (akan di-merge juga)
+                        $sheet->setCellValue("C{$row}", $activity->pj);
+
+                        // sisanya isi per-baris (geser 1 kolom ke kanan)
+                        $sheet->setCellValue("D{$row}", $activity->work_team);
+                        $sheet->setCellValue("E{$row}", $activity->work_group);
+                        $sheet->setCellValue("F{$row}", $formatCurrency($activity->activity_budget));
+
+                        // isi Bulan
+                        $sheet->setCellValue("G{$row}", $activity->monthly_period ? 
+                            Carbon::parse($activity->monthly_period)->locale('id')->translatedFormat('F Y') : '-');
+
+                        // lanjutkan target & realisasi mulai kolom H
+                        $sheet->setCellValue("H{$row}", $formatCurrency($activity->financial_target));
+                        $sheet->setCellValue("I{$row}", $formatCurrency($activity->financial_realization));
 
                         $budget = $activity->activity_budget ?? 0;
                         $financial_realization = $activity->financial_realization ?? 0;
-                        $sheet->setCellValue("H{$row}", $budget > 0 ? round($financial_realization / $budget * 100, 1).'%' : '-');
+                        $sheet->setCellValue("J{$row}", $budget > 0 ? round($financial_realization / $budget * 100, 1).'%' : '-');
 
-                        $sheet->setCellValue("I{$row}", $activity->physical_target !== null ? $activity->physical_target.'%' : '-');
-                        $sheet->setCellValue("J{$row}", $activity->physical_realization !== null ? $activity->physical_realization.'%' : '-');
+                        $sheet->setCellValue("K{$row}", $activity->physical_target !== null ? $activity->physical_target.'%' : '-');
+                        $sheet->setCellValue("L{$row}", $activity->physical_realization !== null ? $activity->physical_realization.'%' : '-');
 
-                        $sheet->setCellValue("K{$row}", $formatList($activity->completed_tasks));
-                        $sheet->setCellValue("L{$row}", $formatList($activity->issues));
-                        $sheet->setCellValue("M{$row}", $formatList($activity->follow_ups));
-                        $sheet->setCellValue("N{$row}", $formatList($activity->planned_tasks));
+                        $sheet->setCellValue("M{$row}", $formatList($activity->completed_tasks));
+                        $sheet->setCellValue("N{$row}", $formatList($activity->issues));
+                        $sheet->setCellValue("O{$row}", $formatList($activity->follow_ups));
+                        $sheet->setCellValue("P{$row}", $formatList($activity->planned_tasks));
 
                         $row++;
                     }
                     $endRow = $row - 1;
                     if ($endRow > $startRow) {
-                        // merge No dan Judul
+                        // merge No, Judul, dan PJ
                         $sheet->mergeCells("A{$startRow}:A{$endRow}");
                         $sheet->mergeCells("B{$startRow}:B{$endRow}");
-                        $sheet->getStyle("A{$startRow}:B{$endRow}")->getAlignment()->setVertical('center');
+                        $sheet->mergeCells("C{$startRow}:C{$endRow}");
+                        $sheet->getStyle("A{$startRow}:P{$endRow}")->getAlignment()->setVertical('top');
+                        $sheet->getStyle("A4:P{$endRow}")
+                            ->getBorders()->getAllBorders()
+                            ->setBorderStyle(Border::BORDER_THIN)
+                            ->setColor(new Color('000000'));
                     }
 
                     // increment per group judul
                     $no++;
                 }
-
             }
         ];
     }
