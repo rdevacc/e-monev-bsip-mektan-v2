@@ -28,71 +28,6 @@ class ActivityController extends Controller
         return $clean;
     }
 
-    private function parseJsonArrayField(mixed $raw): array
-    {
-        // normalisasi null/empty
-        if (is_null($raw) || $raw === '') {
-            return [];
-        }
-
-        // jika sudah array
-        if (is_array($raw)) {
-            return $raw;
-        }
-
-        // jika object => cast ke array
-        if (is_object($raw)) {
-            $raw = (array) $raw;
-        }
-
-        // jika string: coba decode langsung
-        if (is_string($raw)) {
-            // 1) coba decode langsung
-            $decoded = json_decode($raw, true);
-            if (json_last_error() === JSON_ERROR_NONE) {
-                // jika decoded adalah array sederhana -> return
-                if (is_array($decoded)) {
-                    // jika bentuknya ['val' => '["a","b"]'] => decode inner
-                    if (array_key_exists('val', $decoded) && is_string($decoded['val'])) {
-                        $inner = json_decode($decoded['val'], true);
-                        if (json_last_error() === JSON_ERROR_NONE && is_array($inner)) {
-                            return $inner;
-                        }
-                        // jika val sudah array
-                        if (is_array($decoded['val'])) return $decoded['val'];
-                    }
-                    return $decoded;
-                }
-            }
-
-            // 2) coba stripslashes dan decode lagi (kadang double escaped)
-            $stripped = stripslashes($raw);
-            if ($stripped !== $raw) {
-                $decoded2 = json_decode($stripped, true);
-                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded2)) {
-                    return $decoded2;
-                }
-            }
-
-            // 3) regex cari "val":"[...]"
-            if (preg_match('/"val"\s*:\s*"(.+?)"/', $raw, $m)) {
-                $valStr = stripslashes($m[1]);
-                $inner2 = json_decode($valStr, true);
-                if (json_last_error() === JSON_ERROR_NONE && is_array($inner2)) {
-                    return $inner2;
-                }
-            }
-
-            // 4) fallback: split by comma (jika string "a, b, c")
-            $parts = preg_split('/\s*,\s*/', trim($raw), -1, PREG_SPLIT_NO_EMPTY);
-            if ($parts && count($parts) > 0) {
-                return $parts;
-            }
-        }
-
-        return [];
-    }
-
     /**
      * * Display a listing of the resource. *
      */
@@ -100,13 +35,9 @@ class ActivityController extends Controller
     {
         if ($request->ajax()) {
 
-            // Default periode: bulan sekarang
-            $currentPeriod = now()->format('Y-m');
-
             // Gunakan filterPeriod dari request jika ada
-            $period = $request->filterPeriod ?? $currentPeriod;
-            $year = date('Y', strtotime($period . '-01'));
-            $month = date('m', strtotime($period . '-01'));
+            $year = $request->filterYear ?? null;
+            $month = $request->filterMonth ?? null;
 
             // Query utama
             $activities = Activity::select(
@@ -126,16 +57,24 @@ class ActivityController extends Controller
                 'work_teams.name as work_team_name',
                 'activity_statuses.name as status_nama'
             )
-            ->leftJoin('monthly_activities', function($join) use ($year, $month) {
-                $join->on('activities.id', '=', 'monthly_activities.activity_id')
-                    ->whereYear('monthly_activities.period', $year)
-                    ->whereMonth('monthly_activities.period', $month);
+            ->leftJoin('monthly_activities', function($join) {
+                $join->on('activities.id', '=', 'monthly_activities.activity_id');
             })
             ->leftJoin('users', 'activities.user_id', '=', 'users.id')
             ->leftJoin('work_groups', 'activities.work_group_id', '=', 'work_groups.id')
             ->leftJoin('work_teams', 'activities.work_team_id', '=', 'work_teams.id')
             ->leftJoin('activity_statuses', 'activities.status_id', '=', 'activity_statuses.id')
             ->orderBy('activities.created_at','desc');
+
+            // Filter Tahun
+            if (!empty($year)) {
+                $activities->whereYear('monthly_activities.period', $year);
+            }
+
+            // Filter Bulan
+            if (!empty($month)) {
+                $activities->whereMonth('monthly_activities.period', $month);
+            }
 
             // Filter PJ
             $activities->when($request->filterPJ, fn($q) => $q->where('users.id', $request->filterPJ));
@@ -155,6 +94,8 @@ class ActivityController extends Controller
             // Logging (opsional)
             Log::info('Filter period: '.$request->filterPeriod);
             Log::info('Filter PJ: '.$request->filterPJ);
+            Log::info('Filter Year: ' . $year);
+            Log::info('Filter Month: ' . $month);
 
             // DataTables
             return DataTables::eloquent($activities)
@@ -206,13 +147,20 @@ class ActivityController extends Controller
                         ? str_replace('.', ',', sprintf('%.1f', (float) $data->monthly_physical_realization))
                         : '-'
                 )
-                ->editColumn('monthly_period', function ($activity) use ($request, $period) {
+                ->editColumn('monthly_period', function ($activity) use ($year, $month) {
                     if ($activity->monthly_period) {
                         return Carbon::parse($activity->monthly_period)->locale('id')->translatedFormat('F Y');
                     }
 
-                    // fallback ke filterPeriod (misalnya "2025-09")
-                    return Carbon::createFromFormat('Y-m', $period)->locale('id')->translatedFormat('F Y');
+                   // fallback ke filter (kalau ada year dan month)
+                   if ($year && $month) {
+                        return Carbon::createFromDate($year, $month, 1)
+                            ->locale('id')
+                            ->translatedFormat('F Y');
+                    }
+
+                    // fallback default kalau kosong semua
+                    return '-';
                 })
                 // ->editColumn('monthly_completed_tasks', function($activity) {
                 //     $raw = $activity->monthly_completed_tasks;

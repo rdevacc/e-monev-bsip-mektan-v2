@@ -103,19 +103,31 @@
                 <div class="row mx-1 py-2 d-flex justify-content-between align-items-center">
                     <div class="row mx-1 mb-3">
                         <div class="col-12 col-md-3">
-                            <label for="filterPeriod" class="form-label">Bulan</label>
-                            <select id="filterPeriod" class="form-select">
-                                <option value="">-- Semua Bulan --</option>
-                                @foreach ($periods as $period)
-                                    <option value="{{ $period['id'] }}" {{ $period['id'] === now()->format('Y-m') ? 'selected' : '' }}>
-                                        {{ $period['name'] }}
-                                    </option>
-                                @endforeach
+                            <label for="filterYear" class="form-label">Tahun</label>
+                            <select id="filterYear" class="form-select">
+                                <option value="" selected>-- Semua Tahun --</option>
+                                @for ($y = now()->year; $y >= 2022; $y--)
+                                    <option value="{{ $y }}">{{ $y }}</option>
+                                @endfor
                             </select>
                         </div>
+
+                        <div class="col-12 col-md-3">
+                            <label for="filterMonth" class="form-label">Bulan</label>
+                            <select id="filterMonth" class="form-select" disabled>
+                                <option value="">-- Semua Bulan --</option>
+                                @for ($m = 1; $m <= 12; $m++)
+                                    <option value="{{ sprintf('%02d', $m) }}">
+                                        {{ \Carbon\Carbon::create()->month($m)->locale('id')->translatedFormat('F') }}
+                                    </option>
+                                @endfor
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mx-1 mb-4">
                         <div class="col-12 col-md-3">
                             <label for="filterWorkGroup" class="form-label">Kelompok Kerja</label>
-                            <select id="filterWorkGroup" class="form-select">
+                            <select id="filterWorkGroup" class="form-select" disabled>
                                 <option selected value="">Pilih Kelompok Kerja</option>
                                 @foreach ($workGroupList as $workGroup)
                                     <option value="{{ $workGroup->id }}">{{ $workGroup->name }}</option>
@@ -124,7 +136,7 @@
                         </div>
                         <div class="col-12 col-md-3">
                             <label for="filterWorkTeam" class="form-label">Tim Kerja</label>
-                            <select id="filterWorkTeam" class="form-select">
+                            <select id="filterWorkTeam" class="form-select" disabled>
                                 <option selected value="">Pilih Tim Kerja</option>
                                 @foreach ($workTeamList as $workTeam)
                                     <option value="{{ $workTeam->id }}">{{ $workTeam->name }}</option>
@@ -133,7 +145,7 @@
                         </div>
                         <div class="col-12 col-md-3">
                             <label for="filterPJ" class="form-label">PJ Kegiatan</label>
-                            <select id="filterPJ" class="form-select">
+                            <select id="filterPJ" class="form-select" disabled>
                                 <option selected value="">Pilih PJ Kegiatan</option>
                                 @foreach ($pjList as $pj)
                                     <option value="{{ $pj->id }}">{{ $pj->name }}</option>
@@ -160,9 +172,10 @@
         </div>
 
         <!-- Content Section -->
+        
         <div class="row">
             <div class="col-lg-12">
-                <div class="card">
+                <div class="card" id="activity-card" style="display:none;">
                     <div class="card-body">
 
                         <!-- Table with stripped rows -->
@@ -279,6 +292,9 @@
         }
 
         $(function () {
+            // Default: card hidden
+            $('#activity-card').hide();
+
             var activityTable = $('#activity-table').DataTable({
                 processing: true,
                 serverSide: true,
@@ -298,8 +314,16 @@
                         data.filterWorkGroup = $('#filterWorkGroup').val();
                         data.filterWorkTeam = $('#filterWorkTeam').val();
                         data.text_search = $('#text_search').val();
-                        data.filterPeriod = $('#filterPeriod').val();
+                        data.filterYear = $('#filterYear').val();
+                        data.filterMonth = $('#filterMonth').val();
                     },
+                    // Cegah request awal kalau tahun belum dipilih
+                    dataSrc: function(json) {
+                        if (!$('#filterYear').val()) {
+                            return [];
+                        }
+                        return json.data;
+                    }
                 },
                 columns: [{
                         data: 'DT_RowIndex',
@@ -428,9 +452,41 @@
                 activityTable.draw();
             });
 
-            $('#filterPeriod').change(function () { 
-                console.log($('#filterPeriod').val())
+            // Default: bulan disabled sampai tahun dipilih
+            if (!$('#filterYear').val()) {
+                $('#filterMonth').val('').prop('disabled', true);
+            }
+
+            $('#filterYear').on('change', function () {
+                if ($(this).val()) {
+                    let currentYear = new Date().getFullYear();
+                    currentMonth = ("0" + (new Date().getMonth() + 1)).slice(-2);
+
+                    // Kalau tahun yang dipilih sama dengan tahun sekarang, otomatis pilih bulan sekarang
+                    if ($(this).val() == currentYear) {
+                        $('#filterMonth').prop('disabled', false).val(currentMonth).trigger('change');
+                    } else {
+                        $('#filterMonth').prop('disabled', false).val('').trigger('change');
+                    }
+
+                    $('#filterWorkGroup').prop('disabled', false);
+                    $('#filterWorkTeam').prop('disabled', false);
+                    $('#filterPJ').prop('disabled', false);
+                    $('#activity-card').show();
+                } else {
+                    $('#filterMonth').val('').prop('disabled', true);
+                    $('#filterWorkGroup').prop('disabled', true);
+                    $('#filterWorkTeam').prop('disabled', true);
+                    $('#filterPJ').prop('disabled', true);
+                    $('#activity-card').hide();
+                }
                 activityTable.draw();
+            });
+
+            $('#filterMonth').on('change', function () {
+                if ($('#filterYear').val()) {
+                    activityTable.draw();
+                }
             });
         });
     </script>

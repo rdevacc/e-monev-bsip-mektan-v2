@@ -310,12 +310,11 @@
 
                             {{-- Submit --}}
                             <div class="mt-4 text-end">
-                                <button type="submit" class="btn btn-primary">Simpan</button>
+                                <button type="submit" id="btnSubmit" class="btn btn-primary">
+                                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                    <span class="btn-text">Simpan</span>
+                                </button>
                                 <a href="{{ route('activity.index') }}" class="btn btn-secondary">Batal</a>
-                                {{-- Clear button --}}
-                                {{-- <button type="button" id="clearMonthlyData" class="btn btn-warning">
-                                    Kosongkan Data Bulanan
-                                </button> --}}
                             </div>
                         </form>
                     </div>
@@ -639,6 +638,12 @@ $(document).ready(function() {
     // ===== Form Submit convert Rupiah to number =====
     $('#editActivityForm').on('submit', function() {
         
+        // ===== Spinner Submit Button =====
+        let btn = $('#btnSubmit');
+        btn.prop('disabled', true);
+        btn.find('.spinner-border').removeClass('d-none');
+        btn.find('.btn-text').text('Menyimpan...');
+
         // ===== Financial Target =====
         const ft = $('#financial_target').val();
         const ftd = $('#financial_target_display').val();
