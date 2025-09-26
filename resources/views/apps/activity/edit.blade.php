@@ -140,8 +140,54 @@
                             {{-- Monthly Data --}}
                             <div class="mb-3">
                                 <label for="period" class="form-label">Bulan</label>
-                                <input type="month" class="form-control @error('period') is-invalid @enderror"
-                                    id="period" name="period" value="{{ old('period', $activity->period) }}">
+
+                                @php
+                                // Ambil monthly activity sesuai activity & period terakhir
+                                $monthly = $activity->monthly_activity()->latest('period')->first();
+                                @endphp
+
+                                @if(in_array(auth()->user()->role->name, ['Admin', 'SuperAdmin']))
+                                    {{-- Admin / SuperAdmin bisa pilih bulan --}}
+                                    <input type="month"
+                                        class="form-control @error('period') is-invalid @enderror"
+                                        id="period" name="period"
+                                        value="{{ old('period', optional($monthly->period ? \Carbon\Carbon::parse($monthly->period) : now())->format('Y-m')) }}">
+                                @else
+                                     @php
+                                        $now = now();
+                                        $lastMonth = now()->subMonth();
+
+                                        $options = [
+                                            $now->format('Y-m') => $now->translatedFormat('F Y'),
+                                            $lastMonth->format('Y-m') => $lastMonth->translatedFormat('F Y'),
+                                        ];
+
+                                        $selectedPeriod = old('period', optional($monthly->period ? \Carbon\Carbon::parse($monthly->period) : $now)->format('Y-m'));
+                                    @endphp
+
+                                    {{-- User biasa mengikuti aturan canBeEdited --}}
+                                    @if($monthly->canBeEdited())
+                                        <input type="month"
+                                            class="form-control @error('period') is-invalid @enderror"
+                                            id="period" name="period"
+                                            value="{{ old('period', optional($monthly->period ? \Carbon\Carbon::parse($monthly->period) : now())->format('Y-m')) }}">
+                                    @else
+                                        <input type="month"
+                                            class="form-control @error('period') is-invalid @enderror"
+                                            id="period_display"
+                                            value="{{ old('period', optional($monthly->period ? \Carbon\Carbon::parse($monthly->period) : now())->format('Y-m')) }}"
+                                            disabled>
+                                        <input type="hidden" id="period" name="period"
+                                            value="{{ old('period', optional($monthly->period ? \Carbon\Carbon::parse($monthly->period) : now())->format('Y-m')) }}">
+                                    @endif
+                                    {{-- <input type="month"
+                                        class="form-control @error('period') is-invalid @enderror"
+                                        id="period_display"
+                                        value="{{ old('period', optional(\Carbon\Carbon::parse($activity->period))->format('Y-m') ?? now()->format('Y-m')) }}"
+                                        disabled>
+                                    <input type="hidden" id="period" name="period" value="{{ old('period', optional(\Carbon\Carbon::parse($activity->period))->format('Y-m') ?? now()->format('Y-m')) }}"> --}}
+                                @endif
+
                                 @error('period')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -152,12 +198,27 @@
                                 <div class="card-body">
                                     <h5 class="card-title">Data Bulanan <span id="periodText" style="font-weight: bold; color: #0d6efd;"></span></h5>
 
+                                    @php
+                                        // Ambil monthly activity sesuai periode saat ini (atau terakhir jika null)
+                                        $monthly = $activity->monthly_activity()->latest('period')->first();
+                                        $canEditTarget = $monthly ? $monthly->canUpdateTarget() : false;
+                                    @endphp
+
                                     <div class="row mb-3">
                                         <div class="col-md-6">
-                                            <label for="financial_target" class="form-label">Target Keuangan</label>
+                                            <label for="financial_target_display" class="form-label">Target Keuangan</label>
                                             <input type="text"
-                                                class="form-control @error('financial_target') is-invalid @enderror"
-                                                id="financial_target" name="financial_target" value="{{ old('financial_target', $activity->financial_target) }}">
+                                                class="form-control @error('financial_target_display') is-invalid @enderror"
+                                                id="financial_target_display"
+                                                {{ $canEditTarget ? '' : 'disabled style=background:#e9ecef' }}
+                                                value="{{ old('financial_target', $activity->financial_target ?? 0) }}">
+                                            
+                                            @if($canEditTarget)
+                                                <input type="hidden" name="financial_target" id="financial_target" value="{{ old('financial_target', $activity->financial_target) }}">
+                                            @else
+                                                <input type="hidden" name="financial_target" id="financial_target" value="{{ old('financial_target', $activity->financial_target) }}">
+                                            @endif
+
                                             @error('financial_target')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -175,10 +236,19 @@
 
                                     <div class="row mb-3">
                                         <div class="col-md-6">
-                                            <label for="physical_target" class="form-label">Target Fisik (%)</label>
+                                            <label for="physical_target_display" class="form-label">Target Fisik (%)</label>
                                             <input type="text"
-                                                class="form-control @error('physical_target') is-invalid @enderror"
-                                                id="physical_target" name="physical_target" value="{{ old('physical_target', $activity->physical_target) }}">
+                                                class="form-control @error('physical_target_display') is-invalid @enderror"
+                                                id="physical_target_display"
+                                                {{ $canEditTarget ? '' : 'disabled style=background:#e9ecef' }}
+                                                value="{{ old('physical_target', $activity->physical_target ?? 0) }}">
+                                            
+                                            @if($canEditTarget)
+                                                <input type="hidden" name="physical_target" id="physical_target" value="{{ old('physical_target', $activity->physical_target) }}">
+                                            @else
+                                                <input type="hidden" name="physical_target" id="physical_target" value="{{ old('physical_target', $activity->physical_target) }}">
+                                            @endif
+
                                             @error('physical_target')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -340,9 +410,9 @@ $(document).ready(function() {
 
     // ===== Input Formatting Binding =====
     handleCurrencyInput('#activity_budget');
-    handleCurrencyInput('#financial_target');
+    handleCurrencyInput('#financial_target_display');
     handleCurrencyInput('#financial_realization');
-    handleDecimalInput('#physical_target', ',');
+    handleDecimalInput('#physical_target_display', ',');
     handleDecimalInput('#physical_realization', ',');
 
     // ===== Utility: normalize dynamic rows (label only first, add button only first) =====
@@ -441,28 +511,26 @@ $(document).ready(function() {
 
     // run on load
     showMonthlyIfNeeded();
+    
+    // === Auto-load monthly data on page load ===
+    let initialPeriod = $('#period').val() || $('#period_display').val();
+    if (initialPeriod) {
+        console.log("Period hidden:", $('#period').val());
+        console.log("Period display:", $('#period_display').val());
+        console.log("Initial period used:", initialPeriod);
 
-    // ===== AJAX Update Berdasarkan Periode =====
-    $('#period').on('change', function() {
-        let period = $(this).val();
+        // langsung jalankan isi logika AJAX sama persis dengan event change
         let activityId = "{{ $activity->id }}";
         let url = "{{ route('activity.monthly-data', ':id') }}".replace(':id', activityId);
-
-        if (!period) {
-            // jika periode dikosongkan, sembunyikan card (sesuai requirement)
-            showMonthlyIfNeeded();
-            return;
-        }
 
         $.ajax({
             url: url,
             type: 'GET',
-            data: { period: period },
+            data: { period: initialPeriod },
             success: function(response) {
-                // safe parsing + formatting
-                $('#financial_target').val(response.financial_target ? formatRupiah(rupiahToNumber(response.financial_target)) : '');
+                $('#financial_target_display').val(response.financial_target ? formatRupiah(rupiahToNumber(response.financial_target)) : '');
                 $('#financial_realization').val(response.financial_realization ? formatRupiah(rupiahToNumber(response.financial_realization)) : '');
-                $('#physical_target').val(response.physical_target ? response.physical_target.toString().replace('.', ',') : '');
+                $('#physical_target_display').val(response.physical_target ? response.physical_target.toString().replace('.', ',') : '');
                 $('#physical_realization').val(response.physical_realization ? response.physical_realization.toString().replace('.', ',') : '');
 
                 function updateFields(rowId, fieldName, dataArray, fieldLabel, addBtnId) {
@@ -493,6 +561,69 @@ $(document).ready(function() {
                 updateFields('#followUpsRow', 'follow_ups', response.follow_ups, 'Tindak Lanjut', 'followUpsAddBtn');
                 updateFields('#plannedTasksRow', 'planned_tasks', response.planned_tasks, 'Kegiatan yang akan dilakukan', 'plannedTasksAddBtn');
 
+                $('#monthlyCard').slideDown();
+                updatePeriodTitle();
+            },
+            error: function() {
+                $('#monthlyCard').slideDown();
+                updatePeriodTitle();
+            }
+        });
+    }
+
+    // ===== AJAX Update Berdasarkan Periode =====
+    $('#period').on('change', function() {
+        let period = $(this).val();
+        let activityId = "{{ $activity->id }}";
+        let url = "{{ route('activity.monthly-data', ':id') }}".replace(':id', activityId);
+
+        if (!period) {
+            // jika periode dikosongkan, sembunyikan card (sesuai requirement)
+            showMonthlyIfNeeded();
+            return;
+        }
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            data: { period: period },
+            success: function(response) {
+                // safe parsing + formatting
+                $('#financial_target_display').val(response.financial_target ? formatRupiah(rupiahToNumber(response.financial_target)) : '');
+                $('#financial_realization').val(response.financial_realization ? formatRupiah(rupiahToNumber(response.financial_realization)) : '');
+                $('#physical_target_display').val(response.physical_target ? response.physical_target.toString().replace('.', ',') : '');
+                $('#physical_realization').val(response.physical_realization ? response.physical_realization.toString().replace('.', ',') : '');
+
+                function updateFields(rowId, fieldName, dataArray, fieldLabel, addBtnId) {
+                    $(rowId).empty();
+                    if (!dataArray || !dataArray.length) dataArray = [''];
+                    dataArray.forEach((val, i) => {
+                        const fieldClass = fieldName + 'Field';
+                        const removeBtnClass = fieldName + 'RemoveBtn';
+                        const inputId = `${fieldName}_${i}`;
+                        $(rowId).append(`
+                            <div class="row align-items-end ${fieldClass} my-2">
+                                <div class="col-10 col-md-11">
+                                    ${i === 0 ? `<label class="form-label" for="${inputId}">${fieldLabel}</label>` : ''}
+                                    <input type="text" class="form-control" id="${inputId}" name="${fieldName}[${i}]" value="${val ?? ''}">
+                                </div>
+                                <div class="col-2 col-md-1">
+                                    ${i === 0 
+                                        ? `<button type="button" class="btn btn-outline-success" id="${addBtnId}"><i class="bi bi-plus-circle"></i></button>` 
+                                        : `<button type="button" class="btn btn-outline-danger ${removeBtnClass}"><i class="bi bi-dash-circle"></i></button>`}
+                                </div>
+                            </div>
+                        `);
+                    });
+                    // ensure proper labels/buttons after insertion
+                    normalizeDynamicRows(rowId, fieldName, fieldLabel, addBtnId);
+                }
+
+                updateFields('#completedTasksRow', 'completed_tasks', response.completed_tasks, 'Kegiatan yang sudah dilakukan', 'completedTasksAddBtn');
+                updateFields('#issuesRow', 'issues', response.issues, 'Permasalahan', 'issuesAddBtn');
+                updateFields('#followUpsRow', 'follow_ups', response.follow_ups, 'Tindak Lanjut', 'followUpsAddBtn');
+                updateFields('#plannedTasksRow', 'planned_tasks', response.planned_tasks, 'Kegiatan yang akan dilakukan', 'plannedTasksAddBtn');
+
                 // tampilkan card bila sukses load data
                 $('#monthlyCard').slideDown();
                 updatePeriodTitle();
@@ -505,64 +636,26 @@ $(document).ready(function() {
         });
     });
 
-    // ===== Clear Monthly Data =====
-    $('#clearMonthlyData').on('click', function() {
-        Swal.fire({
-            title: 'Apakah kamu yakin?',
-            text: "Data bulanan akan dikosongkan!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Ya, kosongkan!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Kosongkan input keuangan & fisik
-                $('#financial_target').val('');
-                $('#financial_realization').val('');
-                $('#physical_target').val('');
-                $('#physical_realization').val('');
-
-                // Fungsi untuk kosongkan dynamic field - sisakan 1 kosong
-                function clearDynamicFields(rowId, fieldName, fieldLabel, addBtnId) {
-                    $(rowId).empty();
-                    $(rowId).append(`
-                        <div class="row align-items-end ${fieldName}Field my-2">
-                            <div class="col-10 col-md-11">
-                                <label class="form-label">${fieldLabel}</label>
-                                <input type="text" class="form-control" name="${fieldName}[0]" value="">
-                            </div>
-                            <div class="col-2 col-md-1">
-                                <button type="button" class="btn btn-outline-success" id="${addBtnId}">
-                                    <i class="bi bi-plus-circle"></i>
-                                </button>
-                            </div>
-                        </div>
-                    `);
-                }
-
-                clearDynamicFields('#completedTasksRow','completed_tasks','Kegiatan yang sudah dilakukan','completedTasksAddBtn');
-                clearDynamicFields('#issuesRow','issues','Permasalahan','issuesAddBtn');
-                clearDynamicFields('#followUpsRow','follow_ups','Tindak Lanjut','followUpsAddBtn');
-                clearDynamicFields('#plannedTasksRow','planned_tasks','Kegiatan yang akan dilakukan','plannedTasksAddBtn');
-
-                Swal.fire(
-                    'Berhasil!',
-                    'Data bulanan telah dikosongkan.',
-                    'success'
-                );
-            }
-        });
-    });
-
     // ===== Form Submit convert Rupiah to number =====
     $('#editActivityForm').on('submit', function() {
-        $('#financial_target').val(rupiahToNumber($('#financial_target').val()));
-        $('#financial_realization').val(rupiahToNumber($('#financial_realization').val()));
+        
+        // ===== Financial Target =====
+        const ft = $('#financial_target').val();
+        const ftd = $('#financial_target_display').val();
+        $('#financial_target').val(ftd ? rupiahToNumber(ftd) : 0);
 
-        $('#physical_target').val($('#physical_target').val().trim().replace(/,/g, '.'));
-        $('#physical_realization').val($('#physical_realization').val().trim().replace(/,/g, '.'));
+        // ===== Physical Target =====
+        const pt = $('#physical_target').val();
+        const ptd = $('#physical_target_display').val();
+        $('#physical_target').val(ptd ? ptd.trim().replace(/,/g, '.') : 0);
+        
+        // ===== Financial Realization =====
+        const fr = $('#financial_realization').val();
+        $('#financial_realization').val(fr ? rupiahToNumber(fr) : 0);
+
+        // ===== Physical Realization =====
+        const pr = $('#physical_realization').val();
+        $('#physical_realization').val(pr ? pr.trim().replace(/,/g, '.') : 0);
     });
 
 });

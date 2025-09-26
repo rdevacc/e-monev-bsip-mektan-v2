@@ -410,13 +410,24 @@ class ActivityController extends Controller
      */
     public function edit(Activity $activity)
     {
-         $this->authorize('update', $activity);
+        $this->authorize('update', $activity);
+
+        $year = now()->year;
+        $month = now()->month;
 
         // Initiate Data
         $workGroupList = WorkGroup::orderBy('name')->get(['id', 'name']);
         $workTeamList = WorkTeam::orderBy('name')->get(['id', 'name']);
         $pjList = User::orderBy('name')->get(['id', 'name']);
         $statusList = ActivityStatus::orderBy('name')->get(['id', 'name']);
+        $monthlyActivity = $activity->monthly_activity_for_month($year, $month)->first();
+
+        // Cek role user
+        $userRole = auth()->user()->role;
+        if (!in_array($userRole, ['Admin', 'SuperAdmin'])) {
+            // override period ke bulan sekarang
+            $activity->period = now()->format('Y-m');
+        }
 
         return view('apps.activity.edit', compact([
             'activity',
@@ -424,6 +435,7 @@ class ActivityController extends Controller
             'workTeamList',
             'pjList',
             'statusList',
+            'monthlyActivity',
         ]));
     }
 
@@ -466,7 +478,7 @@ class ActivityController extends Controller
      */
     public function update(Request $request, Activity $activity)
     {
-         $this->authorize('update', $activity);
+        $this->authorize('update', $activity);
 
         $request->validate([
             'name' => 'required',
@@ -486,7 +498,6 @@ class ActivityController extends Controller
             'planned_tasks' => 'nullable|array',
         ]);
 
-        // return dd($request->user_id);
         // Update activity
         $activity->update([
             'name' => $request->name,
@@ -497,14 +508,38 @@ class ActivityController extends Controller
             'activity_budget' => parseRupiah($request->activity_budget),
         ]);
 
+        // Tentukan period sesuai input
         $periodDate = $request->period . '-01';
+
+        // boleh edit hanya bulan berjalan atau bulan lalu
+        $allowedPeriods = [
+            now()->startOfMonth()->toDateString(),
+            now()->subMonth()->startOfMonth()->toDateString(),
+        ];
+
+        if (!in_array(auth()->user()->role->name, ['Admin', 'SuperAdmin'])) {
+            if (!in_array(Carbon::parse($periodDate)->toDateString(), $allowedPeriods)) {
+                return redirect()->back()->withErrors([
+                    'period' => 'Periode yang dipilih tidak valid. Hanya bulan ini atau bulan sebelumnya yang boleh dipilih.'
+                ]);
+            }
+        }
 
         $monthly = $activity->monthly_activity()->firstOrNew([
             'period' => $periodDate
         ]);
 
-        $monthly->financial_target = $this->cleanNumber($request->financial_target);
-        $monthly->financial_realization = $this->cleanNumber($request->financial_realization);
+
+        // ==== Pengecekan aturan edit (deadline, dll) ====
+        if (!$monthly->canBeEdited()) {
+            return redirect()->back()->withErrors([
+                'period' => 'Sudah melebihi batas deadline edit data yang telah ditentukan.',
+            ]);
+        }
+
+        
+        $monthly->financial_target = $request->financial_target;
+        $monthly->financial_realization = $request->financial_realization;
         $monthly->physical_target = $request->physical_target;
         $monthly->physical_realization = $request->physical_realization;
         $monthly->completed_tasks = $request->completed_tasks ?? [];
