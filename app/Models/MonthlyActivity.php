@@ -60,7 +60,7 @@ class MonthlyActivity extends Model
     /**
      * Cek apakah target (keuangan/fisik) bisa diupdate.
      * Aturan: hanya bisa di awal tahun untuk input,
-     * dan update setiap triwulan I–III (Maret, Juni, September).
+     * dan update setiap April, Juli, Oktober.
      */
     public function canUpdateTarget(): bool
     {
@@ -72,10 +72,17 @@ class MonthlyActivity extends Model
             return false;
         }
 
-        // hanya di bulan Maret, Juni, September
-        $allowedMonths = [3, 6, 9];
+        // khusus Januari boleh isi sepanjang bulan
+        if ($now->month === 1){
+            return true;
+        }
 
-        return in_array($now->month, $allowedMonths);
+        // bulan April, Juli, Oktober hanya sampai tanggal 5
+        $allowedMonths = [4, 7, 10];
+        if (in_array($now->month, $allowedMonths)) {
+            return $now->day <= 5;
+        }
+
+        return false;
     }
-
 }

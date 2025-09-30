@@ -153,9 +153,18 @@
                                         id="period" name="period"
                                         value="{{ old('period', optional($monthly->period ? \Carbon\Carbon::parse($monthly->period) : now())->format('Y-m')) }}">
                                 @else
-                                     @php
+                                    @php
                                         $now = now();
                                         $lastMonth = now()->subMonth();
+                                        
+                                        // default: hanya bulan sekarang
+                                        $minPeriod = $now->format('Y-m');
+                                        $maxPeriod = $now->format('Y-m');
+
+                                        // kalau tanggal 1, izinkan bulan sebelumnya
+                                        if ($now->day === 1) {
+                                            $minPeriod = $lastMonth->format('Y-m');
+                                        }
 
                                         $options = [
                                             $now->format('Y-m') => $now->translatedFormat('F Y'),
@@ -168,6 +177,8 @@
                                     {{-- User biasa mengikuti aturan canBeEdited --}}
                                     @if($monthly->canBeEdited())
                                         <input type="month"
+                                            min="{{ $minPeriod }}" 
+                                            max="{{ $maxPeriod }}"
                                             class="form-control @error('period') is-invalid @enderror"
                                             id="period" name="period"
                                             value="{{ old('period', optional($monthly->period ? \Carbon\Carbon::parse($monthly->period) : now())->format('Y-m')) }}">
@@ -180,12 +191,6 @@
                                         <input type="hidden" id="period" name="period"
                                             value="{{ old('period', optional($monthly->period ? \Carbon\Carbon::parse($monthly->period) : now())->format('Y-m')) }}">
                                     @endif
-                                    {{-- <input type="month"
-                                        class="form-control @error('period') is-invalid @enderror"
-                                        id="period_display"
-                                        value="{{ old('period', optional(\Carbon\Carbon::parse($activity->period))->format('Y-m') ?? now()->format('Y-m')) }}"
-                                        disabled>
-                                    <input type="hidden" id="period" name="period" value="{{ old('period', optional(\Carbon\Carbon::parse($activity->period))->format('Y-m') ?? now()->format('Y-m')) }}"> --}}
                                 @endif
 
                                 @error('period')

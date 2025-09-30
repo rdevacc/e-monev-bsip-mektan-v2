@@ -481,7 +481,7 @@ class ActivityController extends Controller
         // ==== Pengecekan aturan edit (deadline, dll) ====
         if (!$monthly->canBeEdited()) {
             return redirect()->back()->withErrors([
-                'period' => 'Sudah melebihi batas deadline edit data yang telah ditentukan.',
+                'period' => 'Sudah melebihi batas deadline edit data yang telah ditentukan. Maksimal tanggal 1 tiap Bulan berikutnya',
             ]);
         }
 
