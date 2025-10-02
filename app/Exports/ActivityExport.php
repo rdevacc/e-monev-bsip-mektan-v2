@@ -152,16 +152,38 @@ class ActivityExport implements WithEvents, WithStyles
             $no = 1;
 
             $formatCurrency = fn($val) => $val !== null ? 'Rp. '.number_format($val,0,',','.') : '-';
+         
             $formatList = function($json) {
-                if (is_null($json) || $json === '' || strtolower(trim((string)$json)) === 'null') return '-';
-                $arr = json_decode($json,true);
-                if (!is_array($arr) || empty($arr)) return '-';
-                $arr = array_filter($arr, fn($v) => !is_null($v) && strtolower(trim((string)$v))!=='null' && trim((string)$v)!=='' );
+                if (is_null($json) || trim($json) === '' || strtolower(trim((string)$json)) === 'null') {
+                    return '-';
+                }
+
+                // Hapus tanda kutip ganda di awal/akhir dan backslash
+                $cleaned = trim($json, "\"");
+                $cleaned = str_replace(['\\'], '', $cleaned);
+
+                // Decode JSON
+                $arr = json_decode($cleaned, true);
+
+                // Kalau decode gagal, jadikan string sebagai 1 item
+                if (!is_array($arr)) {
+                    $arr = [$cleaned];
+                }
+
+                // Filter nilai kosong/null
+                $arr = array_filter($arr, fn($v) => !is_null($v) && trim($v) !== '' && strtolower(trim($v)) !== 'null');
                 if (empty($arr)) return '-';
-                $out=[]; $counter=1;
-                foreach($arr as $v) $out[] = $counter++ . '. ' . (string)$v;
-                return implode("\n",$out);
+
+                // Buat list bernomor
+                $out = [];
+                foreach (array_values($arr) as $i => $v) {
+                    $out[] = ($i + 1) . '. ' . trim($v);
+                }
+
+                // Gabungkan dengan newline supaya di Excel muncul multi-line
+                return implode("\n", $out);
             };
+
 
             // Group data per nama kegiatan
             $grouped = [];
