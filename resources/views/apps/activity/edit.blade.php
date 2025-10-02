@@ -144,14 +144,14 @@
                                 @php
                                 // Ambil monthly activity sesuai activity & period terakhir
                                 $monthly = $activity->monthly_activity()->latest('period')->first();
-                                @endphp
+                                @endphp 
 
                                 @if(in_array(auth()->user()->role->name, ['Admin', 'SuperAdmin']))
                                     {{-- Admin / SuperAdmin bisa pilih bulan --}}
                                     <input type="month"
                                         class="form-control @error('period') is-invalid @enderror"
                                         id="period" name="period"
-                                        value="{{ old('period', optional($monthly->period ? \Carbon\Carbon::parse($monthly->period) : now())->format('Y-m')) }}">
+                                        value="{{ now()->format('Y-m') }}">
                                 @else
                                     @php
                                         $now = now();
@@ -181,15 +181,15 @@
                                             max="{{ $maxPeriod }}"
                                             class="form-control @error('period') is-invalid @enderror"
                                             id="period" name="period"
-                                            value="{{ old('period', optional($monthly->period ? \Carbon\Carbon::parse($monthly->period) : now())->format('Y-m')) }}">
+                                            value="{{ now()->format('Y-m') }}">
                                     @else
                                         <input type="month"
                                             class="form-control @error('period') is-invalid @enderror"
                                             id="period_display"
-                                            value="{{ old('period', optional($monthly->period ? \Carbon\Carbon::parse($monthly->period) : now())->format('Y-m')) }}"
+                                            value="{{ now()->format('Y-m') }}"
                                             disabled>
                                         <input type="hidden" id="period" name="period"
-                                            value="{{ old('period', optional($monthly->period ? \Carbon\Carbon::parse($monthly->period) : now())->format('Y-m')) }}">
+                                            value="{{ now()->format('Y-m') }}">
                                     @endif
                                 @endif
 

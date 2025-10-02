@@ -115,7 +115,6 @@
                                 <div class="mb-3">
                                     <label class="form-label">Kegiatan yang sudah dilakukan</label>
                                     <ul class="list-group" id="completedTasksList">
-                                        roup-item">-</li>
                                     </ul>
                                 </div>
 
@@ -239,6 +238,13 @@
             });
         }
 
+        // ===== Input Formatting Binding =====
+        handleCurrencyInput('#activity_budget');
+        handleCurrencyInput('#financial_target_display');
+        handleCurrencyInput('#financial_realization');
+        handleDecimalInput('#physical_target_display', ',');
+        handleDecimalInput('#physical_realization', ',');
+
 
         // ===== Utility: normalize dynamic rows (label only first, add button only first) =====
         function normalizeDynamicRows(rowId, fieldName, fieldLabel, addBtnId) {
@@ -303,6 +309,7 @@
         setupDynamicField("#followUpsRow", "followUpsAddBtn", "follow_ups", "Tindak Lanjut");
         setupDynamicField("#plannedTasksRow", "plannedTasksAddBtn", "planned_tasks", "Kegiatan yang akan dilakukan");
 
+
         // ===== Show monthly card when appropriate =====
         function showMonthlyIfNeeded() {
             const periodVal = $('#period').val();
@@ -319,11 +326,10 @@
                 $('#monthlyCard').show();
                 updatePeriodTitle();
                 // format any existing numeric values
-                const ft = $('#financial_target').text();
-                if (ft) $('#financial_target').text("Rp " + formatRupiah(rupiahToNumber(ft)));
-
-                const fr = $('#financial_realization').text();
-                if (fr) $('#financial_realization').text("Rp " + formatRupiah(rupiahToNumber(fr)));
+                const ft = $('#financial_target').val();
+                if (ft) $('#financial_target').val(formatRupiah(rupiahToNumber(ft)));
+                const fr = $('#financial_realization').val();
+                if (fr) $('#financial_realization').val(formatRupiah(rupiahToNumber(fr)));
             } else {
                 $('#monthlyCard').hide();
             }
@@ -342,7 +348,7 @@
         $('#period').on('change', function() {
             let period = $(this).val();
             let activityId = "{{ $activity->id }}";
-            let url = "{{ route('activity.monthly-data', ':id') }}".replace(':id', activityId);
+            let url = "{{ route('activity.show-monthly-data', ':id') }}".replace(':id', activityId);
 
             if (!period) {
                 // jika periode dikosongkan, sembunyikan card (sesuai requirement)

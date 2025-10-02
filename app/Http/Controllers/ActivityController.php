@@ -293,10 +293,7 @@ class ActivityController extends Controller
         ]));
     }
 
-    /**
-     * * Store a newly created resource in storage. *
-     */
-    public function store(Request $request)
+   public function store(Request $request)
     {
         $this->authorize('create', Activity::class);
         
@@ -309,8 +306,8 @@ class ActivityController extends Controller
             'name'            => 'required',
             'activity_budget' => 'nullable',
 
-            // kolom MonthlyActivity pertama
-            'period'                => 'required',
+            // kolom MonthlyActivity pertama (digunakan sebagai template)
+            'period'                => 'required|date_format:Y-m', // contoh 2025-01
             'financial_target'      => 'nullable',
             'financial_realization' => 'nullable',
             'physical_target'       => 'nullable',
@@ -333,24 +330,48 @@ class ActivityController extends Controller
         $activity->updated_by      = auth()->id();
         $activity->save();
 
-        // 2. Simpan monthly pertama
-        $monthly = new MonthlyActivity();
-        $monthly->activity_id           = $activity->id;
-        $monthly->period                = $request->period . '-01 00:00:00';
-        $monthly->financial_target      = $this->cleanNumber($request->financial_target);
-        $monthly->financial_realization = $this->cleanNumber($request->financial_realization);
-        $monthly->physical_target       = $request->physical_target;
-        $monthly->physical_realization  = $request->physical_realization;
-        $monthly->completed_tasks       = $request->completed_tasks ?? '-';
-        $monthly->issues                = $request->issues ?? '-';
-        $monthly->follow_ups            = $request->follow_ups ?? '-';
-        $monthly->planned_tasks         = $request->planned_tasks ?? '-';
-        $monthly->created_by            = auth()->id();
-        $monthly->updated_by            = auth()->id();
-        $monthly->save();
+        // Simpan nilai awal (bulan pertama)
+        $initialTarget      = $this->cleanNumber($request->financial_target);
+        $initialRealization = $this->cleanNumber($request->financial_realization);
+        $initialPhysicalT   = $request->physical_target;
+        $initialPhysicalR   = $request->physical_realization;
+
+
+        // 2. Buat 12 monthly activity otomatis
+        $startPeriod = Carbon::createFromFormat('Y-m', $request->period)->startOfMonth();
+        
+        for ($i = 0; $i < 12; $i++) {
+            $period = $startPeriod->copy()->addMonths($i);
+
+            $monthly = new MonthlyActivity();
+            $monthly->activity_id           = $activity->id;
+            $monthly->period                = $period;
+            $monthly->financial_target      = $i === 0 ? $initialTarget      : $initialTarget;
+            $monthly->financial_realization = $i === 0 ? $initialRealization : $initialRealization;
+            $monthly->physical_target       = $i === 0 ? $initialPhysicalT   : $initialPhysicalT;
+            $monthly->physical_realization  = $i === 0 ? $initialPhysicalR   : $initialPhysicalR;
+            $monthly->completed_tasks       = $i === 0 ? ($request->completed_tasks ?? [null]) : [null];
+            $monthly->issues                = $i === 0 ? ($request->issues ?? [null])        : [null];
+            $monthly->follow_ups            = $i === 0 ? ($request->follow_ups ?? [null])    : [null];
+            $monthly->planned_tasks         = $i === 0 ? ($request->planned_tasks ?? [null]) : [null];
+            $monthly->created_by            = auth()->id();
+            $monthly->updated_by            = auth()->id();
+            $monthly->save();
+        }
+
+        // Update bulan setelah bulan pertama supaya ikut nilai awal
+        MonthlyActivity::where('activity_id', $monthly->activity_id)
+        ->where('period', '>', $startPeriod)
+        ->update([
+            'financial_target'      => $monthly->financial_target,
+            'financial_realization' => $monthly->financial_realization,
+            'physical_target'       => $monthly->physical_target,
+            'physical_realization'  => $monthly->physical_realization,
+            'updated_at'            => now(),
+        ]);
 
         return redirect()->route('activity.index')
-            ->with('success', 'Kegiatan baru dan laporan bulan pertama berhasil dibuat');
+            ->with('success', 'Kegiatan baru dan 12 laporan bulanan berhasil dibuat');
     }
 
     /**
@@ -392,7 +413,6 @@ class ActivityController extends Controller
      */
     public function getMonthlyData(Request $request, $id)
     {
-        
         $request->validate([
             'period' => 'required|date_format:Y-m',
         ]);
@@ -400,6 +420,37 @@ class ActivityController extends Controller
         $activity = Activity::findOrFail($id);
         
         $this->authorize('update', $activity);
+        
+        $monthly = $activity->monthly_activity()
+            ->whereYear('period', date('Y', strtotime($request->period . '-01')))
+            ->whereMonth('period', date('m', strtotime($request->period . '-01')))
+            ->first();
+
+        $data = [
+            'period' => $monthly?->period ?? '',
+            'financial_target' => $monthly?->financial_target !== null ? (float) $monthly->financial_target : 0,
+            'financial_realization' => $monthly?->financial_realization !== null ? (float) $monthly->financial_realization : 0,
+            'physical_target' => $monthly?->physical_target ?? '',
+            'physical_realization' => $monthly?->physical_realization ?? '',
+            'completed_tasks' => $monthly?->completed_tasks ?? ['-'],
+            'issues' => $monthly?->issues ?? ['-'],
+            'follow_ups' => $monthly?->follow_ups ?? ['-'],
+            'planned_tasks' => $monthly?->planned_tasks ?? ['-'],
+        ];
+
+        return response()->json($data);
+    }
+    
+    /**
+     * * Get Monthly data for Detail Page. *
+     */
+    public function getShowMonthlyData(Request $request, $id)
+    {
+        $request->validate([
+            'period' => 'required|date_format:Y-m',
+        ]);
+        
+        $activity = Activity::findOrFail($id);
         
         $monthly = $activity->monthly_activity()
             ->whereYear('period', date('Y', strtotime($request->period . '-01')))
@@ -496,6 +547,16 @@ class ActivityController extends Controller
         $monthly->planned_tasks = $request->planned_tasks ?? [];
         $monthly->save();
 
+        MonthlyActivity::where('activity_id', $monthly->activity_id)
+        ->where('period', '>', $monthly->period)
+        ->update([
+            'financial_target'      => $monthly->financial_target,
+            'financial_realization' => $monthly->financial_realization,
+            'physical_target'       => $monthly->physical_target,
+            'physical_realization'  => $monthly->physical_realization,
+            'updated_at'            => now(),
+        ]);
+
         return redirect()->route('activity.index')
             ->with('success', 'Activity dan Monthly Activity berhasil diperbarui.');
     }
@@ -544,10 +605,10 @@ class ActivityController extends Controller
     {
         $activity = $activity->find($activity->id);
 
-        $workGroupList = WorkGroup::orderBy('name')->get(['id', 'name']);
-        $workTeamList = WorkTeam::orderBy('name')->get(['id', 'name']);
-        $pjList = User::orderBy('name')->get(['id', 'name']);
-        $statusList = ActivityStatus::orderBy('name')->get(['id', 'name']);
+        $workGroupList = WorkGroup::orderBy('name')->get();
+        $workTeamList = WorkTeam::orderBy('name')->get();
+        $pjList = User::orderBy('name')->get();
+        $statusList = ActivityStatus::orderBy('name')->get();
 
         return view('apps.activity.show',compact([
             'activity',

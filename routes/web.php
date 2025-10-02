@@ -129,6 +129,8 @@ Route::prefix('/v2')->middleware('auth')->group(function () {
 
     Route::get('/app/activity/{id}/monthly-data', [ActivityController::class, 'getMonthlyData'])
     ->name('activity.monthly-data');
+    Route::get('/app/activity/{id}/show-monthly-data', [ActivityController::class, 'getShowMonthlyData'])
+    ->name('activity.show-monthly-data');
 
     Route::post('/app/activity/{activity}/clear-monthly', [ActivityController::class, 'clearMonthlyData'])->name('activity.clearMonthlyData');
 

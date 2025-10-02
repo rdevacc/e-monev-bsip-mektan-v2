@@ -46,12 +46,20 @@ class MonthlyActivity extends Model
      * Cek apakah masih bisa diedit (umum).
      * Aturan: hanya bisa edit bulan berjalan sampai tgl 1 bulan berikutnya.
      */
-    public function canBeEdited(): bool
+   public function canBeEdited(): bool
     {
+        $user = auth()->user();
+
+        // Kalau SuperAdmin atau Admin, selalu bisa edit
+        if ($user && in_array($user->role->name, ['Admin','SuperAdmin'])) {
+            return true;
+        }
+
+        // Kalau bukan admin, pakai aturan deadline
         $now = now()->locale('id');
         $period = Carbon::parse($this->period);
 
-        // Deadline = tanggal 1 bulan berikutnya
+        // Deadline = tanggal 1 bulan berikutnya (akhir hari)
         $deadline = $period->copy()->addMonth()->startOfMonth()->endOfDay();
 
         return $now->lessThanOrEqualTo($deadline);
