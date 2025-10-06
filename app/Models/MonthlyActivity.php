@@ -75,6 +75,13 @@ class MonthlyActivity extends Model
         $now = now()->locale('id');
         $periodYear = Carbon::parse($this->period)->year;
 
+        $user = auth()->user();
+
+        // Kalau SuperAdmin atau Admin, selalu bisa edit
+        if ($user && in_array($user->role->name, ['Admin','SuperAdmin'])) {
+            return true;
+        }
+
         // hanya tahun yang sama
         if ($now->year !== $periodYear) {
             return false;
