@@ -60,13 +60,14 @@ class UserController extends Controller
             'email' => 'required|email',
             'password' => 'required|same:confirmed_password',
             'confirmed_password' => 'required|same:password',
+            'work_group_id' => 'required',
             'work_team_id' => 'required',
             'role_id' => 'required',
         ]);
 
         User::create($validated);
 
-        return redirect()->route('user-index')->with('success', 'New user has been added!');
+        return redirect()->route('user.index')->with('success', 'New user has been added!');
     }
 
     /**
@@ -114,7 +115,7 @@ class UserController extends Controller
          */
         User::where('id', $user->id)->update($validated);
 
-        return redirect()->route('user-index')->with('success', 'User ' . $user->name . ' has been updated!');
+        return redirect()->route('user.index')->with('success', 'User ' . $user->name . ' has been updated!');
     }
 
     /**
@@ -132,6 +133,6 @@ class UserController extends Controller
         // Query for delete data
         User::destroy($user->id);
 
-        return redirect()->route('user-index')->with('success', 'User ' . $user->name . ' has been deleted!');
+        return redirect()->route('user.index')->with('success', 'User ' . $user->name . ' has been deleted!');
     }
 }

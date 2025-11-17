@@ -38,7 +38,7 @@ class RoleController extends Controller
 
         Role::create($validated);
 
-        return redirect()->route('role-index')->with('success', 'New role has been added!');
+        return redirect()->route('role.index')->with('success', 'New role has been added!');
     }
 
     /**
@@ -80,7 +80,7 @@ class RoleController extends Controller
         Role::where('id', $role->id)->update($validated);
 
 
-        return redirect()->route('role-index')->with('success', 'Role ' . $role->nama . ' has been updated!');
+        return redirect()->route('role.index')->with('success', 'Role ' . $role->nama . ' has been updated!');
     }
 
     /**
@@ -90,6 +90,6 @@ class RoleController extends Controller
     {
         Role::destroy($role->id);
 
-        return redirect()->route('role-index')->with('success', 'Role ' . $role->nama . ' has been deleted!');
+        return redirect()->route('role.index')->with('success', 'Role ' . $role->nama . ' has been deleted!');
     }
 }
