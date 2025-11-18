@@ -242,6 +242,21 @@ class ActivityExport implements WithEvents, WithStyles
 
                 $no++;
             }
+            // BORDER HEADER (A4 sampai Q6)
+            $sheet->getStyle('A4:Q6')
+                ->getBorders()->getAllBorders()
+                ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN)
+                ->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('000000'));
+
+            // BORDER ISI TABEL (mulai A7 sampai baris terakhir)
+            $lastDataRow = $row - 1;
+            if ($lastDataRow >= 7) {
+                $sheet->getStyle("A7:Q{$lastDataRow}")
+                    ->getBorders()->getAllBorders()
+                    ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN)
+                    ->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('000000'));
+            }
+
         }
     ];
 }

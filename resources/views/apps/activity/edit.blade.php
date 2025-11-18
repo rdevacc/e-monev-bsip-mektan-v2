@@ -58,7 +58,11 @@
                                         </option>
                                     @endforeach
                                 </select>
+
+                                @cannot('adminUpdate', $activity)
                                 <input type="hidden" name="work_group_id" value="{{ $activity->work_group_id }}">
+                                @endcannot
+
                                 @error('work_group_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -77,7 +81,11 @@
                                         </option>
                                     @endforeach
                                 </select>
+
+                                @cannot('adminUpdate', $activity)
                                 <input type="hidden" name="work_team_id" value="{{ $activity->work_team_id }}">
+                                @endcannot
+
                                 @error('work_team_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -119,7 +127,11 @@
                                         </option>
                                     @endforeach
                                 </select>
+
+                                @cannot('adminUpdate', $activity)
                                 <input type="hidden" name="status_id" value="{{ $activity->status_id }}">
+                                @endcannot
+
                                 @error('status_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror

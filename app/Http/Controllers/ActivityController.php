@@ -528,14 +528,12 @@ class ActivityController extends Controller
             'period' => $periodDate
         ]);
 
-
         // ==== Pengecekan aturan edit (deadline, dll) ====
         if (!$monthly->canBeEdited()) {
             return redirect()->back()->withErrors([
                 'period' => 'Sudah melebihi batas deadline edit data yang telah ditentukan. Maksimal tanggal 1 tiap Bulan berikutnya',
             ]);
         }
-
         
         $monthly->financial_target = $request->financial_target;
         $monthly->financial_realization = $request->financial_realization;
