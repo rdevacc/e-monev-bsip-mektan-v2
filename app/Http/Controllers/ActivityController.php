@@ -340,9 +340,17 @@ class ActivityController extends Controller
         // 2. Buat 12 monthly activity otomatis
         $startPeriod = Carbon::createFromFormat('Y-m', $request->period)->startOfMonth();
         
-        for ($i = 0; $i < 12; $i++) {
-            $period = $startPeriod->copy()->addMonths($i);
+        // Variable untuk looping membuat kegiatan
+        $startMonth = $startPeriod->month;
+        $monthToCreate = 12 - $startMonth + 1;
 
+        for ($i = 0; $i < $monthToCreate; $i++) {
+            $period = $startPeriod->copy()->addMonths($i);
+            
+            // Guard tambahan, biar benar-benar tidak lompat tahun
+            if ($period->year !== $startPeriod->year) {
+                break;
+            }
             $monthly = new MonthlyActivity();
             $monthly->activity_id           = $activity->id;
             $monthly->period                = $period;

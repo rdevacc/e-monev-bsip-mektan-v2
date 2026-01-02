@@ -10,12 +10,13 @@ class DashboardController extends Controller
 {
     public function index(MonthlyKegiatansChart $chart, KegiatansSudahDanBelumDikerjakanChart $chartSudahdanBelum) {
 
-        $activity = Activity::with(['status', 'monthly_activity'])->orderBy('created_at', 'desc')->get();
-
+        
         $currentYear = now()->timezone('Asia/Jakarta')->translatedFormat('Y');
         $currentMonth = now()->timezone('Asia/Jakarta')->translatedFormat('m');
         $lastMonth = now()->timezone('Asia/Jakarta')->startOfMonth()->subMonth();
-
+        
+        $activity = Activity::with(['status', 'monthly_activity'])->whereYear('created_at', $currentYear)->orderBy('created_at', 'desc')->get();
+        
         $totalCompleted = 0;
         $totalIncomplete = 0;
         $totalBudget = 0;

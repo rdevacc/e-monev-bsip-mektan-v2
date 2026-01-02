@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Login | E-Monev BBRM Mektan</title>
+  <title>Login | E-Monev BRMP Mektan</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -42,7 +42,7 @@
                 </div>
                 <div class="pt-1 text-center">
                     <a href="#" class="logo d-flex align-items-center w-auto">
-                        <span class="d-flex d-lg-block">E-Monev BBRM Mektan</span>
+                        <span class="d-flex d-lg-block">E-Monev BRMP Mektan</span>
                     </a>
                 </div>
               </div><!-- End Logo -->

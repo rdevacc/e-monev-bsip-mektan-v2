@@ -106,7 +106,7 @@
                             <label for="filterYear" class="form-label">Tahun</label>
                             <select id="filterYear" class="form-select">
                                 <option value="" selected>-- Semua Tahun --</option>
-                                @for ($y = now()->year; $y >= 2022; $y--)
+                                @for ($y = now()->year; $y >= 2025; $y--)
                                     <option value="{{ $y }}">{{ $y }}</option>
                                 @endfor
                             </select>
