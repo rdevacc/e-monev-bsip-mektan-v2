@@ -12,6 +12,7 @@ use App\Http\Controllers\PDFController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SubKelompokController;
+use App\Http\Controllers\UsageGuideController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkGroupController;
 use App\Http\Controllers\WorkTeamController;
@@ -52,6 +53,13 @@ Route::prefix('/v2')->middleware('auth')->group(function () {
      * * Dashboard Route
      */
     Route::get('/app/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    /**
+     * * Usage Guide Route
+     */
+    Route::get('/guide/pj', [UsageGuideController::class, 'pj'])->name('guide.pj');
+    Route::get('/guide/admin', [UsageGuideController::class, 'admin'])->name('guide.admin');
+    Route::get('/guide/pdf/{filename}', [UsageGuideController::class, 'showPdf'])->name('guide.pdf');
 
     /**
      * * Excel Route

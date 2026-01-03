@@ -52,14 +52,14 @@
                                                     href="{{ route('user.edit', $user->id) }}" data-bs-toggle="tooltip"
                                                     data-bs-placement="top" data-bs-custom-class="custom-tooltip"
                                                     data-bs-title="Edit User {{ $user->name }}">
-                                                    <i class="bi bi-pencil"></i>
+                                                    <iconify-icon icon="bi:pencil" width="16" height="22" style="display: flex;"></iconify-icon>
                                                 </a>
 
                                                 <!-- Button trigger modal -->
                                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                                                     data-bs-target="#deleteModal" data-id="{{ $user->id }}"
                                                     data-name="{{ $user->name }}">
-                                                    <i class="bi bi-trash text-body-secondary"></i>
+                                                    <iconify-icon icon="bi:trash" width="16" height="22" style="display: flex; color: #212529;"></iconify-icon>
                                                 </button>
 
                                                 <!-- Modal -->

@@ -335,3 +335,41 @@
   }
 
 })();
+
+// Custom dropdown toggle tanpa Bootstrap
+document.addEventListener('DOMContentLoaded', function() {
+    const guideToggle = document.querySelector('[data-target="#guide-nav"]');
+    const guideNav = document.getElementById('guide-nav');
+    
+    if (guideToggle && guideNav) {
+        
+        // Fungsi toggle dropdown
+        function toggleDropdown() {
+            // Toggle class 'open' di link
+            guideToggle.classList. toggle('open');
+            guideToggle.classList.toggle('collapsed');
+            
+            // Toggle class 'show' di dropdown
+            guideNav.classList.toggle('show');
+            
+            console.log('Dropdown toggled:', guideNav.classList.contains('show'));
+        }
+        
+        // Event listener untuk klik
+        guideToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            toggleDropdown();
+        });
+        
+        // Auto-open jika ada submenu yang active
+        const hasActiveSubmenu = guideNav.querySelector('a.active');
+        
+        if (hasActiveSubmenu) {
+            guideToggle.classList.add('open');
+            guideToggle.classList.remove('collapsed');
+            guideNav.classList. add('show');
+            
+            console.log('Auto-opened dropdown karena ada active submenu');
+        }
+    }
+});

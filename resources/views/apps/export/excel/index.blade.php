@@ -1,7 +1,7 @@
 @extends('layouts.app-v2')
 
 @section('title')
-    Export | E-Monev BBRM Mektan
+    Export | E-Monev BRMP Mektan
 @endsection
 
 @push('css')
@@ -58,7 +58,7 @@
 <main id="main" class="main">
     <section class="section">
         <div class="pagetitle">
-            <h1>Export Kegiatan BBRM Mektan</h1>
+            <h1>Export Kegiatan BRMP Mektan</h1>
         </div>
 
         <!-- Session Alert -->

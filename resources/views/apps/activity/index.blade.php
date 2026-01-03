@@ -1,7 +1,7 @@
 @extends('layouts.app-v2')
 
 @section('title')
-    Kegiatan | E-Monev BBRM Mektan
+    Kegiatan | E-Monev BRMP Mektan
 @endsection
 
 @push('css')
@@ -83,7 +83,7 @@
 <main id="main" class="main">
     <section class="section">
         <div class="pagetitle">
-            <h1>Data Kegiatan BBRM Mektan</h1>
+            <h1>Data Kegiatan BRMP Mektan</h1>
         </div>
 
         <!-- Session Alert -->

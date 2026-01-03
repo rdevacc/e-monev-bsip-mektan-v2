@@ -242,7 +242,7 @@ class ActivityExportController extends Controller
         });
 
         // Buat array tahun, misal 5 tahun terakhir
-        $years = collect(range($currentYear - 4, $currentYear))->map(function($year) {
+        $years = collect(range($currentYear - 2, $currentYear))->map(function($year) {
             return [
                 'id' => $year,
                 'name' => $year

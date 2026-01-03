@@ -721,30 +721,54 @@ h6 {
   color: #4154f1;
 }
 
-.sidebar-nav .nav-link .bi-chevron-down {
-  margin-right: 0;
-  transition: transform 0.2s ease-in-out;
+/* ===== DROPDOWN CHEVRON ===== */
+.sidebar-nav .nav-link .chevron-dropdown {
+  margin-left: auto;
+  display: inline-block;
+  transition: transform 0.3s ease;
+  transform: rotate(0deg);
 }
 
-.sidebar-nav .nav-link:not(.collapsed) .bi-chevron-down {
+/* Chevron rotate saat dropdown terbuka */
+.sidebar-nav .nav-link.open .chevron-dropdown {
   transform: rotate(180deg);
 }
 
+/* ===== PARENT MENU STYLING ===== */
+.sidebar-nav .nav-link.open {
+  color: #4154f1 !important;
+  background: #f6f9ff !important;
+}
+
+.sidebar-nav .nav-link.open iconify-icon {
+  color: #4154f1 !important;
+}
+
+/* ===== SUBMENU CONTENT ===== */
 .sidebar-nav .nav-content {
-  padding: 5px 0 0 0;
+  padding: 0;
   margin: 0;
   list-style: none;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+/* Submenu saat terbuka */
+.sidebar-nav .nav-content.show {
+  max-height: 500px; /* Adjust sesuai kebutuhan */
+  padding: 5px 0 0 0;
 }
 
 .sidebar-nav .nav-content a {
   display: flex;
+  text-decoration: none !important;
   align-items: center;
   font-size: 14px;
   font-weight: 600;
-  color: #012970;
-  transition: 0.3;
-  padding: 10px 0 10px 40px;
-  transition: 0.3s;
+  color:  #012970;
+  padding:  10px 0 10px 40px;
+  transition:  0.3s;
 }
 
 .sidebar-nav .nav-content a i {
@@ -756,16 +780,17 @@ h6 {
 
 .sidebar-nav .nav-content a:hover,
 .sidebar-nav .nav-content a.active {
-  color: #4154f1;
+  color: #4154f1 !important;
 }
 
 .sidebar-nav .nav-content a.active i {
-  background-color: #4154f1;
+  background-color: #4154f1 ! important;
 }
 
-.sidebar-nav .nav-link.active{
-  color: #4154f1;
-  background: #f1f5ff;
+/* ===== MENU UTAMA ACTIVE ===== */
+.sidebar-nav .nav-link.active {
+  color: #4154f1 !important;
+  background: #f6f9ff ! important;
 }
 
 /*--------------------------------------------------------------

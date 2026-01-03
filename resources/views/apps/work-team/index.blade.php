@@ -48,14 +48,14 @@
                                                         href="{{ route('work-team.edit', $work_team->id) }}" data-bs-toggle="tooltip"
                                                         data-bs-placement="top" data-bs-custom-class="custom-tooltip"
                                                         data-bs-title="Edit {{ $work_team->nama }}">
-                                                        <i class="bi bi-pencil"></i>
+                                                        <iconify-icon icon="bi:pencil" width="16" height="22" style="display: flex;"></iconify-icon>
                                                     </a>
 
                                                     <!-- Button trigger modal -->
                                                     <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                                                         data-bs-target="#deleteModal" data-id="{{ $work_team->id }}"
                                                         data-name="{{ $work_team->name }}">
-                                                        <i class="bi bi-trash text-body-secondary"></i>
+                                                        <iconify-icon icon="bi:trash" width="16" height="22" style="display: flex; color: #212529;"></iconify-icon>
                                                     </button>
 
                                                     <!-- Modal -->

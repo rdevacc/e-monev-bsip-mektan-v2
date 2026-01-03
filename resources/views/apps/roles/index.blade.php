@@ -45,14 +45,14 @@
                                                         href="{{ route('role.edit', $role->id) }}" data-bs-toggle="tooltip"
                                                         data-bs-placement="top" data-bs-custom-class="custom-tooltip"
                                                         data-bs-title="Edit role {{ $role->name }}">
-                                                        <i class="bi bi-pencil"></i>
+                                                        <iconify-icon icon="bi:pencil" width="16" height="22" style="display: flex;"></iconify-icon>
                                                     </a>
 
                                                     <!-- Button trigger modal -->
                                                     <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                                                         data-bs-target="#deleteModal" data-id="{{ $role->id }}"
                                                         data-name="{{ $role->name }}">
-                                                        <i class="bi bi-trash text-body-secondary"></i>
+                                                        <iconify-icon icon="bi:trash" width="16" height="22" style="display: flex; color: #212529;"></iconify-icon>
                                                     </button>
 
                                                     <!-- Modal -->
