@@ -41,7 +41,7 @@ Route::prefix('/v2')->group(function() {
          */
         Route::get('app/login', [LoginController::class, 'index'])->middleware('guest')->name('login');
         Route::post('app/login', [LoginController::class, 'authenticate'])->name('login-submit');
-        Route::post('app/logout', [LoginController::class, 'logout'])->name('logout');
+        
 
         Route::get('app/forgot-password', [ForgotPasswordController::class, 'forgot_password'])->middleware('guest')->name('forgot-password');
         Route::post('app/forgot-password-submit', [ForgotPasswordController::class, 'forgot_password_submit'])->name('forgot-password-submit');
@@ -59,6 +59,7 @@ Route::prefix('/v2')->group(function() {
          * * Dashboard Route
          */
         Route::get('/app/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::post('app/logout', [LoginController::class, 'logout'])->name('logout');
         
         /**
          * * Usage Guide Route
