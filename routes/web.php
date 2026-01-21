@@ -43,15 +43,15 @@ Route::prefix('/v2')->group(function() {
         /**
          * * Authentication Route *
          */
-        Route::get('/v2/app/login', [LoginController::class, 'index'])->middleware('guest')->name('login');
-        Route::post('/v2/app/login', [LoginController::class, 'authenticate'])->name('login-submit');
-        Route::post('/v2/app/logout', [LoginController::class, 'logout'])->name('logout');
+        Route::get('app/login', [LoginController::class, 'index'])->middleware('guest')->name('login');
+        Route::post('app/login', [LoginController::class, 'authenticate'])->name('login-submit');
+        Route::post('app/logout', [LoginController::class, 'logout'])->name('logout');
 
-        Route::get('/v2/app/forgot-password', [ForgotPasswordController::class, 'forgot_password'])->middleware('guest')->name('forgot-password');
-        Route::post('/v2/app/forgot-password-submit', [ForgotPasswordController::class, 'forgot_password_submit'])->name('forgot-password-submit');
+        Route::get('app/forgot-password', [ForgotPasswordController::class, 'forgot_password'])->middleware('guest')->name('forgot-password');
+        Route::post('app/forgot-password-submit', [ForgotPasswordController::class, 'forgot_password_submit'])->name('forgot-password-submit');
 
-        Route::get('/v2/app/reset-password/{token}', [ResetPasswordController::class, 'reset_password'])->middleware('guest')->name('password.reset');
-        Route::post('/v2/app/reset-password/', [ResetPasswordController::class, 'reset_password_submit'])->middleware('guest')->name('password.update');
+        Route::get('app/reset-password/{token}', [ResetPasswordController::class, 'reset_password'])->middleware('guest')->name('password.reset');
+        Route::post('app/reset-password/', [ResetPasswordController::class, 'reset_password_submit'])->middleware('guest')->name('password.update');
 
     });
 
