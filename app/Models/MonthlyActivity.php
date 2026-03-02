@@ -62,8 +62,12 @@ class MonthlyActivity extends Model
         // Deadline = tanggal 1 bulan berikutnya (akhir hari)
         $deadline = $period->copy()->addMonth()->startOfMonth()->endOfDay();
 
+        // Logika untuk isian setelah periode, misal bulan februari bisa diisi di bulan maret
+        $allowedMonth = $period->copy()->addMont();
+
         // return $now->lessThanOrEqualTo($deadline);
-        return true;
+        return $now->year === $allowedMonth->year
+            && $now->month === $allowedMonth->month;
     }
 
     /**
