@@ -155,7 +155,9 @@
 
                                 @php
                                 // Ambil monthly activity sesuai activity & period terakhir
-                                $monthly = $activity->monthly_activity()->latest('period')->first();
+                                $monthly = $activity->monthly_activity()
+                                    ->where('period', now()->subMonth()->format('Y-m-01'))
+                                    ->first();
                                 @endphp 
 
                                 @if(in_array(auth()->user()->role->name, ['Admin', 'SuperAdmin']))
@@ -163,7 +165,7 @@
                                     <input type="month"
                                         class="form-control @error('period') is-invalid @enderror"
                                         id="period" name="period"
-                                        value="{{ now()->format('Y-m') }}">
+                                        value="{{ now()->subMonth()->format('Y-m') }}">
                                 @else
                                     @php
                                         $now = now();
@@ -183,25 +185,28 @@
                                             $lastMonth->format('Y-m') => $lastMonth->translatedFormat('F Y'),
                                         ];
 
-                                        $selectedPeriod = old('period', optional($monthly->period ? \Carbon\Carbon::parse($monthly->period) : $now)->format('Y-m'));
+                                        $selectedPeriod = old(
+                                            'period',
+                                            optional(optional($monthly)->period ? \Carbon\Carbon::parse($monthly->period) : null)?->format('Y-m')
+                                        );
                                     @endphp
 
                                     {{-- User biasa mengikuti aturan canBeEdited --}}
-                                    @if($monthly->canBeEdited())
+                                    @if(optional($monthly)->canBeEdited())
                                         <input type="month"
                                             min="{{ $minPeriod }}" 
                                             max="{{ $maxPeriod }}"
                                             class="form-control @error('period') is-invalid @enderror"
                                             id="period" name="period"
-                                            value="{{ now()->format('Y-m') }}">
+                                            value="{{ now()->subMonth()->format('Y-m') }}">
                                     @else
                                         <input type="month"
                                             class="form-control @error('period') is-invalid @enderror"
                                             id="period_display"
-                                            value="{{ now()->format('Y-m') }}"
+                                            value="{{ now()->subMonth()->format('Y-m') }}"
                                             disabled>
                                         <input type="hidden" id="period" name="period"
-                                            value="{{ now()->format('Y-m') }}">
+                                            value="{{ now()->subMonth()->format('Y-m') }}">
                                     @endif
                                 @endif
 
@@ -226,8 +231,7 @@
                                             <label for="financial_target_display" class="form-label">Target Keuangan</label>
                                             <input type="text"
                                                 class="form-control @error('financial_target_display') is-invalid @enderror"
-                                                id="financial_target_display"
-                                                {{ $canEditTarget ? '' : 'disabled style=background:#e9ecef' }}
+                                                id="financial_target_display" {{ $canEditTarget ? '' : 'disabled style=background:#e9ecef' }}
                                                 value="{{ old('financial_target', $activity->financial_target ?? 0) }}">
                                             
                                             @if($canEditTarget)
@@ -244,7 +248,8 @@
                                             <label for="financial_realization" class="form-label">Realisasi Keuangan</label>
                                             <input type="text"
                                                 class="form-control @error('financial_realization') is-invalid @enderror"
-                                                id="financial_realization" name="financial_realization" value="{{ old('financial_realization', $activity->financial_realization) }}">
+                                                id="financial_realization" {{ $canEditTarget ? '' : 'disabled style=background:#e9ecef' }}
+                                                name="financial_realization" value="{{ old('financial_realization', $activity->financial_realization) }}">
                                             @error('financial_realization')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -327,11 +332,11 @@
 
                             {{-- Submit --}}
                             <div class="mt-4 text-end">
+                                <a href="{{ route('activity.index') }}" class="btn btn-secondary">Batal</a>
                                 <button type="submit" id="btnSubmit" class="btn btn-primary">
                                     <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                                     <span class="btn-text">Simpan</span>
                                 </button>
-                                <a href="{{ route('activity.index') }}" class="btn btn-secondary">Batal</a>
                             </div>
                         </form>
                     </div>

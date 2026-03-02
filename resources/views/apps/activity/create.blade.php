@@ -301,8 +301,8 @@
 
                                 {{-- Submit --}}
                                 <div class="mt-4">
-                                    <button type="submit" class="btn btn-primary">Simpan</button>
                                     <a href="{{ route('activity.index') }}" class="btn btn-secondary">Batal</a>
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
                                 </div>
                             </form>
                         </div>
