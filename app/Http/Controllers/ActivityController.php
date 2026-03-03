@@ -515,19 +515,16 @@ class ActivityController extends Controller
             'activity_budget' => parseRupiah($request->activity_budget),
         ]);
 
-        // Tentukan period sesuai input
+        // Tentukan period sesuai `input`
         $periodDate = $request->period . '-01';
 
-        // boleh edit hanya bulan berjalan atau bulan lalu
-        $allowedPeriods = [
-            now()->startOfMonth()->toDateString(),
-            now()->subMonth()->startOfMonth()->toDateString(),
-        ];
+        // boleh edit hanya bulan lalu
+        $allowedPeriods = now()->subMonth()->startOfMonth()->toDateString();
 
         if (!in_array(auth()->user()->role->name, ['Admin', 'SuperAdmin'])) {
-            if (!in_array(Carbon::parse($periodDate)->toDateString(), $allowedPeriods)) {
+            if ($periodDate != $allowedPeriods) {
                 return redirect()->back()->withErrors([
-                    'period' => 'Periode yang dipilih tidak valid. Hanya bulan ini atau bulan sebelumnya yang boleh dipilih.'
+                    'period' => 'Hanya boleh mengedit data bulan sebelumnya.'
                 ]);
             }
         }
@@ -535,13 +532,6 @@ class ActivityController extends Controller
         $monthly = $activity->monthly_activity()->firstOrNew([
             'period' => $periodDate
         ]);
-
-        // ==== Pengecekan aturan edit (deadline, dll) ====
-        if (!$monthly->canBeEdited()) {
-            return redirect()->back()->withErrors([
-                'period' => 'Sudah melebihi batas deadline edit data yang telah ditentukan. Maksimal tanggal 1 tiap Bulan berikutnya',
-            ]);
-        }
         
         $monthly->financial_target = $request->financial_target;
         $monthly->financial_realization = $request->financial_realization;
