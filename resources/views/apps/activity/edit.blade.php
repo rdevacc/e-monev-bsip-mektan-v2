@@ -171,10 +171,6 @@
                                         $now = now();
                                         $lastMonth = now()->subMonth();
                                         
-                                        // default: hanya bulan sekarang
-                                        $minPeriod = $now->format('Y-m');
-                                        $maxPeriod = $now->format('Y-m');
-
                                         // kalau tanggal 1, izinkan bulan sebelumnya
                                         if ($now->day === 1) {
                                             $minPeriod = $lastMonth->format('Y-m');
@@ -194,8 +190,6 @@
                                     {{-- User biasa mengikuti aturan canBeEdited --}}
                                     @if(optional($monthly)->canBeEdited())
                                         <input type="month"
-                                            min="{{ $minPeriod }}" 
-                                            max="{{ $maxPeriod }}"
                                             class="form-control @error('period') is-invalid @enderror"
                                             id="period" name="period"
                                             value="{{ now()->subMonth()->format('Y-m') }}">
