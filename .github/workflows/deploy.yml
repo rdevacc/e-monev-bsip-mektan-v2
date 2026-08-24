@@ -1,0 +1,19 @@
+name: Deploy E-Monev
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy Production
+
+    runs-on:
+      - self-hosted
+      - e-monev
+      - production
+
+    steps:
+      - name: Deploy E-Monev
+        run: /opt/deploy/e-monev.sh
