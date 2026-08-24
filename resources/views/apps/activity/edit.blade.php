@@ -245,11 +245,23 @@
                                             @enderror
                                         </div>
                                         <div class="col-md-6">
-                                            <label for="financial_realization" class="form-label">Realisasi Keuangan</label>
+                                            <label for="financial_realization_display" class="form-label">
+                                                Realisasi Keuangan
+                                            </label>
+
+                                            {{-- Input yang dilihat user --}}
                                             <input type="text"
                                                 class="form-control @error('financial_realization') is-invalid @enderror"
-                                                id="financial_realization" {{ $canEditTarget ? '' : 'disabled style=background:#e9ecef' }}
-                                                name="financial_realization" value="{{ old('financial_realization', $activity->financial_realization) }}">
+                                                id="financial_realization_display"
+                                                {{ $canEditTarget ? '' : 'disabled style=background:#e9ecef' }}
+                                                value="{{ old('financial_realization', $activity->financial_realization) }}">
+
+                                            {{-- Input sebenarnya yang dikirim ke controller --}}
+                                            <input type="hidden"
+                                                name="financial_realization"
+                                                id="financial_realization"
+                                                value="{{ old('financial_realization', $activity->financial_realization) }}">
+
                                             @error('financial_realization')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -432,7 +444,7 @@ $(document).ready(function() {
     // ===== Input Formatting Binding =====
     handleCurrencyInput('#activity_budget');
     handleCurrencyInput('#financial_target_display');
-    handleCurrencyInput('#financial_realization');
+    handleCurrencyInput('#financial_realization_display');
     handleDecimalInput('#physical_target_display', ',');
     handleDecimalInput('#physical_realization', ',');
 
@@ -550,7 +562,13 @@ $(document).ready(function() {
             data: { period: initialPeriod },
             success: function(response) {
                 $('#financial_target_display').val(response.financial_target ? formatRupiah(rupiahToNumber(response.financial_target)) : '');
-                $('#financial_realization').val(response.financial_realization ? formatRupiah(rupiahToNumber(response.financial_realization)) : '');
+                const financialRealization = response.financial_realization ?? 0;
+                $('#financial_realization_display').val(
+                    financialRealization
+                        ? formatRupiah(rupiahToNumber(financialRealization))
+                        : ''
+                );
+                $('#financial_realization').val(financialRealization);
                 $('#physical_target_display').val(response.physical_target ? response.physical_target.toString().replace('.', ',') : '');
                 $('#physical_realization').val(response.physical_realization ? response.physical_realization.toString().replace('.', ',') : '');
 
@@ -611,7 +629,13 @@ $(document).ready(function() {
             success: function(response) {
                 // safe parsing + formatting
                 $('#financial_target_display').val(response.financial_target ? formatRupiah(rupiahToNumber(response.financial_target)) : '');
-                $('#financial_realization').val(response.financial_realization ? formatRupiah(rupiahToNumber(response.financial_realization)) : '');
+                const financialRealization = response.financial_realization ?? 0;
+                $('#financial_realization_display').val(
+                    financialRealization
+                        ? formatRupiah(rupiahToNumber(financialRealization))
+                        : ''
+                );
+                $('#financial_realization').val(financialRealization);
                 $('#physical_target_display').val(response.physical_target ? response.physical_target.toString().replace('.', ',') : '');
                 $('#physical_realization').val(response.physical_realization ? response.physical_realization.toString().replace('.', ',') : '');
 
@@ -677,7 +701,7 @@ $(document).ready(function() {
         $('#physical_target').val(ptd ? ptd.trim().replace(/,/g, '.') : 0);
         
         // ===== Financial Realization =====
-        const fr = $('#financial_realization').val();
+        const fr = $('#financial_realization_display').val();
         $('#financial_realization').val(fr ? rupiahToNumber(fr) : 0);
 
         // ===== Physical Realization =====

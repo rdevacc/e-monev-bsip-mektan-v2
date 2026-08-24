@@ -47,10 +47,6 @@ class ActivityController extends Controller
                 'monthly_activities.financial_realization as monthly_financial_realization',
                 'monthly_activities.physical_target as monthly_physical_target',
                 'monthly_activities.physical_realization as monthly_physical_realization',
-                // 'monthly_activities.completed_tasks as monthly_completed_tasks',
-                // 'monthly_activities.issues as monthly_issues',
-                // 'monthly_activities.follow_ups as monthly_follow_ups',
-                // 'monthly_activities.planned_tasks as monthly_planned_tasks',
                 'users.name as pj_name',
                 'users.role_id as pj_role_id',
                 'work_groups.name as work_group_name',
@@ -162,83 +158,6 @@ class ActivityController extends Controller
                     // fallback default kalau kosong semua
                     return '-';
                 })
-                // ->editColumn('monthly_completed_tasks', function($activity) {
-                //     $raw = $activity->monthly_completed_tasks;
-
-                //     logger()->debug('DT_PARSER completed_tasks', [
-                //         'activity_id' => $activity->id,
-                //         'raw' => $raw,
-                //     ]);
-
-                //     if (empty($raw)) return '-';
-
-                //     $arr = json_decode($raw, true) ?? [];
-
-                //     $arr = array_filter(array_map(function ($v) {
-                //         if (is_null($v)) return '';
-                //         return strtolower(trim((string)$v)) === 'null' ? '' : trim((string)$v);
-                //     }, (array)$arr), fn($v) => $v !== '');
-
-                //     return empty($arr) ? '-' : array_values($arr);
-                // })
-                // ->editColumn('monthly_issues', function($activity) {
-                //     $raw = $activity->monthly_issues;
-
-                //     logger()->debug('DT_PARSER issues', [
-                //         'activity_id' => $activity->id,
-                //         'raw' => $raw,
-                //     ]);
-
-                //     if (empty($raw)) return '-';
-
-                //     $arr = json_decode($raw, true) ?? [];
-
-                //     $arr = array_filter(array_map(function ($v) {
-                //         if (is_null($v)) return '';
-                //         return strtolower(trim((string)$v)) === 'null' ? '' : trim((string)$v);
-                //     }, (array)$arr), fn($v) => $v !== '');
-
-                //     return empty($arr) ? '-' : array_values($arr);
-                // })
-                // ->editColumn('monthly_follow_ups', function($activity) {
-                //     $raw = $activity->monthly_follow_ups;
-
-                //     logger()->debug('DT_PARSER follow_ups', [
-                //         'activity_id' => $activity->id,
-                //         'raw' => $raw,
-                //     ]);
-
-                //     if (empty($raw)) return '-';
-
-                //     $arr = json_decode($raw, true) ?? [];
-
-                //     $arr = array_filter(array_map(function ($v) {
-                //         if (is_null($v)) return '';
-                //         return strtolower(trim((string)$v)) === 'null' ? '' : trim((string)$v);
-                //     }, (array)$arr), fn($v) => $v !== '');
-
-                //     return empty($arr) ? '-' : array_values($arr);
-                // })
-                // ->editColumn('monthly_planned_tasks', function($activity) {
-                //     $raw = $activity->monthly_planned_tasks;
-
-                //     logger()->debug('DT_PARSER planned_tasks', [
-                //         'activity_id' => $activity->id,
-                //         'raw' => $raw,
-                //     ]);
-
-                //     if (empty($raw)) return '-';
-
-                //     $arr = json_decode($raw, true) ?? [];
-
-                //     $arr = array_filter(array_map(function ($v) {
-                //         if (is_null($v)) return '';
-                //         return strtolower(trim((string)$v)) === 'null' ? '' : trim((string)$v);
-                //     }, (array)$arr), fn($v) => $v !== '');
-
-                //     return empty($arr) ? '-' : array_values($arr);
-                // })
-
                 ->editColumn('created_at', fn($data) => $data->created_at?->format('d F Y'))
                 ->addColumn('action', 'components.admin.button')
                 ->rawColumns(['action'])
